@@ -149,14 +149,14 @@ const DashboardPage = () => {
         </div>
       )}
 
-      {/* Let's Go Now Card - cleaner gradient */}
+      {/* Hanglly Now Card - cleaner gradient */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-lime-500 via-electric-500 to-hotpink-500 p-[1.5px] mb-12">
         <div className="relative bg-dark-900 rounded-[calc(1.5rem-1.5px)] p-8 lg:p-10 overflow-hidden">
           <div className="absolute top-0 right-0 w-40 h-40 bg-lime-500/15 rounded-full blur-[80px]"></div>
           <div className="relative flex flex-col lg:flex-row items-center gap-6">
             <div className="flex-1">
               <h2 className="text-2xl lg:text-3xl font-display font-bold text-white mb-2">
-                Let's Go Now! 🚀
+                Hanglly Now! 🚀
               </h2>
               <p className="text-dark-300">Find people for activities happening right now</p>
             </div>

@@ -92,7 +92,7 @@ const LandingPage = () => {
           <div className="flex items-center justify-between h-16 lg:h-20">
             <div className="flex items-center gap-2 group">
               <Logo size={40} className="group-hover:rotate-6 transition-transform" />
-              <span className="text-xl font-display font-bold text-white">Let's Go</span>
+              <span className="text-xl font-display font-bold text-white">Hanglly</span>
             </div>
             
             <div className="hidden md:flex items-center gap-8">
@@ -142,7 +142,7 @@ const LandingPage = () => {
             <h1 className="text-4xl sm:text-5xl lg:text-7xl font-display font-bold text-white mb-6 leading-tight animate-slide-up">
               Don't just chat.
               <br />
-              <span className="gradient-text-flow">Let's Go do something.</span>
+              <span className="gradient-text-flow">Let's Hanglly.</span>
             </h1>
             
             <p className="text-lg lg:text-xl text-dark-300 max-w-2xl mx-auto mb-10 animate-slide-up" style={{ animationDelay: '0.1s' }}>
@@ -310,7 +310,7 @@ const LandingPage = () => {
       <section id="features" className="py-20 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <span className="badge-lime mb-4 inline-block">Why Let's Go?</span>
+            <span className="badge-lime mb-4 inline-block">Why Hanglly?</span>
             <h2 className="text-3xl lg:text-4xl font-display font-bold text-white mb-4">
               Not just another social app
             </h2>
@@ -412,7 +412,7 @@ const LandingPage = () => {
               <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-hotpink-500/20 rounded-full blur-[100px] animate-float-delayed"></div>
               <div className="relative">
                 <h2 className="text-3xl lg:text-4xl font-display font-bold text-white mb-6">
-                  Ready to <span className="gradient-text-flow">Let's Go?</span>
+                  Ready to <span className="gradient-text-flow">Hanglly?</span>
                 </h2>
                 <p className="text-dark-300 max-w-xl mx-auto mb-8 text-lg">
                   Join thousands of people who are already finding their activity buddies and making real connections.
@@ -433,18 +433,18 @@ const LandingPage = () => {
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-2">
               <Logo size={40} />
-              <span className="text-xl font-display font-bold text-white">Let's Go</span>
+              <span className="text-xl font-display font-bold text-white">Hanglly</span>
             </div>
             
             <div className="flex items-center gap-6">
               <a href="#features" className="text-dark-400 hover:text-lime-400 transition-colors">About</a>
               <Link to="/explore" className="text-dark-400 hover:text-lime-400 transition-colors">Explore</Link>
               <Link to="/register" className="text-dark-400 hover:text-lime-400 transition-colors">Get Started</Link>
-              <a href="mailto:support@letsgo.app" className="text-dark-400 hover:text-lime-400 transition-colors">Contact</a>
+              <a href="mailto:support@hanglly.app" className="text-dark-400 hover:text-lime-400 transition-colors">Contact</a>
             </div>
             
             <p className="text-dark-500 text-sm">
-              © 2025 Let's Go. All rights reserved.
+              © 2025 Hanglly. All rights reserved.
             </p>
           </div>
         </div>

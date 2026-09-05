@@ -1,5 +1,5 @@
 const SHELL = ['/', '/index.html', '/manifest.webmanifest', '/icon-192.png', '/icon-512.png', '/apple-touch-icon.png'];
-const SHELL_CACHE = 'letsgo-shell-v2';
+const SHELL_CACHE = 'hanglly-shell-v3';
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -54,7 +54,7 @@ self.addEventListener('push', (event) => {
   } catch {
     /* ignore malformed payloads */
   }
-  const title = data.title || "Let's Go";
+  const title = data.title || "Hanglly";
   const options = {
     body: data.body || '',
     icon: data.icon || '/icon-192.png',
