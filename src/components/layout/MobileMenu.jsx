@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useLocation, NavLink } from 'react-router-dom';
 import { FiX, FiPlus, FiTarget } from 'react-icons/fi';
 import { Logo } from '../common';
@@ -35,7 +36,7 @@ const MobileMenu = ({ isOpen, onClose }) => {
     <nav className="px-4 py-4 space-y-1">{items.map(renderItem)}</nav>
   );
 
-  return (
+  return createPortal(
     <>
       {/* Backdrop */}
       <div
@@ -102,7 +103,8 @@ const MobileMenu = ({ isOpen, onClose }) => {
           </div>
         </div>
       </aside>
-    </>
+    </>,
+    document.body
   );
 };
 

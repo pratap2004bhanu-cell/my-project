@@ -246,7 +246,7 @@ const LandingPage = () => {
               </div>
               
               {/* Floating Cards - glass */}
-              <div className="absolute -left-12 lg:-left-20 top-1/4 glass-strong rounded-2xl p-4 animate-float shadow-float z-10">
+              <div className="absolute left-0 sm:-left-16 lg:-left-20 top-1/4 glass-strong rounded-2xl p-4 animate-float shadow-float z-10">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-lime-500 to-emerald-500 flex items-center justify-center shadow-glow-lime">
                     <FiTarget className="w-5 h-5 text-white" />
@@ -258,7 +258,7 @@ const LandingPage = () => {
                 </div>
               </div>
               
-              <div className="absolute -right-12 lg:-right-16 bottom-1/4 glass-strong rounded-2xl p-4 animate-float shadow-float z-10" style={{ animationDelay: '2s' }}>
+              <div className="absolute right-0 sm:-right-12 lg:-right-16 bottom-1/4 glass-strong rounded-2xl p-4 animate-float shadow-float z-10" style={{ animationDelay: '2s' }}>
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-hotpink-500 to-rose-500 flex items-center justify-center shadow-glow-pink">
                     <FiHeart className="w-5 h-5 text-white" />
