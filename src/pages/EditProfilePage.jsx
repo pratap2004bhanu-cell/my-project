@@ -6,6 +6,7 @@ import {
 } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
 import api from '../api';
+import { RoundAvatar } from '../components/common';
 
 const EditProfilePage = () => {
   const { user, updateUser } = useAuth();
@@ -127,13 +128,12 @@ const EditProfilePage = () => {
       <div className="card p-6 mb-6">
         <div className="flex items-center gap-6">
           <div className="relative">
-            {user?.avatar ? (
-              <img src={user.avatar} alt={profile.name} className="w-24 h-24 rounded-full object-cover border-2 border-dark-700" />
-            ) : (
-              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-lime-500 via-electric-500 to-hotpink-500 flex items-center justify-center text-white text-3xl font-bold">
-                {profile.name.charAt(0)}
-              </div>
-            )}
+            <RoundAvatar
+              src={user?.avatar}
+              name={profile.name}
+              gradient="from-lime-500 via-electric-500 to-hotpink-500"
+              className="w-24 h-24 text-3xl border-2 border-dark-700"
+            />
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading}

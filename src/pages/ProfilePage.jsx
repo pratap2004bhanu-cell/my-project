@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../api';
 import { normalizeActivity } from '../utils/normalize';
+import { RoundAvatar } from '../components/common';
 import { 
   FiEdit2, FiMapPin, FiCalendar, FiHeart, 
   FiActivity, FiStar, FiSettings, FiLogOut,
@@ -116,17 +117,12 @@ const ProfilePage = () => {
         <div className="flex flex-col sm:flex-row items-center gap-6">
           {/* Avatar */}
           <div className="relative">
-            {user?.avatar ? (
-              <img
-                src={user.avatar}
-                alt={user?.name}
-                className="w-28 h-28 rounded-full object-cover shadow-lg border-2 border-dark-700"
-              />
-            ) : (
-              <div className="w-28 h-28 rounded-full bg-gradient-to-br from-lime-500 via-electric-500 to-hotpink-500 flex items-center justify-center text-white text-4xl font-bold shadow-lg">
-                {user?.name?.charAt(0) || 'U'}
-              </div>
-            )}
+            <RoundAvatar
+              src={user?.avatar}
+              name={user?.name}
+              gradient="from-lime-500 via-electric-500 to-hotpink-500"
+              className="w-28 h-28 text-4xl shadow-lg border-2 border-dark-700"
+            />
             <Link
               to="/profile/edit"
               className="absolute bottom-0 right-0 w-8 h-8 bg-dark-800 border-2 border-dark-700 rounded-full flex items-center justify-center hover:bg-dark-700 transition-colors"
