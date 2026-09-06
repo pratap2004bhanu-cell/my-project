@@ -1,44 +1,87 @@
-const Logo = ({ size = 40, className = '' }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 40 40"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    className={className}
-    role="img"
-    aria-label="KIKY"
-  >
-    <defs>
-      <linearGradient id="kiky-brand" x1="5" y1="1" x2="38" y2="40" gradientUnits="userSpaceOnUse">
-        <stop offset="0" stopColor="#84cc16" />
-        <stop offset="0.2" stopColor="#a3e635" />
-        <stop offset="0.55" stopColor="#6366f1" />
-        <stop offset="0.85" stopColor="#c026d3" />
-        <stop offset="1" stopColor="#ec4899" />
-      </linearGradient>
-    </defs>
-    <rect width="40" height="40" rx="11" fill="url(#kiky-brand)" />
-    <circle cx="8" cy="8" r="12" fill="#ffffff" opacity="0.06" />
-    <circle cx="34" cy="34" r="14" fill="#ffffff" opacity="0.08" />
-    <rect x="9.2" y="9.2" width="5.6" height="21.6" rx="2.8" fill="#ffffff" />
-    <path
-      d="M13.9 17.9 C20.4 13.5 26.2 10.2 30.7 8.9"
-      stroke="#ffffff"
-      strokeWidth="5.6"
+const Logo = ({
+  size = 150,
+  tagline = false,
+  className = '',
+}) => {
+  const viewBox = tagline ? '0 0 300 158' : '0 0 300 120';
+
+  return (
+    <svg
+      width={size}
+      height={size * (tagline ? 158 / 300 : 120 / 300)}
+      viewBox={viewBox}
       fill="none"
-      strokeLinecap="round"
-    />
-    <path
-      d="M13.9 24.1 C20.4 28.5 26.2 31.8 30.7 33.1"
-      stroke="#ffffff"
-      strokeWidth="5.6"
-      fill="none"
-      strokeLinecap="round"
-    />
-    <circle cx="33.8" cy="9.5" r="1.35" fill="#ffffff" opacity="0.85" />
-    <circle cx="33.8" cy="32.5" r="1.35" fill="#ffffff" opacity="0.85" />
-  </svg>
-);
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      role="img"
+      aria-label="KIKY"
+    >
+      <defs>
+        <linearGradient id="kiky-sun" x1="90" y1="0" x2="210" y2="0" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#FF5F6D" />
+          <stop offset="1" stopColor="#FFAA24" />
+        </linearGradient>
+      </defs>
+
+      {/* Circular sun accent peeking above the wordmark */}
+      <path
+        d="M 52 40 A 34 34 0 0 1 92 14"
+        fill="none"
+        stroke="#FFAA24"
+        strokeWidth="8"
+        strokeLinecap="round"
+        opacity="0.95"
+      />
+
+      {/* Wordmark */}
+      <text
+        x="150"
+        y="86"
+        textAnchor="middle"
+        fontFamily='"Baloo 2", "Fredoka", "Nunito", sans-serif'
+        fontWeight="800"
+        fontSize="70"
+        letterSpacing="2"
+        fill="currentColor"
+      >
+        KIKY
+      </text>
+
+      {/* Playful Y feet (two friends) */}
+      <circle cx="212" cy="114" r="4.5" fill="url(#kiky-sun)" />
+      <circle cx="228" cy="114" r="4.5" fill="url(#kiky-sun)" />
+
+      {/* Smile */}
+      <path
+        d="M 92 100 Q 150 114 200 100"
+        fill="none"
+        stroke="url(#kiky-sun)"
+        strokeWidth="7"
+        strokeLinecap="round"
+      />
+
+      {/* Spark lines */}
+      <path d="M 238 34 l 11 -10" stroke="#FFAA24" strokeWidth="6" strokeLinecap="round" />
+      <path d="M 249 46 l 10 -9" stroke="#FFAA24" strokeWidth="6" strokeLinecap="round" opacity="0.7" />
+      <path d="M 258 58 l 8 -7" stroke="#FFAA24" strokeWidth="5" strokeLinecap="round" opacity="0.5" />
+
+      {tagline && (
+        <text
+          x="150"
+          y="142"
+          textAnchor="middle"
+          fontFamily='"Poppins", "Inter", sans-serif'
+          fontWeight="500"
+          fontSize="22"
+          letterSpacing="7"
+          fill="currentColor"
+          opacity="0.6"
+        >
+          People • Plans • Play
+        </text>
+      )}
+    </svg>
+  );
+};
 
 export default Logo;

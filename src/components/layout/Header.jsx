@@ -55,8 +55,7 @@ const Header = () => {
       <div className="flex items-center justify-between px-4 lg:px-6 h-16 lg:h-20">
         {/* Logo */}
         <Link to="/dashboard" className="flex items-center gap-2">
-          <Logo size={40} />
-          <span className="text-xl font-display font-bold text-white hidden sm:block">KIKY</span>
+          <Logo size={96} className="text-white" />
         </Link>
 
         {/* Search - Desktop */}

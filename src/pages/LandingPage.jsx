@@ -93,8 +93,7 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-20">
             <div className="flex items-center gap-2 group">
-              <Logo size={40} className="group-hover:rotate-6 transition-transform" />
-              <span className="text-xl font-display font-bold text-white">KIKY</span>
+              <Logo size={104} className="group-hover:rotate-6 transition-transform text-white" />
             </div>
             
             <div className="hidden md:flex items-center gap-8">
@@ -437,8 +436,7 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-2">
-              <Logo size={40} />
-              <span className="text-xl font-display font-bold text-white">KIKY</span>
+              <Logo size={150} tagline className="text-white" />
             </div>
             
             <div className="flex items-center gap-6">

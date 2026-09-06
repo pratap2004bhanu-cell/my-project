@@ -65,7 +65,7 @@ const PublicRoute = ({ children }) => {
       <div className="min-h-screen flex items-center justify-center bg-dark-950">
         <div className="flex flex-col items-center gap-4">
           <div className="animate-pulse">
-            <Logo size={64} />
+            <Logo size={64} className="text-white" />
           </div>
           <div className="w-8 h-8 border-2 border-lime-500 border-t-transparent rounded-full animate-spin"></div>
         </div>

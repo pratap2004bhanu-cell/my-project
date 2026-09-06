@@ -50,8 +50,7 @@ const LoginPage = () => {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center justify-center gap-3 mb-6">
-            <Logo size={56} className="shadow-lg rounded-2xl" />
-            <span className="text-2xl font-display font-bold text-white">KIKY</span>
+            <Logo size={170} className="text-white" />
           </Link>
           <h1 className="text-2xl font-bold text-white">Welcome back!</h1>
           <p className="text-dark-400 mt-2">Sign in to find your activity buddies</p>
