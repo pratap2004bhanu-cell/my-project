@@ -218,13 +218,13 @@ const DashboardPage = () => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1.5">
-                      <h3 className="font-semibold text-white truncate">{activity.title}</h3>
+                      <h3 className="font-semibold text-white truncate min-w-0">{activity.title}</h3>
                       <span className="text-lime-400 text-xs font-medium flex-shrink-0">{activity.match}% match</span>
                     </div>
-                    <div className="flex items-center gap-5 text-sm text-dark-400">
-                      <span className="flex items-center gap-1.5">
-                        <FiMapPin className="w-3.5 h-3.5" />
-                        {activity.distanceLabel}
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-dark-400">
+                      <span className="flex items-center gap-1.5 min-w-0">
+                        <FiMapPin className="w-3.5 h-3.5 flex-shrink-0" />
+                        <span className="truncate max-w-36">{activity.distanceLabel}</span>
                       </span>
                       <span className="flex items-center gap-1.5">
                         <FiCalendar className="w-3.5 h-3.5" />
@@ -268,12 +268,12 @@ const DashboardPage = () => {
                   <div className={`w-full h-20 bg-gradient-to-br ${activity.color} rounded-xl flex items-center justify-center text-3xl mb-4`}>
                     {activity.emoji}
                   </div>
-                  <h3 className="font-semibold text-white mb-1.5">{activity.title}</h3>
-                  <div className="flex items-center gap-2 text-sm text-dark-400">
-                    <FiMapPin className="w-3.5 h-3.5" />
-                    {activity.distanceLabel}
+                  <h3 className="font-semibold text-white mb-1.5 truncate">{activity.title}</h3>
+                  <div className="flex items-center gap-2 text-sm text-dark-400 min-w-0">
+                    <FiMapPin className="w-3.5 h-3.5 flex-shrink-0" />
+                    <span className="truncate">{activity.distanceLabel}</span>
                   </div>
-                  <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/10">
+                  <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 mt-3 pt-3 border-t border-white/10">
                     <span className="flex items-center gap-1.5 text-sm text-dark-400">
                       <FiUsers className="w-3.5 h-3.5" />
                       {activity.participants} joined
