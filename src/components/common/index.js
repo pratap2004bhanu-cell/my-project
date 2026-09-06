@@ -4,3 +4,4 @@ export { default as Avatar } from './Avatar';
 export { default as RoundAvatar } from './RoundAvatar';
 export { default as Logo } from './Logo';
 export { default as Modal } from './Modal';
+export { default as DemoTour } from './DemoTour';

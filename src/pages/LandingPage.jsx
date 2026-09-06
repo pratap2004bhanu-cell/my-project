@@ -1,14 +1,16 @@
 import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { 
   FiArrowRight, FiMapPin, FiUsers, FiCalendar, 
   FiHeart, FiStar, FiZap, FiTarget, FiTrendingUp,
   FiCheck, FiPlay
 } from 'react-icons/fi';
-import { Logo } from '../components/common';
+import { Logo, DemoTour } from '../components/common';
 
 const LandingPage = () => {
   const [currentWord, setCurrentWord] = useState(0);
+  const [demoOpen, setDemoOpen] = useState(false);
+  const handleCloseDemo = useCallback(() => setDemoOpen(false), []);
   const words = ['activities', 'people', 'adventures', 'plans'];
   
   useEffect(() => {
@@ -156,7 +158,10 @@ const LandingPage = () => {
                 Start Exploring
                 <FiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <button className="btn-ghost text-lg px-8 py-4 flex items-center gap-2">
+              <button
+                onClick={() => setDemoOpen(true)}
+                className="btn-ghost text-lg px-8 py-4 flex items-center gap-2 cursor-pointer"
+              >
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-lime-500 to-electric-500 flex items-center justify-center shadow-glow-lime">
                   <FiPlay className="w-5 h-5 text-dark-900 ml-0.5" />
                 </div>
@@ -449,6 +454,8 @@ const LandingPage = () => {
           </div>
         </div>
       </footer>
+
+      <DemoTour isOpen={demoOpen} onClose={handleCloseDemo} />
     </div>
   );
 };
