@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { 
-  FiSend, FiPaperclip, FiPhone, FiVideo,
-  FiArrowLeft, FiMapPin,
+  FiSend, FiSmile,
+  FiArrowLeft, FiMapPin, FiX,
   FiUsers, FiInfo,
   FiCalendar, FiSettings
 } from 'react-icons/fi';
@@ -10,7 +10,8 @@ import api from '../api';
 import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
 import { RoundAvatar } from '../components/common';
-import { normalizeActivity, normalizeMessage, categoryColor } from '../utils/normalize';
+import { MessageBubble, EmojiPicker, AttachmentButton } from '../components/chat';
+import { normalizeActivity, normalizeMessage, categoryColor, messagePreview } from '../utils/normalize';
 
 const GroupChatPage = () => {
   const { activityId } = useParams();
@@ -23,6 +24,8 @@ const GroupChatPage = () => {
   const [activityMap, setActivityMap] = useState({});
   const [messagesByGroup, setMessagesByGroup] = useState({});
   const [loading, setLoading] = useState(true);
+  const [emojiOpen, setEmojiOpen] = useState(false);
+  const [pendingAttachment, setPendingAttachment] = useState(null);
   const messagesEndRef = useRef(null);
 
   // Load my activities as group chats
@@ -108,7 +111,7 @@ const GroupChatPage = () => {
       avatar: nm.senderAvatar || (nm.senderName || 'Y')[0],
       gradient: m.sender?.gradient || categoryColor(activityMap[nm.senderId]?.category),
     };
-    return { id: nm.id, sender, text: nm.text, time: nm.time, isMe: nm.senderId === me?.id };
+    return { id: nm.id, sender, text: nm.text, image: nm.image, attachment: nm.attachment, time: nm.time, isMe: nm.senderId === me?.id };
   };
 
   const scrollToBottom = () => {
@@ -117,12 +120,14 @@ const GroupChatPage = () => {
 
   const handleSend = (e) => {
     e.preventDefault();
-    if (message.trim() && activeGroup) {
-      if (socket?.connected) {
-        socket.emit('activity:message', { activityId: activeGroup, content: message.trim() });
-      }
-      setMessage('');
+    const content = message.trim();
+    if ((!content && !pendingAttachment) || !activeGroup) return;
+    if (socket?.connected) {
+      socket.emit('activity:message', { activityId: activeGroup, content, attachment: pendingAttachment || undefined });
     }
+    setMessage('');
+    setPendingAttachment(null);
+    setEmojiOpen(false);
   };
 
   const activeGroupData = groups.find(g => g.id === activeGroup);
@@ -215,12 +220,6 @@ const GroupChatPage = () => {
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <button className="btn-icon w-8 h-8">
-                  <FiPhone className="w-4 h-4" />
-                </button>
-                <button className="btn-icon w-8 h-8">
-                  <FiVideo className="w-4 h-4" />
-                </button>
                 <button 
                   onClick={() => setShowInfo(!showInfo)}
                   className="btn-icon w-8 h-8"
@@ -249,26 +248,17 @@ const GroupChatPage = () => {
                           src={msg.sender.avatar}
                           name={msg.sender.name}
                           gradient={msg.sender.gradient}
-                          className="w-8 h-8 text-xs mr-2"
+                          className="w-8 h-8 text-xs mr-2 flex-shrink-0"
                         />
                       )}
-                      <div className={`max-w-[70%] ${msg.isMe ? '' : ''}`}>
-                        {!msg.isMe && (
-                          <p className="text-xs text-dark-400 mb-1 ml-1">{msg.sender.name}</p>
-                        )}
-                        <div
-                          className={`rounded-2xl px-4 py-2.5 ${
-                            msg.isMe
-                              ? 'bg-lime-500 text-dark-900 rounded-br-md'
-                              : 'bg-dark-800 text-white rounded-bl-md'
-                          }`}
-                        >
-                          <p>{msg.text}</p>
-                        </div>
-                        <p className={`text-[10px] text-dark-400 mt-1 ${msg.isMe ? 'text-right mr-1' : 'ml-1'}`}>
-                          {msg.time}
-                        </p>
-                      </div>
+                      <MessageBubble
+                        text={msg.text}
+                        image={msg.image}
+                        attachment={msg.attachment}
+                        time={msg.time}
+                        isMe={msg.isMe}
+                        showName={msg.isMe ? undefined : msg.sender.name}
+                      />
                     </div>
                   ))}
                   <div ref={messagesEndRef} />
@@ -277,21 +267,52 @@ const GroupChatPage = () => {
                 {/* Message Input */}
                 <div className="p-4 border-t border-dark-800">
                   <form onSubmit={handleSend} className="flex items-center gap-3">
-                    <button type="button" className="btn-icon w-8 h-8">
-                      <FiPaperclip className="w-4 h-4" />
-                    </button>
+                    <AttachmentButton
+                      onAttach={setPendingAttachment}
+                      buttonClass="btn-icon w-8 h-8"
+                      iconClass="w-4 h-4"
+                    />
+                    {pendingAttachment && (
+                      <span className="flex items-center gap-2 max-w-[150px] bg-dark-800 border border-dark-700 rounded-xl px-3 py-2 text-sm text-white flex-shrink-0">
+                        <span className="truncate">
+                          {pendingAttachment.type?.startsWith('image/') ? '📷 ' : '📎 '}
+                          {pendingAttachment.name}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setPendingAttachment(null)}
+                          className="text-dark-400 hover:text-white flex-shrink-0"
+                          aria-label="Remove attachment"
+                        >
+                          <FiX className="w-4 h-4" />
+                        </button>
+                      </span>
+                    )}
                     <div className="flex-1 relative">
                       <input
                         type="text"
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                         placeholder="Type a message..."
-                        className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-xl text-white placeholder-dark-400 focus:outline-none focus:border-lime-500/50 text-sm"
+                        className="w-full px-4 py-2.5 pr-10 bg-dark-800 border border-dark-700 rounded-xl text-white placeholder-dark-400 focus:outline-none focus:border-lime-500/50 text-sm"
                       />
+                      <button
+                        type="button"
+                        onClick={() => setEmojiOpen((prev) => !prev)}
+                        className={`absolute right-2.5 top-1/2 -translate-y-1/2 transition-colors ${emojiOpen ? 'text-lime-400' : 'text-dark-400 hover:text-white'}`}
+                        aria-label="Emoji picker"
+                      >
+                        <FiSmile className="w-4 h-4" />
+                      </button>
+                      {emojiOpen && (
+                        <EmojiPicker
+                          onSelect={(emoji) => { setMessage((prev) => prev + emoji); setEmojiOpen(false); }}
+                        />
+                      )}
                     </div>
                     <button 
                       type="submit"
-                      disabled={!message.trim()}
+                      disabled={!message.trim() && !pendingAttachment}
                       className="btn-primary px-3 py-2.5 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <FiSend className="w-4 h-4" />

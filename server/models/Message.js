@@ -5,7 +5,13 @@ const messageSchema = new mongoose.Schema({
   receiver: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   activity: { type: mongoose.Schema.Types.ObjectId, ref: 'Activity' },
   community: { type: mongoose.Schema.Types.ObjectId, ref: 'Community' },
-  content: { type: String, required: true },
+  content: { type: String, default: '' },
+  attachment: {
+    url: { type: String, default: '' },
+    name: { type: String, default: '' },
+    type: { type: String, default: '' },
+    size: { type: Number, default: 0 },
+  },
   read: { type: Boolean, default: false },
 }, { timestamps: true });
 

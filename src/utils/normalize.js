@@ -108,4 +108,17 @@ export const normalizeMessage = (m) => ({
   read: m.read,
   createdAt: m.createdAt,
   time: m.createdAt ? new Date(m.createdAt).toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' }) : '',
+  attachment: m.attachment?.url ? {
+    url: m.attachment.url,
+    name: m.attachment.name || 'Attachment',
+    type: m.attachment.type || '',
+    size: m.attachment.size || 0,
+  } : null,
+  image: m.attachment?.url && String(m.attachment.type || '').startsWith('image/') ? m.attachment.url : null,
 });
+
+export const messagePreview = (m) => {
+  if (m?.content) return m.content;
+  if (!m?.attachment?.url) return '';
+  return String(m.attachment.type || '').startsWith('image/') ? '📷 Photo' : `📎 ${m.attachment.name || 'Attachment'}`;
+};

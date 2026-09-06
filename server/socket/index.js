@@ -54,7 +54,8 @@ const configureSocket = (io) => {
         const message = await Message.create({
           sender: socket.user._id,
           community: data.communityId,
-          content: data.content,
+          content: data.content || '',
+          attachment: data.attachment,
         });
 
         const populated = await message.populate('sender', 'name avatar');
@@ -70,7 +71,8 @@ const configureSocket = (io) => {
         const message = await Message.create({
           sender: socket.user._id,
           receiver: data.receiver,
-          content: data.content,
+          content: data.content || '',
+          attachment: data.attachment,
         });
 
         const populated = await message.populate('sender', 'name avatar');
@@ -101,7 +103,8 @@ const configureSocket = (io) => {
         const message = await Message.create({
           sender: socket.user._id,
           activity: data.activityId,
-          content: data.content,
+          content: data.content || '',
+          attachment: data.attachment,
         });
 
         const populated = await message.populate('sender', 'name avatar');

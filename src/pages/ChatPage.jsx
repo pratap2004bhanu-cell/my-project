@@ -1,14 +1,15 @@
 import { useState, useRef, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { 
-  FiSend, FiPaperclip, FiSmile, FiPhone, FiVideo,
-  FiMoreVertical, FiArrowLeft, FiImage, FiCheck
+  FiSend, FiSmile,
+  FiMoreVertical, FiArrowLeft, FiX
 } from 'react-icons/fi';
 import api from '../api';
 import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
 import { RoundAvatar } from '../components/common';
-import { normalizeMessage } from '../utils/normalize';
+import { MessageBubble, EmojiPicker, AttachmentButton } from '../components/chat';
+import { normalizeMessage, messagePreview } from '../utils/normalize';
 
 const gradients = [
   'from-lime-500 to-emerald-500',
@@ -29,6 +30,8 @@ const ChatPage = () => {
   const [loading, setLoading] = useState(true);
   const [overrides, setOverrides] = useState({});
   const [typing, setTyping] = useState(false);
+  const [emojiOpen, setEmojiOpen] = useState(false);
+  const [pendingAttachment, setPendingAttachment] = useState(null);
   const messagesEndRef = useRef(null);
   const typingTimer = useRef(null);
   const typingSent = useRef(false);
@@ -47,7 +50,7 @@ const ChatPage = () => {
             name: u.name || 'Unknown',
             avatar: u.avatar || (u.name || 'U')[0],
             gradient: gradients[i % gradients.length],
-            lastMessage: c.lastMessage?.content || '',
+            lastMessage: messagePreview(c.lastMessage),
             time: c.lastMessage?.createdAt
               ? new Date(c.lastMessage.createdAt).toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' })
               : '',
@@ -81,6 +84,8 @@ const ChatPage = () => {
             id: nm.id,
             sender: nm.senderId === me?.id ? 'me' : 'them',
             text: nm.text,
+            image: nm.image,
+            attachment: nm.attachment,
             time: nm.time,
             status: nm.read ? 'read' : 'delivered',
           };
@@ -125,14 +130,14 @@ const ChatPage = () => {
       if (!m.receiver) return;
       const { receiver } = m;
       const nm = normalizeMessage(m);
-      appendMessage(receiver, { id: nm.id, sender: 'me', text: nm.text, time: nm.time, status: 'sent' });
-      bumpConversation(receiver, nm.text);
+      appendMessage(receiver, { id: nm.id, sender: 'me', text: nm.text, image: nm.image, attachment: nm.attachment, time: nm.time, status: 'sent' });
+      bumpConversation(receiver, messagePreview(nm));
     };
     const onReceive = (m) => {
       const fromId = m.sender?._id || m.sender;
       const nm = normalizeMessage(m);
-      appendMessage(fromId, { id: nm.id, sender: 'them', text: nm.text, time: nm.time, status: 'delivered' });
-      bumpConversation(fromId, nm.text);
+      appendMessage(fromId, { id: nm.id, sender: 'them', text: nm.text, image: nm.image, attachment: nm.attachment, time: nm.time, status: 'delivered' });
+      bumpConversation(fromId, messagePreview(nm));
       if (socket?.connected && activeChatRef.current === fromId) {
         socket.emit('message:read', { receiver: fromId });
       }
@@ -214,22 +219,34 @@ const ChatPage = () => {
 
   const handleSend = (e) => {
     e.preventDefault();
-    if (!message.trim() || !activeChat) return;
+    const content = message.trim();
+    if ((!content && !pendingAttachment) || !activeChat) return;
     clearTimeout(typingTimer.current);
     typingSent.current = false;
+    const attachment = pendingAttachment || undefined;
     if (socket?.connected) {
       socket.emit('typing:stop', { receiver: activeChat });
-      socket.emit('message:send', { receiver: activeChat, content: message.trim() });
+      socket.emit('message:send', { receiver: activeChat, content, attachment });
     } else {
-      api.post('/api/messages', { receiver: activeChat, content: message.trim() })
+      api.post('/api/messages', { receiver: activeChat, content, attachment })
         .then((res) => {
           const nm = normalizeMessage(res.data.message);
-          appendMessage(activeChat, { id: nm.id, sender: 'me', text: nm.text, time: nm.time, status: 'sent' });
-          bumpConversation(nm.senderId, nm.text);
+          appendMessage(activeChat, { id: nm.id, sender: 'me', text: nm.text, image: nm.image, attachment: nm.attachment, time: nm.time, status: 'sent' });
+          bumpConversation(nm.senderId, messagePreview(nm));
         })
         .catch((err) => alert(err?.response?.data?.error || 'Message failed to send'));
     }
     setMessage('');
+    setPendingAttachment(null);
+    setEmojiOpen(false);
+  };
+
+  const handleEmoji = (emoji) => {
+    setMessage((prev) => prev + emoji);
+    if (socket?.connected && activeChat && !typingSent.current) {
+      socket.emit('typing:start', { receiver: activeChat });
+      typingSent.current = true;
+    }
   };
 
   const activeConversation = conversations.find((c) => c.id === activeChat) || (activeChat ? overrides[activeChat] : null);
@@ -322,12 +339,6 @@ const ChatPage = () => {
               </div>
               <div className="flex items-center gap-2">
                 <button className="btn-icon">
-                  <FiPhone className="w-5 h-5" />
-                </button>
-                <button className="btn-icon">
-                  <FiVideo className="w-5 h-5" />
-                </button>
-                <button className="btn-icon">
                   <FiMoreVertical className="w-5 h-5" />
                 </button>
               </div>
@@ -346,24 +357,14 @@ const ChatPage = () => {
                   key={msg.id}
                   className={`flex ${msg.sender === 'me' ? 'justify-end' : 'justify-start'}`}
                 >
-                  <div
-                    className={`max-w-[70%] rounded-2xl px-4 py-2.5 ${
-                      msg.sender === 'me'
-                        ? 'bg-lime-500 text-dark-900 rounded-br-md'
-                        : 'bg-dark-800 text-white rounded-bl-md'
-                    }`}
-                  >
-                    <p>{msg.text}</p>
-                    <div className={`flex items-center justify-end gap-1 mt-1 ${msg.sender === 'me' ? 'text-dark-700' : 'text-dark-400'}`}>
-                      <span className="text-[10px]">{msg.time}</span>
-                      {msg.sender === 'me' && (
-                        <span className={`flex items-center ${msg.status === 'read' ? 'text-lime-600' : 'text-dark-500'}`}>
-                          <FiCheck className="w-3 h-3 -mr-1" />
-                          <FiCheck className="w-3 h-3" />
-                        </span>
-                      )}
-                    </div>
-                  </div>
+                  <MessageBubble
+                    text={msg.text}
+                    image={msg.image}
+                    attachment={msg.attachment}
+                    time={msg.time}
+                    status={msg.status}
+                    isMe={msg.sender === 'me'}
+                  />
                 </div>
               ))}
               <div ref={messagesEndRef} />
@@ -372,27 +373,52 @@ const ChatPage = () => {
             {/* Message Input */}
             <div className="p-4 border-t border-dark-800">
               <form onSubmit={handleSend} className="flex items-center gap-3">
-                <button type="button" className="btn-icon">
-                  <FiPaperclip className="w-5 h-5" />
-                </button>
-                <button type="button" className="btn-icon">
-                  <FiImage className="w-5 h-5" />
-                </button>
+                <AttachmentButton
+                  onAttach={setPendingAttachment}
+                  buttonClass="btn-icon"
+                  iconClass="w-5 h-5"
+                />
+                {pendingAttachment && (
+                  <span className="flex items-center gap-2 max-w-[160px] bg-dark-800 border border-dark-700 rounded-xl px-3 py-2 text-sm text-white flex-shrink-0">
+                    <span className="truncate">
+                      {pendingAttachment.type?.startsWith('image/') ? '📷 ' : '📎 '}
+                      {pendingAttachment.name}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setPendingAttachment(null)}
+                      className="text-dark-400 hover:text-white flex-shrink-0"
+                      aria-label="Remove attachment"
+                    >
+                      <FiX className="w-4 h-4" />
+                    </button>
+                  </span>
+                )}
                 <div className="flex-1 relative">
                   <input
                     type="text"
                     value={message}
                     onChange={(e) => handleTyping(e.target.value)}
                     placeholder="Type a message..."
-                    className="w-full px-4 py-3 bg-dark-800 border border-dark-700 rounded-xl text-white placeholder-dark-400 focus:outline-none focus:border-lime-500/50"
+                    className="w-full px-4 py-3 pr-10 bg-dark-800 border border-dark-700 rounded-xl text-white placeholder-dark-400 focus:outline-none focus:border-lime-500/50"
                   />
-                  <button type="button" className="absolute right-3 top-1/2 -translate-y-1/2 text-dark-400 hover:text-white">
+                  <button
+                    type="button"
+                    onClick={() => setEmojiOpen((prev) => !prev)}
+                    className={`absolute right-2.5 top-1/2 -translate-y-1/2 transition-colors ${emojiOpen ? 'text-lime-400' : 'text-dark-400 hover:text-white'}`}
+                    aria-label="Emoji picker"
+                  >
                     <FiSmile className="w-5 h-5" />
                   </button>
+                  {emojiOpen && (
+                    <EmojiPicker
+                      onSelect={(emoji) => { handleEmoji(emoji); setEmojiOpen(false); }}
+                    />
+                  )}
                 </div>
                 <button 
                   type="submit"
-                  disabled={!message.trim()}
+                  disabled={!message.trim() && !pendingAttachment}
                   className="btn-primary px-4 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <FiSend className="w-5 h-5" />

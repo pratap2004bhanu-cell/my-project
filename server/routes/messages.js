@@ -1,9 +1,47 @@
 import { Router } from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import multer from 'multer';
 import Message from '../models/Message.js';
 import { protect } from '../middleware/auth.js';
 import { notify } from '../utils/notify.js';
 
 const router = Router();
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const uploadDir = path.join(__dirname, '..', 'uploads');
+
+const chatStorage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, uploadDir),
+  filename: (req, file, cb) => {
+    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+    const ext = path.extname(file.originalname);
+    cb(null, `chat-${uniqueSuffix}${ext}`);
+  },
+});
+const chatUpload = multer({
+  storage: chatStorage,
+  limits: { fileSize: 10 * 1024 * 1024 },
+});
+
+// Upload a chat attachment (any file type, max 10MB)
+router.post('/upload', protect, (req, res) => {
+  chatUpload.single('file')(req, res, (err) => {
+    if (err) {
+      const msg = err.code === 'LIMIT_FILE_SIZE' ? 'File is too large (max 10MB)' : err.message;
+      return res.status(400).json({ success: false, error: msg });
+    }
+    if (!req.file) {
+      return res.status(400).json({ success: false, error: 'No file uploaded' });
+    }
+    res.json({
+      success: true,
+      url: `/uploads/${req.file.filename}`,
+      name: req.file.originalname,
+      type: req.file.mimetype,
+      size: req.file.size,
+    });
+  });
+});
 
 // Get conversations list
 router.get('/conversations', protect, async (req, res) => {
@@ -88,7 +126,8 @@ router.post('/community/:communityId', protect, async (req, res) => {
     const message = await Message.create({
       sender: req.user._id,
       community: req.params.communityId,
-      content: req.body.content,
+      content: req.body.content || '',
+      attachment: req.body.attachment,
     });
 
     const populated = await message.populate('sender', 'name avatar');
@@ -105,7 +144,8 @@ router.post('/', protect, async (req, res) => {
       sender: req.user._id,
       receiver: req.body.receiver,
       activity: req.body.activity,
-      content: req.body.content,
+      content: req.body.content || '',
+      attachment: req.body.attachment,
     });
 
     const populated = await message.populate('sender', 'name avatar');
