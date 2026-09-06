@@ -274,7 +274,7 @@ const OnboardingPage = () => {
                       className="flex-1 bg-gradient-to-r from-lime-500 to-electric-500 text-dark-900 px-6 py-3.5 rounded-2xl font-bold hover:from-lime-400 hover:to-electric-400 transition-all duration-300 flex items-center justify-center gap-2 group shadow-lg hover:shadow-glow-lime"
                     >
                       <span className="text-lg">🚀</span>
-                      Hanglly!
+                      KIKY!
                     </button>
                   </div>
                 </div>

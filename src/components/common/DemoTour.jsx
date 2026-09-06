@@ -21,10 +21,10 @@ const slides = [
     icon: FiPlay,
     gradient: 'from-lime-500 to-emerald-500',
     shadow: 'shadow-glow-lime',
-    title: 'Welcome to Hanglly',
+    title: 'Welcome to KIKY',
     tagline: 'The activity-first social platform',
     description:
-      'Hanglly helps you discover activities, find compatible people nearby, and actually meet in the real world.',
+      'KIKY helps you discover activities, find compatible people nearby, and actually meet in the real world.',
     points: ['Built around activities, not endless swiping', 'Find your crew and go do things together'],
     chips: ['🚀', '✨', '🤝'],
   },
@@ -68,7 +68,7 @@ const slides = [
     title: 'Let\'s Go Now',
     tagline: 'Spontaneous mode',
     description:
-      'Feeling spontaneous? Tell Hanglly you\'re free right now and get matched with people who want to do something this moment.',
+      'Feeling spontaneous? Tell KIKY you\'re free right now and get matched with people who want to do something this moment.',
     points: ['Match with people ready right now', 'Set a quick activity and radius', 'From "now" to "let\'s go" in minutes'],
     chips: ['⚡', '🔥', '💨'],
   },
@@ -243,7 +243,7 @@ const DemoTour = ({ isOpen, onClose }) => {
                   </div>
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-display font-bold text-white mb-3">
-                  Ready to <span className="gradient-text-flow">Hanglly?</span>
+                  Ready to <span className="gradient-text-flow">KIKY?</span>
                 </h2>
                 <p className="text-dark-300 max-w-lg mx-auto mb-8 leading-relaxed">
                   You've seen everything. Create your free account, set your interests, and start finding

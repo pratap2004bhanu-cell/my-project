@@ -9,7 +9,7 @@ const MobileNav = () => {
     { to: '/nearby', icon: FiMapPin, label: 'Nearby' },
     { to: '/matching', icon: FiTarget, label: 'Matches' },
     { to: '/chat', icon: FiMessageCircle, label: 'Chat' },
-    { to: '/lets-go', icon: FiZap, label: "Hanglly" },
+    { to: '/lets-go', icon: FiZap, label: "KIKY" },
   ];
 
   return (

@@ -123,7 +123,7 @@ const LetsGoNowPage = () => {
           <span className="text-lime-400 font-semibold">Instant Mode</span>
         </div>
         <h1 className="text-3xl lg:text-4xl font-display font-bold text-white mb-2">
-          Hanglly Now
+          KIKY Now
         </h1>
         <p className="text-dark-400 max-w-md mx-auto">
           Find people nearby who want to do the same thing right now
@@ -285,7 +285,7 @@ const LetsGoNowPage = () => {
                           className="flex-1 btn-primary flex items-center justify-center gap-2"
                         >
                           {match.joined ? <FiCheck className="w-4 h-4" /> : <FiZap className="w-4 h-4" />}
-                          {match.joined ? 'View Activity' : "Hanglly!"}
+                          {match.joined ? 'View Activity' : "KIKY!"}
                         </button>
                         <button onClick={() => dismiss(match._id)} className="btn-outline px-4">
                           <FiX className="w-4 h-4" />

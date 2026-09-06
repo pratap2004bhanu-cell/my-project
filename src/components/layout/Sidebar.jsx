@@ -16,7 +16,7 @@ const Sidebar = () => {
     { to: '/trending', icon: FiTrendingUp, label: 'Trending' },
     { to: '/matching', icon: FiTarget, label: 'Matches' },
     { to: '/chat', icon: FiMessageCircle, label: 'Messages' },
-    { to: '/lets-go', icon: FiZap, label: "Hanglly" },
+    { to: '/lets-go', icon: FiZap, label: "KIKY" },
   ];
 
   const secondaryNavItems = [

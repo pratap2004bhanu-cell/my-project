@@ -180,7 +180,7 @@ const StatusPage = () => {
             >
               <span className="text-2xl mb-1 block">⚡</span>
               <p className="text-sm font-semibold text-white">Yes, call me</p>
-              <p className="text-xs text-dark-400 mt-1">Hanglly Now will flag you</p>
+              <p className="text-xs text-dark-400 mt-1">KIKY Now will flag you</p>
             </button>
             <button
               onClick={() => updateStatus({ spontaneous: false })}
