@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
 import { Link } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
 import { FiMapPin, FiUsers, FiCalendar, FiTarget } from 'react-icons/fi';
@@ -12,7 +12,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-const ActivityMap = ({ activities, center = [28.6139, 77.2090], zoom = 12 }) => {
+const ActivityMap = ({ activities, center = [28.6139, 77.2090], zoom = 12, userPosition = null }) => {
   const getActivityColor = (category) => {
     const colors = {
       cricket: '#22c55e',
@@ -31,6 +31,11 @@ const ActivityMap = ({ activities, center = [28.6139, 77.2090], zoom = 12 }) => 
     return colors[category] || '#84cc16';
   };
 
+  const posFor = (activity, i) =>
+    activity.coordinates
+      ? activity.coordinates
+      : [center[0] + ((i % 5) - 2) * 0.012, center[1] + ((i % 3) - 1) * 0.012];
+
   return (
     <MapContainer
       center={center}
@@ -43,10 +48,26 @@ const ActivityMap = ({ activities, center = [28.6139, 77.2090], zoom = 12 }) => 
         url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
         className="dark-tiles"
       />
-      {activities.map((activity) => (
+      {userPosition && (
+        <>
+          <Circle
+            center={userPosition}
+            radius={150}
+            pathOptions={{ color: '#84cc16', fillColor: '#84cc16', fillOpacity: 0.15 }}
+          />
+          <Marker position={userPosition}>
+            <Popup>
+              <div className="text-center p-1">
+                <strong>You are here</strong>
+              </div>
+            </Popup>
+          </Marker>
+        </>
+      )}
+      {activities.map((activity, i) => (
         <Marker
           key={activity.id}
-          position={activity.coordinates || [28.6139 + Math.random() * 0.1, 77.2090 + Math.random() * 0.1]}
+          position={posFor(activity, i)}
         >
           <Popup>
             <div className="p-2 min-w-[200px]">

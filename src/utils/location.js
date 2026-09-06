@@ -20,3 +20,32 @@ export const getPosition = async (user) => {
   if (hasRealCoords(c)) return { lat: c[1], lng: c[0] };
   return browserPos();
 };
+
+// Best-effort reverse geocoding (OpenStreetMap Nominatim). Returns '' on any failure.
+export const reverseGeocode = async (lat, lng) => {
+  try {
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=jsonv2&accept-language=en&lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lng)}`
+    );
+    if (!res.ok) return '';
+    const data = await res.json();
+    return (
+      data.address?.neighbourhood ||
+      data.address?.suburb ||
+      data.address?.town ||
+      data.address?.city ||
+      data.address?.state ||
+      data.display_name ||
+      ''
+    );
+  } catch {
+    return '';
+  }
+};
+
+// "28.6139° N, 77.2090° E"
+export const formatCoords = (lat, lng, decimals = 4) => {
+  const ns = lat >= 0 ? 'N' : 'S';
+  const ew = lng >= 0 ? 'E' : 'W';
+  return `${Math.abs(lat).toFixed(decimals)}° ${ns}, ${Math.abs(lng).toFixed(decimals)}° ${ew}`;
+};

@@ -204,7 +204,7 @@ const PlacesPage = () => {
           <p className="text-dark-400 mb-6">Places appear here as activities get locations. Create an activity with a location to start exploring.</p>
         </div>
       ) : viewMode === 'map' ? (
-        <div className="h-[500px] rounded-2xl overflow-hidden border border-dark-700/50">
+        <div className="h-[300px] sm:h-[400px] lg:h-[500px] rounded-2xl overflow-hidden border border-dark-700/50">
           <Suspense fallback={<MapLoading />}>
             <PlacesMap places={filteredPlaces} userCenter={hasLocation ? [myLocation[1], myLocation[0]] : null} />
           </Suspense>

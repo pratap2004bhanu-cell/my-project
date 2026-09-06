@@ -6,6 +6,7 @@ import {
 import api from '../api';
 import { useAuth } from '../context/AuthContext';
 import { RoundAvatar } from '../components/common';
+import { reverseGeocode, formatCoords } from '../utils/location';
 
 const LiveMap = lazy(() => import('../components/map/LiveMap'));
 
@@ -43,6 +44,20 @@ const LocationPage = () => {
       : null
   );
   const mapRef = useRef(null);
+  const [locAddress, setLocAddress] = useState('');
+  const centerKey = center ? center.join(',') : '';
+
+  useEffect(() => {
+    let cancelled = false;
+    const label = async () => {
+      if (!center) return;
+      const a = await reverseGeocode(center[0], center[1]);
+      if (!cancelled) setLocAddress(a);
+    };
+    label();
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [centerKey]);
 
   const loadFriends = () => {
     api.get('/api/users/me/connections')
@@ -137,7 +152,7 @@ const LocationPage = () => {
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Map */}
         <div className="lg:col-span-2">
-          <div className="h-[500px] rounded-2xl overflow-hidden border border-dark-700/50">
+          <div className="h-[300px] sm:h-[400px] lg:h-[500px] rounded-2xl overflow-hidden border border-dark-700/50">
             <Suspense fallback={<MapLoading />}>
               <LiveMap ref={mapRef} center={center} friends={showOthers ? nearbyFriends : []} />
             </Suspense>
@@ -191,6 +206,16 @@ const LocationPage = () => {
                 </p>
               )}
             </div>
+            {center && (
+              <div className="mt-4">
+                {locAddress && (
+                  <p className="font-semibold text-white leading-snug">{locAddress}</p>
+                )}
+                <p className="text-sm text-dark-400 font-mono mt-1">
+                  {formatCoords(center[0], center[1])}
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Nearby Friends */}
