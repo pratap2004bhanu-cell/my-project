@@ -97,12 +97,20 @@ router.post('/login', async (req, res) => {
 });
 
 // Google OAuth - initiate
-router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'], session: false }));
+const getOrigin = (req) => `https://${req.get('host')}`;
+
+router.get('/google', (req, res, next) => {
+  passport.authenticate('google', {
+    scope: ['profile', 'email'],
+    session: false,
+    callbackURL: `${getOrigin(req)}/auth/google/callback`,
+  })(req, res, next);
+});
 
 // Google OAuth - callback
 router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/login', session: false }), (req, res) => {
   const token = generateToken(req.user._id);
-  res.redirect(`${process.env.FRONTEND_URL}/oauth/callback?token=${token}`);
+  res.redirect(`${getOrigin(req)}/oauth/callback?token=${token}`);
 });
 
 // Get current user
