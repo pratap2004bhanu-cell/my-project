@@ -5,6 +5,7 @@ import {
 } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
 import { normalizeActivity } from '../utils/normalize';
+import { RoundAvatar } from '../components/common';
 import api from '../api';
 
 const pointFor = (u) =>
@@ -285,15 +286,12 @@ const GamificationPage = () => {
                   {podium.map((person, idx) => (
                     <div key={person.rank} className={`text-center ${idx === 0 ? 'order-2' : idx === 1 ? 'order-1' : 'order-3'}`}>
                       <div className={`relative ${idx === 0 ? 'mb-2' : 'mb-1'}`}>
-                        <div className={`w-16 h-16 rounded-full bg-gradient-to-br ${person.gradient} flex items-center justify-center text-white font-bold overflow-hidden ${
-                          idx === 0 ? 'w-20 h-20 text-xl' : ''
-                        }`}>
-                          {person.avatar && typeof person.avatar === 'string' && person.avatar.startsWith('/') ? (
-                            <img src={person.avatar} alt={person.name} className="w-full h-full object-cover" />
-                          ) : (
-                            person.avatar
-                          )}
-                        </div>
+                        <RoundAvatar
+                          name={person.name}
+                          src={person.avatar}
+                          gradient={person.gradient}
+                          className={idx === 0 ? 'w-20 h-20 text-xl' : 'w-16 h-16'}
+                        />
                         <div className={`absolute -top-2 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
                           idx === 0 ? 'bg-amber-400 text-dark-900' : 
                           idx === 1 ? 'bg-gray-300 text-dark-900' : 
@@ -319,13 +317,12 @@ const GamificationPage = () => {
                       }`}
                     >
                       <span className="w-8 text-center font-bold text-dark-400">#{person.rank}</span>
-                      <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${person.gradient} flex items-center justify-center text-white font-bold overflow-hidden`}>
-                        {person.avatar && typeof person.avatar === 'string' && person.avatar.startsWith('/') ? (
-                          <img src={person.avatar} alt={person.name} className="w-full h-full object-cover" />
-                        ) : (
-                          person.avatar
-                        )}
-                      </div>
+                      <RoundAvatar
+                        name={person.name}
+                        src={person.avatar}
+                        gradient={person.gradient}
+                        className="w-10 h-10"
+                      />
                       <div className="flex-1">
                         <h4 className={`font-semibold ${person.isMe ? 'text-lime-400' : 'text-white'}`}>
                           {person.name}

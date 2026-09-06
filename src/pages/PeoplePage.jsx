@@ -7,6 +7,7 @@ import {
 import api from '../api';
 import { useAuth } from '../context/AuthContext';
 import { normalizeUser } from '../utils/normalize';
+import { RoundAvatar } from '../components/common';
 
 const PeoplePage = () => {
   const { user } = useAuth();
@@ -242,13 +243,12 @@ const PeoplePage = () => {
               <div key={person.id} className="card-glow p-6">
                 <div className="flex items-start gap-4 mb-4">
                   <div className="relative">
-                    {person.avatar ? (
-                      <img src={person.avatar} alt={person.name} className="w-16 h-16 rounded-full object-cover" />
-                    ) : (
-                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-lime-500 via-electric-500 to-hotpink-500 flex items-center justify-center text-white text-xl font-bold">
-                        {person.name.charAt(0)}
-                      </div>
-                    )}
+                    <RoundAvatar
+                      name={person.name}
+                      src={person.avatar}
+                      gradient="from-lime-500 via-electric-500 to-hotpink-500"
+                      className="w-16 h-16 text-xl"
+                    />
                   </div>
                   <div className="flex-1">
                     <h3 className="font-bold text-white text-lg">{person.name}</h3>
@@ -295,13 +295,12 @@ const PeoplePage = () => {
             {/* Header */}
             <div className="flex items-start gap-4 mb-4">
               <div className="relative">
-                {person.avatar ? (
-                  <img src={person.avatar} alt={person.name} className="w-16 h-16 rounded-full object-cover" />
-                ) : (
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-lime-500 via-electric-500 to-hotpink-500 flex items-center justify-center text-white text-xl font-bold">
-                    {person.name.charAt(0)}
-                  </div>
-                )}
+                <RoundAvatar
+                  name={person.name}
+                  src={person.avatar}
+                  gradient="from-lime-500 via-electric-500 to-hotpink-500"
+                  className="w-16 h-16 text-xl"
+                />
                 <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full border-2 border-dark-900"></div>
               </div>
               <div className="flex-1">

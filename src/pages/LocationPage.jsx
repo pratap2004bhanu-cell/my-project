@@ -5,6 +5,7 @@ import {
 } from 'react-icons/fi';
 import api from '../api';
 import { useAuth } from '../context/AuthContext';
+import { RoundAvatar } from '../components/common';
 
 const LiveMap = lazy(() => import('../components/map/LiveMap'));
 
@@ -207,13 +208,12 @@ const LocationPage = () => {
                 {nearbyFriends.map((friend) => (
                   <div key={friend._id} className="flex items-center gap-3 p-3 bg-dark-800/50 rounded-xl">
                     <div className="relative">
-                      {friend.avatar ? (
-                        <img src={friend.avatar} alt={friend.name} className="w-10 h-10 rounded-full object-cover" />
-                      ) : (
-                        <div className={`w-10 h-10 rounded-full bg-gradient-to-br from-electric-500 to-cyan-500 flex items-center justify-center text-white font-bold`}>
-                          {friend.name[0]}
-                        </div>
-                      )}
+                      <RoundAvatar
+                        name={friend.name}
+                        src={friend.avatar}
+                        gradient="from-electric-500 to-cyan-500"
+                        className="w-10 h-10"
+                      />
                       {friend.online && (
                         <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-dark-900" />
                       )}

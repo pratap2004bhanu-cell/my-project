@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
 import { FiCheck, FiClock, FiCalendar, FiZap } from 'react-icons/fi';
+import { RoundAvatar } from '../components/common';
 
 const statusOptions = [
   { id: 'online', label: 'Online', sub: 'Looking to hang out now', color: 'bg-lime-400', emoji: '🟢' },
@@ -57,14 +58,13 @@ const StatusPage = () => {
       <div className="glass-strong rounded-2xl p-6 mb-8">
         <div className="flex items-center gap-4">
           <div className="relative">
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-lime-500 to-electric-500 flex items-center justify-center text-2xl font-bold overflow-hidden">
-              {user?.avatar ? (
-                <img src={user.avatar} alt={user?.name} className="w-full h-full object-cover" />
-              ) : (
-                user?.name?.charAt(0) || 'U'
-              )}
-            </div>
-            <span className={`absolute bottom-1 right-1 w-5 h-5 rounded-full border-2 border-dark-900 ${currentOption.color}`}></span>
+            <RoundAvatar
+                name={user?.name}
+                src={user?.avatar}
+                gradient="from-lime-500 to-electric-500"
+                className="w-16 h-16 text-2xl"
+              />
+              <span className={`absolute bottom-1 right-1 w-5 h-5 rounded-full border-2 border-dark-900 ${currentOption.color}`}></span>
           </div>
           <div>
             <p className="text-xl font-bold text-white">{user?.name}</p>

@@ -6,6 +6,7 @@ import {
 } from 'react-icons/fi';
 import api from '../api';
 import { useAuth } from '../context/AuthContext';
+import { RoundAvatar } from '../components/common';
 
 const SafetyPage = () => {
   const { user } = useAuth();
@@ -204,13 +205,12 @@ const SafetyPage = () => {
           <div className="space-y-3">
             {blockedUsers.map((user) => (
               <div key={user._id} className="flex items-center gap-3 p-3 bg-dark-800/50 rounded-xl">
-                {user.avatar ? (
-                  <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full object-cover" />
-                ) : (
-                  <div className="w-10 h-10 rounded-full bg-dark-700 flex items-center justify-center text-dark-400 font-bold">
-                    {user.name?.[0]?.toUpperCase()}
-                  </div>
-                )}
+                <RoundAvatar
+                  name={user.name}
+                  src={user.avatar}
+                  gradient="from-dark-700 to-dark-800"
+                  className="w-10 h-10"
+                />
                 <div className="flex-1">
                   <h3 className="font-medium text-white">{user.name}</h3>
                   <p className="text-xs text-dark-400">Blocked</p>

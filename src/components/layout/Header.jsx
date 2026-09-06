@@ -6,7 +6,7 @@ import {
   FiBell, FiSearch, FiMapPin, FiMenu
 } from 'react-icons/fi';
 import ThemeToggle from '../common/ThemeToggle';
-import { Logo } from '../common';
+import { Logo, RoundAvatar } from '../common';
 import MobileMenu from './MobileMenu';
 import api from '../../api';
 
@@ -131,17 +131,12 @@ const Header = () => {
           {/* Profile */}
           <Link to="/profile" className="flex items-center gap-3">
             <div className="relative">
-              {user?.avatar ? (
-                <img
-                  src={user.avatar}
-                  alt={user?.name}
-                  className="w-10 h-10 rounded-full object-cover"
-                />
-              ) : (
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-lime-500 to-electric-500 flex items-center justify-center text-white font-bold">
-                  {user?.name?.charAt(0) || 'U'}
-                </div>
-              )}
+              <RoundAvatar
+                name={user?.name}
+                src={user?.avatar}
+                gradient="from-lime-500 to-electric-500"
+                className="w-10 h-10"
+              />
               <span className="absolute bottom-0 right-0 w-3 h-3 bg-lime-400 rounded-full border-2 border-dark-950"></span>
             </div>
           </Link>

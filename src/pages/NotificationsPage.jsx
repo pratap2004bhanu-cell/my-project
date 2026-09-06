@@ -8,6 +8,7 @@ import {
   FiTrash2, FiUsers, FiSmartphone
 } from 'react-icons/fi';
 import api from '../api';
+import { RoundAvatar } from '../components/common';
 
 const getNotificationIcon = (type) => {
   switch (type) {
@@ -255,16 +256,14 @@ const NotificationsPage = () => {
           >
             {/* Avatar/Icon */}
             <div className="relative flex-shrink-0">
-              {notification.actor?.avatar ? (
-                <img src={notification.actor.avatar} alt={notification.actor.name} className="w-12 h-12 rounded-full object-cover" />
-              ) : notification.actor ? (
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-lime-500 to-electric-500 flex items-center justify-center text-white font-bold">
-                  {notification.actor.name.charAt(0)}
-                </div>
+              {notification.actor ? (
+                <RoundAvatar
+                  name={notification.actor.name}
+                  src={notification.actor.avatar}
+                  className="w-12 h-12"
+                />
               ) : (
-                <div className="w-12 h-12 rounded-full bg-dark-700 flex items-center justify-center text-2xl">
-                  ⚡
-                </div>
+                <div className="w-12 h-12 rounded-full bg-dark-700 flex items-center justify-center text-2xl">⚡</div>
               )}
               <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-dark-800 rounded-full flex items-center justify-center">
                 {getNotificationIcon(notification.type)}

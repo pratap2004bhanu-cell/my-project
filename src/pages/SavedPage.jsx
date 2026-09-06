@@ -5,6 +5,7 @@ import {
   FiX, FiExternalLink, FiClock, FiMessageCircle
 } from 'react-icons/fi';
 import { normalizeActivity, getMatchScore } from '../utils/normalize';
+import { RoundAvatar } from '../components/common';
 import api from '../api';
 
 const PLACE_EMOJI = {
@@ -211,13 +212,11 @@ const SavedPage = () => {
               {connections.map((person) => (
                 <div key={person._id} className="card-glow flex items-center gap-4 p-4">
                   <div className="relative flex-shrink-0">
-                    {person.avatar ? (
-                      <img src={person.avatar} alt={person.name} className="w-12 h-12 rounded-full object-cover" />
-                    ) : (
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-lime-500 to-emerald-500 flex items-center justify-center text-white font-bold">
-                        {person.name?.[0]}
-                      </div>
-                    )}
+                    <RoundAvatar
+                      name={person.name}
+                      src={person.avatar}
+                      className="w-12 h-12"
+                    />
                     {person.status?.current !== 'offline' && (
                       <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 rounded-full border-2 border-dark-900" />
                     )}

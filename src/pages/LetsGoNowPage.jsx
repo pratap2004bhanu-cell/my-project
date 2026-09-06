@@ -5,6 +5,7 @@ import {
   FiRefreshCw, FiCheck, FiX
 } from 'react-icons/fi';
 import api from '../api';
+import { RoundAvatar } from '../components/common';
 import { useAuth } from '../context/AuthContext';
 import { getMatchScore } from '../utils/normalize';
 
@@ -243,21 +244,13 @@ const LetsGoNowPage = () => {
                         <div className="flex items-center gap-2 mb-3">
                           <div className="flex -space-x-2">
                             {match.participants.slice(0, 5).map((person, idx) => (
-                              person.avatar ? (
-                                <img
-                                  key={idx}
-                                  src={person.avatar}
-                                  alt={person.name}
-                                  className="w-8 h-8 rounded-full object-cover border-2 border-dark-900"
-                                />
-                              ) : (
-                                <div
-                                  key={idx}
-                                  className={`w-8 h-8 rounded-full bg-gradient-to-br ${PALETTE[idx % PALETTE.length]} flex items-center justify-center text-white text-xs font-bold border-2 border-dark-900`}
-                                >
-                                  {person.name[0]}
-                                </div>
-                              )
+                              <RoundAvatar
+                                key={idx}
+                                name={person.name}
+                                src={person.avatar}
+                                gradient={PALETTE[idx % PALETTE.length]}
+                                className="w-8 h-8 text-xs border-2 border-dark-900"
+                              />
                             ))}
                           </div>
                           <span className="text-sm text-dark-400">

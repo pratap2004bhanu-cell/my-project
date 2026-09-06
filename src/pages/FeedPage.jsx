@@ -7,6 +7,7 @@ import {
 } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
 import { normalizeActivity } from '../utils/normalize';
+import { RoundAvatar } from '../components/common';
 import api from '../api';
 
 const FeedPage = () => {
@@ -152,15 +153,12 @@ const FeedPage = () => {
             <article key={post.id} className="card">
               {/* Post Header */}
               <Link to={`/users/${post.creatorId}`} className="flex items-center gap-3 p-4 pb-0 group">
-                <div className={`w-12 h-12 rounded-full ${post.user.gradient} flex items-center justify-center text-white font-bold overflow-hidden`}>
-                  {post.user.avatar && post.user.avatar.startsWith('http') ? (
-                    <img src={post.user.avatar} alt={post.user.name} className="w-full h-full object-cover" />
-                  ) : post.user.avatar && post.user.avatar.startsWith('/') ? (
-                    <img src={post.user.avatar} alt={post.user.name} className="w-full h-full object-cover" />
-                  ) : (
-                    post.user.avatar
-                  )}
-                </div>
+                <RoundAvatar
+                  name={post.user.name}
+                  src={post.user.avatar}
+                  gradient={post.user.gradient}
+                  className="w-12 h-12"
+                />
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
                     <h3 className="font-semibold text-white group-hover:text-lime-400 transition-colors">{post.user.name}</h3>

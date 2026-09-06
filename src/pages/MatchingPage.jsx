@@ -7,6 +7,7 @@ import {
 } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
 import { normalizeActivity, getMatchScore } from '../utils/normalize';
+import { RoundAvatar } from '../components/common';
 import api from '../api';
 
 const haversineKm = (la1, lo1, la2, lo2) => {
@@ -262,13 +263,12 @@ const MatchingPage = () => {
               <div key={person.id} className="card-glow p-6">
                 {/* Header */}
                 <div className="flex items-center gap-4 mb-4">
-                  <div className={`w-16 h-16 rounded-full bg-gradient-to-br ${person.gradient} flex items-center justify-center text-white text-xl font-bold overflow-hidden`}>
-                    {person.avatar && typeof person.avatar === 'string' && person.avatar.startsWith('/') ? (
-                      <img src={person.avatar} alt={person.name} className="w-full h-full object-cover" />
-                    ) : (
-                      person.avatar
-                    )}
-                  </div>
+                  <RoundAvatar
+                    name={person.name}
+                    src={person.avatar}
+                    gradient={person.gradient}
+                    className="w-16 h-16 text-xl"
+                  />
                   <div>
                     <Link to={`/users/${person.id}`} className="font-bold text-white text-lg hover:text-lime-400 transition-colors">
                       {person.name}
