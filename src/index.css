@@ -81,6 +81,7 @@
   /* Layout */
   .page-container {
     @apply min-h-screen bg-dark-950;
+    overflow-x: clip;
   }
   
   .auth-container {

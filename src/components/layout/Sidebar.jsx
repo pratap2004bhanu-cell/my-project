@@ -1,48 +1,13 @@
 import { NavLink } from 'react-router-dom';
-import { 
-  FiHome, FiCompass, FiHeart, FiMessageCircle, 
-  FiCalendar, FiUser, FiPlus, FiTarget, FiMapPin,
-  FiSearch, FiBell, FiZap, FiUsers, FiShield, FiAward,
-  FiBookmark, FiClock, FiSettings, FiTrendingUp,
-  FiGrid, FiStar, FiCopy, FiCheckCircle, FiDollarSign,
-  FiImage, FiMap, FiFileText, FiSun, FiCircle,
-  FiCloud
+import {
+  FiPlus, FiTarget
 } from 'react-icons/fi';
+import { mainNavItems, secondaryNavItems, bottomNavItems } from './navItems';
 
 const Sidebar = () => {
-  const mainNavItems = [
-    { to: '/dashboard', icon: FiHome, label: 'Home' },
-    { to: '/nearby', icon: FiMapPin, label: 'Nearby' },
-    { to: '/trending', icon: FiTrendingUp, label: 'Trending' },
-    { to: '/matching', icon: FiTarget, label: 'Matches' },
-    { to: '/chat', icon: FiMessageCircle, label: 'Messages' },
-    { to: '/lets-go', icon: FiZap, label: "KIKY" },
-  ];
-
-  const secondaryNavItems = [
-    { to: '/people', icon: FiUsers, label: 'People' },
-    { to: '/communities', icon: FiHeart, label: 'Communities' },
-    { to: '/status', icon: FiCircle, label: 'Status' },
-    { to: '/weather', icon: FiSun, label: 'Weather' },
-    { to: '/calendar', icon: FiCalendar, label: 'Calendar' },
-    { to: '/checkin', icon: FiCheckCircle, label: 'Check In' },
-    { to: '/expenses', icon: FiDollarSign, label: 'Expenses' },
-    { to: '/gallery', icon: FiImage, label: 'Gallery' },
-    { to: '/places', icon: FiMap, label: 'Places' },
-    { to: '/drafts', icon: FiFileText, label: 'Drafts' },
-    { to: '/templates', icon: FiCopy, label: 'Templates' },
-  ];
-
-  const bottomNavItems = [
-    { to: '/notifications', icon: FiBell, label: 'Notifications' },
-    { to: '/analytics', icon: FiTrendingUp, label: 'Analytics' },
-    { to: '/safety', icon: FiShield, label: 'Safety' },
-    { to: '/settings', icon: FiSettings, label: 'Settings' },
-  ];
-
   return (
-    <aside className="sidebar sidebar-glass">
-      <div className="flex flex-col h-full">
+    <aside className="sidebar sidebar-glass overflow-y-auto">
+      <div className="flex flex-col min-h-full">
         {/* Main Navigation */}
         <nav className="flex-1 px-4 py-6 space-y-1">
           {mainNavItems.map((item) => (

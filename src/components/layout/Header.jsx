@@ -1,12 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useSocket } from '../../context/SocketContext';
 import { 
-  FiBell, FiSearch, FiMapPin
+  FiBell, FiSearch, FiMapPin, FiMenu
 } from 'react-icons/fi';
 import ThemeToggle from '../common/ThemeToggle';
 import { Logo } from '../common';
+import MobileMenu from './MobileMenu';
 import api from '../../api';
 
 const Header = () => {
@@ -17,6 +18,9 @@ const Header = () => {
   const [unread, setUnread] = useState(0);
   const [query, setQuery] = useState('');
   const [mobileSearch, setMobileSearch] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const openMenu = useCallback(() => setMenuOpen(true), []);
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
 
   const submitSearch = (e) => {
     e.preventDefault();
@@ -75,6 +79,15 @@ const Header = () => {
 
         {/* Actions */}
         <div className="flex items-center gap-2 lg:gap-4">
+          {/* Mobile menu */}
+          <button
+            onClick={openMenu}
+            className="lg:hidden btn-icon"
+            aria-label="Open menu"
+          >
+            <FiMenu className="w-5 h-5" />
+          </button>
+
           {/* Theme Toggle */}
           <ThemeToggle />
 
@@ -151,6 +164,8 @@ const Header = () => {
           </form>
         </div>
       )}
+
+      <MobileMenu isOpen={menuOpen} onClose={closeMenu} />
     </header>
   );
 };
