@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { FiMail, FiLock, FiArrowRight, FiEye, FiEyeOff } from 'react-icons/fi';
 import { Logo } from '../components/common';
@@ -7,10 +7,15 @@ import { Logo } from '../components/common';
 const showGoogle = import.meta.env.VITE_DISABLE_GOOGLE !== 'true';
 
 const LoginPage = () => {
+  const [searchParams] = useSearchParams();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState(
+    searchParams.get('oauth_error')
+      ? 'Google sign-in could not be completed. If this keeps failing, make sure this site is authorized in your Google Cloud console, or use email login.'
+      : ''
+  );
   const [loading, setLoading] = useState(false);
   
   const { login } = useAuth();

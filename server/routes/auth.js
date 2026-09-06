@@ -98,19 +98,25 @@ router.post('/login', async (req, res) => {
 
 // Google OAuth - initiate
 const getOrigin = (req) => `https://${req.get('host')}`;
+const googleCallbackUrl = (req) => `${getOrigin(req)}/auth/google/callback`;
 
 router.get('/google', (req, res, next) => {
   passport.authenticate('google', {
     scope: ['profile', 'email'],
     session: false,
-    callbackURL: `${getOrigin(req)}/auth/google/callback`,
+    callbackURL: googleCallbackUrl(req),
   })(req, res, next);
 });
 
 // Google OAuth - callback
-router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/login', session: false }), (req, res) => {
-  const token = generateToken(req.user._id);
-  res.redirect(`${getOrigin(req)}/oauth/callback?token=${token}`);
+router.get('/google/callback', (req, res, next) => {
+  passport.authenticate('google', { session: false, callbackURL: googleCallbackUrl(req) }, (err, user) => {
+    if (err || !user) {
+      return res.redirect('/login?oauth_error=1');
+    }
+    const token = generateToken(user._id);
+    res.redirect(`${getOrigin(req)}/oauth/callback?token=${token}`);
+  })(req, res, next);
 });
 
 // Get current user

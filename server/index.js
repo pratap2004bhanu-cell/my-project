@@ -101,6 +101,13 @@ if (process.env.NODE_ENV === 'production' && existsSync(distDir)) {
   console.log(`Serving frontend from ${distDir}`);
 }
 
+// Central error handler -> JSON instead of plain "Internal Server Error"
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err?.message);
+  if (res.headersSent) return next(err);
+  res.status(500).json({ success: false, error: err?.message || 'Internal Server Error' });
+});
+
 const PORT = process.env.PORT || 5000;
 httpServer.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
