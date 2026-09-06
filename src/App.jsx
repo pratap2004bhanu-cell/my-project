@@ -49,6 +49,7 @@ const TrendingPage = lazy(() => import('./pages/TrendingPage'));
 const DraftsPage = lazy(() => import('./pages/DraftsPage'));
 const StatusPage = lazy(() => import('./pages/StatusPage'));
 const WeatherPage = lazy(() => import('./pages/WeatherPage'));
+const IdeasPage = lazy(() => import('./pages/IdeasPage'));
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center">
@@ -191,6 +192,7 @@ function App() {
             <Route path="drafts" element={<DraftsPage />} />
             <Route path="status" element={<StatusPage />} />
             <Route path="weather" element={<WeatherPage />} />
+            <Route path="ideas" element={<IdeasPage />} />
           </Route>
           
           {/* Catch all - redirect to home */}

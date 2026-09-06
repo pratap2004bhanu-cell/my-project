@@ -26,6 +26,7 @@ import communityRoutes from './routes/communities.js';
 import draftRoutes from './routes/drafts.js';
 import templateRoutes from './routes/templates.js';
 import reportRoutes from './routes/reports.js';
+import suggestionRoutes from './routes/suggestions.js';
 import refreshActivityStatuses from './utils/lifecycle.js';
 
 const app = express();
@@ -77,6 +78,7 @@ app.use('/api/communities', communityRoutes);
 app.use('/api/drafts', draftRoutes);
 app.use('/api/templates', templateRoutes);
 app.use('/api/reports', reportRoutes);
+app.use('/api/suggestions', suggestionRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
