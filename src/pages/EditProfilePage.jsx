@@ -98,7 +98,7 @@ const EditProfilePage = () => {
   };
 
   return (
-    <div className="p-4 lg:p-6 max-w-2xl mx-auto">
+    <div className="p-4 lg:p-6 max-w-2xl mx-auto pb-32 lg:pb-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
@@ -276,7 +276,7 @@ const EditProfilePage = () => {
       </div>
 
       {/* Save Button (Mobile) */}
-      <div className="lg:hidden fixed bottom-20 left-4 right-4">
+      <div className="lg:hidden fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] left-4 right-4 z-40 box-border">
         <button
           onClick={handleSave}
           disabled={!hasChanges || saving}

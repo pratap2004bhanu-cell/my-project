@@ -210,7 +210,7 @@ const SavedPage = () => {
           ) : (
             <div className="space-y-4">
               {connections.map((person) => (
-                <div key={person._id} className="card-glow flex items-center gap-4 p-4">
+                <div key={person._id} className="card-glow flex flex-wrap items-center gap-4 p-4">
                   <div className="relative flex-shrink-0">
                     <RoundAvatar
                       name={person.name}
@@ -232,7 +232,7 @@ const SavedPage = () => {
                       ))}
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 flex-shrink-0">
+                  <div className="flex items-center gap-2 flex-shrink-0 ml-auto sm:ml-0">
                     <Link to={`/chat/${person._id}`} className="btn-icon">
                       <FiMessageCircle className="w-5 h-5" />
                     </Link>

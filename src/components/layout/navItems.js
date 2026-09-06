@@ -20,6 +20,7 @@ export const mainNavItems = [
 export const secondaryNavItems = [
   { to: '/people', icon: FiUsers, label: 'People' },
   { to: '/communities', icon: FiHeart, label: 'Communities' },
+  { to: '/location', icon: FiMap, label: 'Live Location' },
   { to: '/status', icon: FiCircle, label: 'Status' },
   { to: '/weather', icon: FiSun, label: 'Weather' },
   { to: '/calendar', icon: FiCalendar, label: 'Calendar' },

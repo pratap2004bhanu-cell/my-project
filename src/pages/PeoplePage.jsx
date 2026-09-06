@@ -348,7 +348,7 @@ const PeoplePage = () => {
             </div>
 
             {/* Actions */}
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               {friends.includes(person.id) ? (
                 <>
                   <button

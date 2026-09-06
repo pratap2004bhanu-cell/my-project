@@ -112,7 +112,7 @@ const CommunityChatPage = () => {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)] lg:h-screen">
+    <div className="flex flex-col chat-viewport lg:h-[calc(100vh-5rem)]">
       {/* Header */}
       <div className="flex items-center gap-3 p-4 border-b border-dark-800">
         <button onClick={() => navigate(`/communities/${id}`)} className="btn-icon w-8 h-8">
@@ -174,7 +174,7 @@ const CommunityChatPage = () => {
       </div>
 
       {/* Input */}
-      <div className="p-4 border-t border-dark-800">
+      <div className="px-4 pt-3 pb-4 pb-[calc(1rem+env(safe-area-inset-bottom))] border-t border-dark-800">
         <form onSubmit={handleSend} className="flex items-center gap-3">
           <button type="button" className="btn-icon w-8 h-8">
             <FiPaperclip className="w-4 h-4" />

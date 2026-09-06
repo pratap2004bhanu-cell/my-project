@@ -252,7 +252,7 @@ const ChatPage = () => {
   const activeConversation = conversations.find((c) => c.id === activeChat) || (activeChat ? overrides[activeChat] : null);
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] lg:h-screen">
+    <div className="flex chat-viewport lg:h-[calc(100vh-5rem)]">
       {/* Conversations List */}
       <div className={`${activeChat ? 'hidden lg:flex' : 'flex'} flex-col w-full lg:w-96 border-r border-dark-800`}>
         {/* Header */}
@@ -311,7 +311,7 @@ const ChatPage = () => {
       </div>
 
       {/* Chat Area */}
-      <div className={`${activeChat ? 'flex' : 'hidden lg:flex'} flex-col flex-1`}>
+      <div className={`${activeChat ? 'flex' : 'hidden lg:flex'} flex-col flex-1 min-w-0`}>
         {activeChat ? (
           <>
             {/* Chat Header */}
@@ -371,7 +371,7 @@ const ChatPage = () => {
             </div>
 
             {/* Message Input */}
-            <div className="p-4 border-t border-dark-800">
+            <div className="px-4 pt-3 pb-4 pb-[calc(1rem+env(safe-area-inset-bottom))] border-t border-dark-800">
               <form onSubmit={handleSend} className="flex items-center gap-3">
                 <AttachmentButton
                   onAttach={setPendingAttachment}

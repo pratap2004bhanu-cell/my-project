@@ -171,12 +171,12 @@ const ProfilePage = () => {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-6">
         {stats.map((stat) => (
-          <div key={stat.label} className="card text-center">
-            <stat.icon className="w-6 h-6 text-lime-400 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-white">{stat.value}</p>
-            <p className="text-sm text-dark-400">{stat.label}</p>
+          <div key={stat.label} className="card text-center px-2 py-4 sm:px-4">
+            <stat.icon className="w-5 h-5 sm:w-6 sm:h-6 text-lime-400 mx-auto mb-2" />
+            <p className="text-xl sm:text-2xl font-bold text-white truncate">{stat.value}</p>
+            <p className="text-xs sm:text-sm text-dark-400 whitespace-nowrap overflow-hidden overflow-ellipsis">{stat.label}</p>
           </div>
         ))}
       </div>

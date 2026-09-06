@@ -58,8 +58,8 @@ const Header = () => {
     <header className="sticky top-0 z-40 bg-dark-950/80 backdrop-blur-xl border-b border-dark-800/50">
       <div className="flex items-center justify-between px-4 lg:px-6 h-16 lg:h-20">
         {/* Logo */}
-        <Link to="/dashboard" className="flex items-center gap-2">
-          <Logo size={96} className="text-white" />
+        <Link to="/dashboard" className="flex items-center gap-2 flex-shrink-0">
+          <Logo size={96} className="text-white w-16 sm:w-24" />
         </Link>
 
         {/* Search - Desktop */}
@@ -78,7 +78,7 @@ const Header = () => {
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-2 lg:gap-4">
+        <div className="flex items-center gap-1 sm:gap-2 lg:gap-4">
           {/* Mobile menu */}
           <button
             onClick={openMenu}
@@ -88,8 +88,10 @@ const Header = () => {
             <FiMenu className="w-5 h-5" />
           </button>
 
-          {/* Theme Toggle */}
-          <ThemeToggle />
+          {/* Theme Toggle (hidden on very small phones — available in the menu) */}
+          <div className="hidden sm:block">
+            <ThemeToggle />
+          </div>
 
           {/* Search - Mobile toggle */}
           <button
@@ -109,13 +111,6 @@ const Header = () => {
             <span className="text-sm">
               {typeof user?.location === 'string' ? user.location : (user?.location?.address || user?.location?.label || 'Set location')}
             </span>
-          </button>
-          <button
-            onClick={() => navigate('/location')}
-            className="sm:hidden btn-icon"
-            aria-label="Set location"
-          >
-            <FiMapPin className="w-5 h-5" />
           </button>
           
           {/* Notifications */}

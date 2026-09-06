@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { useLocation, NavLink } from 'react-router-dom';
 import { FiX, FiPlus, FiTarget } from 'react-icons/fi';
 import { Logo } from '../common';
+import ThemeToggle from '../common/ThemeToggle';
 import { mainNavItems, secondaryNavItems, bottomNavItems } from './navItems';
 
 const MobileMenu = ({ isOpen, onClose }) => {
@@ -67,6 +68,10 @@ const MobileMenu = ({ isOpen, onClose }) => {
 
         {/* Scrollable nav */}
         <div className="flex-1 overflow-y-auto pb-8">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-dark-800">
+            <span className="text-sm text-dark-300">Theme</span>
+            <ThemeToggle />
+          </div>
           {renderGroup(mainNavItems)}
           <div className="px-4 pt-3"><div className="h-px bg-dark-800 mb-4"></div></div>
           {renderGroup(secondaryNavItems)}

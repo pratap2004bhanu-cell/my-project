@@ -1165,3 +1165,25 @@ html.doodle a {
 .dark-tiles .leaflet-tile-pane {
   filter: invert(1) hue-rotate(180deg) brightness(0.95) contrast(0.9) saturate(0.7);
 }
+
+/* ========================================================
+   MOBILE TUNE-UPS
+   ======================================================== */
+
+/* Chat pages fill the viewport below the header, shrinking with
+   the on-screen keyboard (100dvh) so the composer stays visible */
+.chat-viewport {
+  height: calc(100vh - 4rem);
+}
+@supports (height: 100dvh) {
+  .chat-viewport {
+    height: calc(100dvh - 4rem);
+  }
+}
+
+/* On chat pages the bottom nav is hidden, so drop the reserved padding */
+@media (max-width: 1023px) {
+  .main-content.no-mobile-nav {
+    padding-bottom: 0;
+  }
+}
