@@ -3,7 +3,7 @@ const Logo = ({
   tagline = false,
   className = '',
 }) => {
-  const viewBox = tagline ? '0 0 300 158' : '0 0 300 120';
+  const viewBox = tagline ? '0 0 330 158' : '0 0 300 120';
 
   return (
     <svg
@@ -67,13 +67,13 @@ const Logo = ({
 
       {tagline && (
         <text
-          x="150"
+          x="165"
           y="142"
           textAnchor="middle"
           fontFamily='"Poppins", "Inter", sans-serif'
           fontWeight="500"
-          fontSize="22"
-          letterSpacing="7"
+          fontSize="19"
+          letterSpacing="3"
           fill="currentColor"
           opacity="0.6"
         >
