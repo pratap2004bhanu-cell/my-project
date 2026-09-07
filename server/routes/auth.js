@@ -1,8 +1,9 @@
 import { Router } from 'express';
 import multer from 'multer';
 import passport from 'passport';
+import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
-import { generateToken, protect } from '../middleware/auth.js';
+import { generateToken, generateChallengeToken, protect } from '../middleware/auth.js';
 import { storeFile } from '../config/gridfs.js';
 import { sendOtpMail, isEmailConfigured } from '../utils/email.js';
 
@@ -128,8 +129,9 @@ router.post('/login', async (req, res) => {
         otp,
         purpose: 'two-factor login to your KIKY account',
       });
+      const challengeToken = generateChallengeToken(user._id);
       const emailConfigured = isEmailConfigured();
-      const payload = { success: true, twoFactorRequired: true, emailConfigured };
+      const payload = { success: true, twoFactorRequired: true, challengeToken, emailConfigured };
       if (!emailed) payload.devCode = otp;
       return res.json(payload);
     }
@@ -142,14 +144,30 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Complete a 2FA login with the emailed OTP
+// Complete a 2FA login with the emailed OTP. Identity comes from the
+// challengeToken issued at login/Google OAuth (email fallback for legacy calls).
 router.post('/login/2fa', async (req, res) => {
   try {
-    const { email, code, deviceName, device } = req.body;
-    if (!email || !code) {
+    const { code, challengeToken, email, deviceName, device } = req.body;
+    if (!code) {
       return res.status(400).json({ success: false, error: 'Email and code are required' });
     }
-    const user = await User.findOne({ email });
+
+    let user;
+    if (challengeToken) {
+      try {
+        const decoded = jwt.verify(challengeToken, process.env.JWT_SECRET);
+        if (decoded.purpose !== '2fa' || !decoded.id) {
+          return res.status(401).json({ success: false, error: 'Invalid challenge' });
+        }
+        user = await User.findById(decoded.id);
+      } catch {
+        return res.status(401).json({ success: false, error: 'Sign-in challenge expired. Please sign in again.' });
+      }
+    } else {
+      if (!email) return res.status(400).json({ success: false, error: 'Email and code are required' });
+      user = await User.findOne({ email });
+    }
     if (!user) return res.status(401).json({ success: false, error: 'Invalid email or code' });
 
     const t = user.twoFactor;
@@ -165,6 +183,35 @@ router.post('/login/2fa', async (req, res) => {
     const deviceId = await touchDevice(user, deviceInfo(req));
     const token = generateToken(user._id, deviceId);
     res.json({ success: true, token, user: cleanUser(user) });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Fetch challenge metadata for a pending 2FA sign-in (used by the OAuth
+// callback page so codes never need to live in the redirect URL).
+router.post('/2fa/challenge', async (req, res) => {
+  try {
+    const { challengeToken } = req.body;
+    if (!challengeToken) {
+      return res.status(400).json({ success: false, error: 'Missing challenge token' });
+    }
+    let user;
+    try {
+      const decoded = jwt.verify(challengeToken, process.env.JWT_SECRET);
+      if (decoded.purpose !== '2fa' || !decoded.id) {
+        return res.status(401).json({ success: false, error: 'Invalid challenge' });
+      }
+      user = await User.findById(decoded.id);
+    } catch {
+      return res.status(401).json({ success: false, error: 'Sign-in challenge expired. Please sign in again.' });
+    }
+    if (!user) return res.status(401).json({ success: false, error: 'Invalid challenge' });
+
+    const emailConfigured = isEmailConfigured();
+    const payload = { success: true, emailConfigured, email: user.email };
+    if (!emailConfigured && user.twoFactor?.otp) payload.devCode = user.twoFactor.otp;
+    res.json(payload);
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
@@ -187,6 +234,21 @@ router.get('/google/callback', (req, res, next) => {
   passport.authenticate('google', { session: false, callbackURL: googleCallbackUrl(req) }, async (err, user) => {
     if (err || !user) {
       return res.redirect('/login?oauth_error=1');
+    }
+    // If the user has 2FA enabled, require a code before issuing a session.
+    if (user.twoFactor?.enabled) {
+      const otp = String(Math.floor(100000 + Math.random() * 900000));
+      user.twoFactor.otp = otp;
+      user.twoFactor.otpExpires = new Date(Date.now() + 10 * 60 * 1000);
+      await user.save();
+      await sendOtpMail({
+        to: user.email,
+        name: user.name,
+        otp,
+        purpose: 'two-factor login to your KIKY account',
+      });
+      const challengeToken = generateChallengeToken(user._id);
+      return res.redirect(`${getOrigin(req)}/oauth/callback?2fa=1&token=${challengeToken}`);
     }
     const deviceId = await touchDevice(user, deviceInfo(req));
     const token = generateToken(user._id, deviceId);

@@ -41,6 +41,7 @@ const LoginPage = () => {
       navigate(from, { replace: true });
     } else if (result.twoFactorRequired) {
       setTwoFactor({
+        challengeToken: result.challengeToken,
         emailConfigured: result.emailConfigured,
         devCode: result.devCode,
         sent: true,
@@ -56,7 +57,7 @@ const LoginPage = () => {
     e.preventDefault();
     setError('');
     setVerifying(true);
-    const result = await complete2FALogin(email, twoFactorCode);
+    const result = await complete2FALogin(twoFactorCode, twoFactor?.challengeToken);
     if (result.success) {
       navigate(from, { replace: true });
     } else {

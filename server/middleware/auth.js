@@ -16,6 +16,10 @@ export const protect = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    // A challenge token only authorizes the 2FA step — never a session.
+    if (decoded.purpose === '2fa') {
+      return res.status(401).json({ success: false, error: 'Not authorized' });
+    }
     req.user = await User.findById(decoded.id);
     if (!req.user) {
       return res.status(401).json({ success: false, error: 'User not found' });
@@ -40,5 +44,14 @@ export const protect = async (req, res, next) => {
 export const generateToken = (userId, deviceId) => {
   return jwt.sign({ id: userId, deviceId }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN || '7d',
+  });
+};
+
+// Short-lived token that only authorizes the 2FA challenge step (never grants
+// a session by itself). Used to carry the pending user identity through the
+// Google OAuth redirect for users with two-factor auth enabled.
+export const generateChallengeToken = (userId) => {
+  return jwt.sign({ id: userId, purpose: '2fa' }, process.env.JWT_SECRET, {
+    expiresIn: '10m',
   });
 };

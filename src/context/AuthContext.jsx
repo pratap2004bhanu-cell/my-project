@@ -32,6 +32,7 @@ export const AuthProvider = ({ children }) => {
         return {
           success: false,
           twoFactorRequired: true,
+          challengeToken: res.data.challengeToken,
           emailConfigured: res.data.emailConfigured,
           devCode: res.data.devCode,
         };
@@ -44,14 +45,27 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const complete2FALogin = async (email, code) => {
+  const complete2FALogin = async (code, challengeToken) => {
     try {
-      const res = await api.post('/auth/login/2fa', { email, code, deviceName: getDeviceName() });
+      const res = await api.post('/auth/login/2fa', {
+        code,
+        challengeToken,
+        deviceName: getDeviceName(),
+      });
       localStorage.setItem('token', res.data.token);
       setUser(res.data.user);
       return { success: true };
     } catch (error) {
       return { success: false, error: error.response?.data?.error || 'Could not verify code' };
+    }
+  };
+
+  const get2FAChallenge = async (challengeToken) => {
+    try {
+      const res = await api.post('/auth/2fa/challenge', { challengeToken });
+      return { success: true, ...res.data };
+    } catch (error) {
+      return { success: false, error: error.response?.data?.error || 'Could not load challenge' };
     }
   };
 
@@ -178,6 +192,7 @@ export const AuthProvider = ({ children }) => {
     isAuthenticated: !!user,
     login,
     complete2FALogin,
+    get2FAChallenge,
     register,
     completeOAuth,
     logout,
