@@ -240,14 +240,14 @@ const SettingsPage = () => {
 
   const renderListStyles = 'flex items-center gap-4 p-4 bg-dark-800/50 rounded-xl hover:bg-dark-700/50 transition-colors';
 
-  const ListWrapper = ({ item }) => {
+  const ListWrapper = ({ item, children }) => {
     if (item.onClick) {
-      return <button onClick={item.onClick} className={`${renderListStyles} text-left w-full`}>{item.children}</button>;
+      return <button onClick={item.onClick} className={`${renderListStyles} text-left w-full`}>{children}</button>;
     }
     if (item.link) {
-      return <Link to={item.link} className={renderListStyles}>{item.children}</Link>;
+      return <Link to={item.link} className={renderListStyles}>{children}</Link>;
     }
-    return <div className={renderListStyles}>{item.children}</div>;
+    return <div className={renderListStyles}>{children}</div>;
   };
 
   const ListBody = ({ item }) => (
