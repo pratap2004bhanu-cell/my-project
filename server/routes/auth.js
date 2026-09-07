@@ -2,12 +2,15 @@ import { Router } from 'express';
 import multer from 'multer';
 import passport from 'passport';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import User from '../models/User.js';
 import { generateToken, generateChallengeToken, protect } from '../middleware/auth.js';
 import { storeFile } from '../config/gridfs.js';
-import { sendOtpMail, isEmailConfigured } from '../utils/email.js';
+import { sendOtpMail, sendResetMail, isEmailConfigured } from '../utils/email.js';
 
 const router = Router();
+
+const sha256 = (s) => crypto.createHash('sha256').update(String(s)).digest('hex');
 
 const clientIp = (req) => {
   const fwd = req.headers['x-forwarded-for'];
@@ -212,6 +215,71 @@ router.post('/2fa/challenge', async (req, res) => {
     const payload = { success: true, emailConfigured, email: user.email };
     if (!emailConfigured && user.twoFactor?.otp) payload.devCode = user.twoFactor.otp;
     res.json(payload);
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Request a password reset. Emails a link + code; falls back to a dev code
+// shown inline when mail is not configured (same pattern as other OTP flows).
+router.post('/forgot-password', async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.status(400).json({ success: false, error: 'Please enter a valid email address' });
+    }
+    const user = await User.findOne({ email: String(email).trim().toLowerCase() });
+    if (!user) {
+      // Don't reveal whether an account exists.
+      return res.json({ success: true, emailConfigured: isEmailConfigured() });
+    }
+
+    const code = String(Math.floor(100000 + Math.random() * 900000));
+    const token = crypto.randomBytes(24).toString('hex');
+    user.resetPassword = {
+      token: sha256(token),
+      code,
+      expires: new Date(Date.now() + 15 * 60 * 1000),
+    };
+    await user.save();
+
+    const link = `${getOrigin(req)}/reset-password?token=${token}`;
+    const emailed = await sendResetMail({ to: user.email, name: user.name, code, link });
+    const payload = { success: true, emailConfigured: isEmailConfigured() };
+    if (!emailed) payload.devCode = code;
+    res.json(payload);
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Complete a password reset via the emailed link (`token`) or the emailed/dev
+// code (`email` + `code`).
+router.post('/reset-password', async (req, res) => {
+  try {
+    const { email, code, token, newPassword } = req.body;
+    if (typeof newPassword !== 'string' || newPassword.length < 6) {
+      return res.status(400).json({ success: false, error: 'New password must be at least 6 characters' });
+    }
+
+    let user = null;
+    if (token) {
+      user = await User.findOne({ 'resetPassword.token': sha256(String(token).trim()) });
+    } else if (email && code) {
+      user = await User.findOne({ email: String(email).trim().toLowerCase() });
+      if (user && String(user.resetPassword?.code || '') !== String(code).trim()) user = null;
+    } else {
+      return res.status(400).json({ success: false, error: 'Email and code are required' });
+    }
+
+    if (!user || !user.resetPassword?.expires || new Date(user.resetPassword.expires) < new Date()) {
+      return res.status(400).json({ success: false, error: 'Reset link or code is invalid or expired. Please request a new one.' });
+    }
+
+    user.password = newPassword;
+    user.resetPassword = { token: '', code: '', expires: null };
+    await user.save();
+    res.json({ success: true });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }

@@ -13,6 +13,8 @@ const LoginPage = lazy(() => import('./pages/LoginPage'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage'));
 const OAuthCallbackPage = lazy(() => import('./pages/OAuthCallbackPage'));
 const OnboardingPage = lazy(() => import('./pages/OnboardingPage'));
+const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'));
+const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
 const DashboardPage = lazy(() => import('./pages/DashboardPage'));
 const ExplorePage = lazy(() => import('./pages/ExplorePage'));
 const CreateActivityPage = lazy(() => import('./pages/CreateActivityPage'));
@@ -110,6 +112,16 @@ function App() {
           } />
           <Route path="/oauth/callback" element={<OAuthCallbackPage />} />
           <Route path="/onboarding" element={<OnboardingPage />} />
+          <Route path="/forgot-password" element={
+            <PublicRoute>
+              <ForgotPasswordPage />
+            </PublicRoute>
+          } />
+          <Route path="/reset-password" element={
+            <PublicRoute>
+              <ResetPasswordPage />
+            </PublicRoute>
+          } />
           
           {/* Protected Routes with Layout */}
           <Route

@@ -60,6 +60,39 @@ export const sendOtpMail = async ({ to, name, otp, purpose = 'verify your KIKY p
 // configured or sending fails (caller falls back to showing the code inline).
 export const sendVerificationOtp = async (args) => sendOtpMail({ ...args, purpose: 'verify your profile in 10 minutes' });
 
+// Email a password reset link + code to a user. Returns false if mail is not
+// configured or sending fails (caller falls back to showing the code inline).
+export const sendResetMail = async ({ to, name, code, link }) => {
+  const tr = buildTransporter();
+  if (!tr) return false;
+  const subject = 'KIKY password reset';
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; background: #f7f7f5; padding: 24px; border-radius: 12px;">
+      <div style="background: #111827; color: #fff; padding: 18px 24px; border-radius: 10px; font-size: 18px; margin-bottom: 20px;">
+        🔑 Reset your KIKY password
+      </div>
+      <div style="background: #fff; border-radius: 10px; padding: 24px; color: #374151;">
+        <p>Hi ${esc(name)},</p>
+        <p>Click the button below to set a new password. The link expires in 15 minutes.</p>
+        <p style="text-align: center; margin: 24px 0;">
+          <a href="${esc(link)}" style="display: inline-block; background: #84cc16; color: #111827; font-weight: 700; text-decoration: none; padding: 12px 24px; border-radius: 10px;">Reset password</a>
+        </p>
+        <p>Or enter this code on the reset page:</p>
+        <p style="font-size: 32px; font-weight: 800; letter-spacing: 8px; text-align: center; color: #111827; margin: 24px 0;">${esc(code)}</p>
+        <p style="font-size: 13px; color: #9ca3af;">If you didn't request this, you can safely ignore this email.</p>
+      </div>
+      <p style="color: #9ca3af; font-size: 12px; margin-top: 16px;">Sent by the KIKY app.</p>
+    </div>
+  `;
+  try {
+    await tr.sendMail({ from: `KIKY App <${process.env.SMTP_USER}>`, to, subject, html });
+    return true;
+  } catch (error) {
+    console.error('Reset email failed:', error.message);
+    return false;
+  }
+};
+
 // Email a newly submitted idea to the admin inbox (defined by ADMIN_EMAIL).
 // Never throws: a failed email must not block saving the idea.
 export const sendIdeaMail = async ({ fromName, fromEmail, category, idea }) => {

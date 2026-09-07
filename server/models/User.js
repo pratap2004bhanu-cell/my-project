@@ -91,6 +91,11 @@ const userSchema = new mongoose.Schema({
     ip: { type: String, default: '' },
     lastActive: { type: Date, default: Date.now },
   }],
+  resetPassword: {
+    token: { type: String, default: '' },
+    code: { type: String, default: '' },
+    expires: { type: Date, default: null },
+  },
   pushSubscriptions: [{
     endpoint: { type: String, required: true },
     keys: {
