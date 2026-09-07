@@ -29,6 +29,7 @@ import reportRoutes from './routes/reports.js';
 import suggestionRoutes from './routes/suggestions.js';
 import eventRoutes from './routes/events.js';
 import refreshActivityStatuses from './utils/lifecycle.js';
+import { serveFile } from './config/gridfs.js';
 
 const app = express();
 const httpServer = createServer(app);
@@ -66,8 +67,19 @@ const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 30, standardHeade
 app.use('/api', apiLimiter);
 app.use('/auth', authLimiter);
 
-// Serve uploaded files
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// Serve uploaded files. New uploads live in MongoDB GridFS (durable across
+// deploys); committed demo assets in ./uploads are served as a static fallback.
+const uploadsDir = path.join(__dirname, 'uploads');
+app.use('/uploads', express.static(uploadsDir));
+app.get('/uploads/:id', async (req, res, next) => {
+  try {
+    await serveFile(req, res, req.params.id, (r, s) => {
+      express.static(uploadsDir)(r, s, next);
+    });
+  } catch {
+    next();
+  }
+});
 
 // Routes
 app.use('/auth', authRoutes);

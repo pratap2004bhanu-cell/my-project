@@ -1,22 +1,14 @@
 import { Router } from 'express';
 import multer from 'multer';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import passport from 'passport';
 import User from '../models/User.js';
 import { generateToken, protect } from '../middleware/auth.js';
+import { storeFile } from '../config/gridfs.js';
 
 const router = Router();
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const uploadDir = path.join(__dirname, '..', 'uploads');
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadDir),
-  filename: (req, file, cb) => cb(null, `${req.user._id}-${Date.now()}${path.extname(file.originalname)}`),
-});
 const upload = multer({
-  storage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 2 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     if (/image\/(jpeg|png|webp|gif)/.test(file.mimetype)) return cb(null, true);
@@ -139,13 +131,19 @@ router.put('/me', protect, async (req, res) => {
   }
 });
 
-// Upload avatar
+// Upload avatar -> stored in MongoDB GridFS
 router.post('/me/avatar', protect, upload.single('avatar'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ success: false, error: 'No file uploaded' });
     }
-    const avatar = `/uploads/${req.file.filename}`;
+    const id = await storeFile({
+      name: req.file.originalname,
+      type: req.file.mimetype,
+      size: req.file.size,
+      data: req.file.buffer,
+    });
+    const avatar = `/uploads/${id}`;
     const user = await User.findByIdAndUpdate(req.user._id, { avatar }, { new: true });
     res.json({ success: true, avatar: user.avatar });
   } catch (error) {
