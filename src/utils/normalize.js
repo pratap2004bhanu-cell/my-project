@@ -1,3 +1,5 @@
+import { VIBE_MAP } from '../data/eventCategories';
+
 const CATEGORY_COLORS = {
   cricket: 'from-green-500 to-emerald-600', coffee: 'from-amber-500 to-orange-600',
   gaming: 'from-violet-500 to-purple-600', gym: 'from-rose-500 to-red-600',
@@ -121,4 +123,107 @@ export const messagePreview = (m) => {
   if (m?.content) return m.content;
   if (!m?.attachment?.url) return '';
   return String(m.attachment.type || '').startsWith('image/') ? '📷 Photo' : `📎 ${m.attachment.name || 'Attachment'}`;
+};
+
+export const formatEventDate = (iso, startTime) => {
+  if (!iso) return startTime ? `Today, ${startTime}` : 'Today';
+  const d = new Date(iso);
+  const now = new Date();
+  const isToday = d.toDateString() === now.toDateString();
+  const tomorrow = new Date(now);
+  tomorrow.setDate(now.getDate() + 1);
+  const isTomorrow = d.toDateString() === tomorrow.toDateString();
+  const base = isToday ? 'Today' : isTomorrow ? 'Tomorrow' : d.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+  const t = startTime ? startTime : d.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' });
+  return `${base}, ${t}`;
+};
+
+export const formatPrice = (price) => {
+  if (!price || price.amount == null) return 'Free';
+  const n = Number(price.amount);
+  if (n <= 0) return 'Free';
+  const c = price.currency || 'INR';
+  if (c === 'INR') return `₹${n === Math.floor(n) ? n : n.toFixed(2)}`;
+  if (c === 'USD') return `$${n === Math.floor(n) ? n : n.toFixed(2)}`;
+  return `${n} ${c}`;
+};
+
+export const EVENT_ATTENDEE_LABELS = {
+  interested: 'Interested',
+  going: 'Going',
+  left: 'Left',
+};
+
+export const normalizeEvent = (e) => {
+  const coords = e.venue?.location?.coordinates;
+  return {
+    id: e._id,
+    title: e.title,
+    description: e.description || '',
+    category: e.category,
+    emoji: e.emoji || '🎉',
+    coverImage: e.coverImage || '',
+    organizer: e.organizer || { _id: e.organizerId, name: e.organizerName },
+    organizerName: e.organizerName || e.organizer?.name || 'Organizer',
+    isOrganizer: e.isOrganizer === true,
+    date: e.date,
+    dateLabel: formatEventDate(e.date, e.startTime),
+    startTime: e.startTime,
+    endTime: e.endTime,
+    venueName: e.venue?.name || 'Venue TBA',
+    address: e.venue?.address || 'Location TBA',
+    coordinates: coords ? [coords[1], coords[0]] : null,
+    price: e.price?.amount != null && e.price.amount > 0
+      ? e.price
+      : { amount: 0, currency: e.price?.currency || 'INR', ticketUrl: e.price?.ticketUrl || '' },
+    priceLabel: formatPrice(e.price?.amount != null && e.price.amount > 0 ? e.price : { amount: 0, currency: e.price?.currency }),
+    capacity: e.capacity || 0,
+    rules: e.rules || [],
+    schedule: e.schedule || [],
+    interestedCount: e.interestedCount ?? e.counts?.interested ?? 0,
+    goingCount: e.goingCount ?? e.counts?.going ?? 0,
+    remainingSpots: e.remainingSpots ?? null,
+    distance: e.distance == null ? null : formatDistance(e.distance),
+    myStatus: e.myStatus || null,
+    moderationStatus: e.moderationStatus || 'pending',
+    status: e.status || 'published',
+    createdAt: e.createdAt,
+    people: (e.people || []).map((p) => ({
+      id: p.id || p._id,
+      name: p.name,
+      avatar: p.avatar || null,
+      interests: p.interests || [],
+      status: p.status,
+    })),
+    organizerContact: e.organizerContact || '',
+    socialLinks: e.socialLinks || [],
+    vibe: (e.vibe || VIBES_FOR(e.category)).map((v) => v),
+    isFull: e.remainingSpots != null && e.remainingSpots <= 0 && (e.interestedCount ?? 0) >= (e.capacity || Infinity),
+  };
+};
+
+const VIBES_FOR = (category) => VIBE_MAP[category] || [];
+
+export const normalizeMoment = (m, meId) => {
+  const u = m.user && typeof m.user === 'object' ? m.user : { _id: m.user, name: 'Member', avatar: null };
+  return {
+    id: m._id,
+    text: m.text,
+    rating: m.rating || 0,
+    photos: m.photos || [],
+    likes: (m.likes || []).map((l) => (typeof l === 'object' ? l.user || l._id : l)),
+    liked: (m.likes || []).some((l) => String(typeof l === 'object' ? l.user || l._id : l) === String(meId)),
+    comments: (m.comments || []).map((c) => ({
+      id: c._id,
+      user: c.user?.name || 'Member',
+      avatar: c.user?.avatar || null,
+      text: c.text,
+      createdAt: c.createdAt,
+    })),
+    author: u.name,
+    authorId: u._id,
+    avatar: u.avatar || null,
+    createdAt: m.createdAt,
+    time: m.createdAt ? new Date(m.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : '',
+  };
 };

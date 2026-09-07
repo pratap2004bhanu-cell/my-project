@@ -48,6 +48,33 @@ const configureSocket = (io) => {
       socket.leave(`community:${communityId}`);
     });
 
+    // Join event room
+    socket.on('event:join', (eventId) => {
+      socket.join(`event:${eventId}`);
+    });
+
+    // Leave event room
+    socket.on('event:leave', (eventId) => {
+      socket.leave(`event:${eventId}`);
+    });
+
+    // Event discussion message
+    socket.on('event:message', async (data) => {
+      try {
+        const message = await Message.create({
+          sender: socket.user._id,
+          event: data.eventId,
+          content: data.content || '',
+          attachment: data.attachment,
+        });
+
+        const populated = await message.populate('sender', 'name avatar');
+        io.to(`event:${data.eventId}`).emit('event:message', populated);
+      } catch (error) {
+        socket.emit('error', { message: error.message });
+      }
+    });
+
     // Community group message
     socket.on('community:message', async (data) => {
       try {

@@ -50,6 +50,10 @@ const DraftsPage = lazy(() => import('./pages/DraftsPage'));
 const StatusPage = lazy(() => import('./pages/StatusPage'));
 const WeatherPage = lazy(() => import('./pages/WeatherPage'));
 const IdeasPage = lazy(() => import('./pages/IdeasPage'));
+const EventsPage = lazy(() => import('./pages/EventsPage'));
+const EventDetailsPage = lazy(() => import('./pages/EventDetailsPage'));
+const CreateEventPage = lazy(() => import('./pages/CreateEventPage'));
+const MyEventsPage = lazy(() => import('./pages/MyEventsPage'));
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center">
@@ -193,6 +197,11 @@ function App() {
             <Route path="status" element={<StatusPage />} />
             <Route path="weather" element={<WeatherPage />} />
             <Route path="ideas" element={<IdeasPage />} />
+            <Route path="events" element={<EventsPage />} />
+            <Route path="events/new" element={<CreateEventPage />} />
+            <Route path="events/edit/:id" element={<CreateEventPage />} />
+            <Route path="events/:id" element={<EventDetailsPage />} />
+            <Route path="my-events" element={<MyEventsPage />} />
           </Route>
           
           {/* Catch all - redirect to home */}

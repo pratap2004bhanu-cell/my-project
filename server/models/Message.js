@@ -5,6 +5,7 @@ const messageSchema = new mongoose.Schema({
   receiver: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   activity: { type: mongoose.Schema.Types.ObjectId, ref: 'Activity' },
   community: { type: mongoose.Schema.Types.ObjectId, ref: 'Community' },
+  event: { type: mongoose.Schema.Types.ObjectId, ref: 'Event' },
   content: { type: String, default: '' },
   attachment: {
     url: { type: String, default: '' },
@@ -18,5 +19,6 @@ const messageSchema = new mongoose.Schema({
 messageSchema.index({ sender: 1, receiver: 1 });
 messageSchema.index({ activity: 1, createdAt: -1 });
 messageSchema.index({ community: 1, createdAt: -1 });
+messageSchema.index({ event: 1, createdAt: -1 });
 
 export default mongoose.model('Message', messageSchema);

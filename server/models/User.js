@@ -43,6 +43,7 @@ const userSchema = new mongoose.Schema({
     connectionRequests: { type: Boolean, default: true },
     messages: { type: Boolean, default: true },
     reminders: { type: Boolean, default: true },
+    eventUpdates: { type: Boolean, default: true },
   },
   privacy: {
     profileVisibility: { type: String, enum: ['everyone', 'connections', 'private'], default: 'everyone' },

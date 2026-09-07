@@ -12,6 +12,7 @@ export const mainNavItems = [
   { to: '/dashboard', icon: FiHome, label: 'Home' },
   { to: '/nearby', icon: FiMapPin, label: 'Nearby' },
   { to: '/trending', icon: FiTrendingUp, label: 'Trending' },
+  { to: '/events', icon: FiCalendar, label: 'Events' },
   { to: '/matching', icon: FiTarget, label: 'Matches' },
   { to: '/chat', icon: FiMessageCircle, label: 'Messages' },
   { to: '/lets-go', icon: FiZap, label: "KIKY" },
