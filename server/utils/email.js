@@ -26,6 +26,35 @@ const esc = (s = '') => String(s).replace(/[&<>"']/g, (c) => (
   { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
 ));
 
+// Email an email-verification OTP to a user. Returns false if mail is not
+// configured or sending fails (caller falls back to showing the code inline).
+export const sendVerificationOtp = async ({ to, name, otp }) => {
+  const tr = buildTransporter();
+  if (!tr) return false;
+  const subject = `KIKY verification code: ${otp}`;
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; background: #f7f7f5; padding: 24px; border-radius: 12px;">
+      <div style="background: #111827; color: #fff; padding: 18px 24px; border-radius: 10px; font-size: 18px; margin-bottom: 20px;">
+        🔐 Verify your KIKY profile
+      </div>
+      <div style="background: #fff; border-radius: 10px; padding: 24px; color: #374151;">
+        <p>Hi ${esc(name)},</p>
+        <p>Use the code below to verify your profile. It expires in 10 minutes.</p>
+        <p style="font-size: 32px; font-weight: 800; letter-spacing: 8px; text-align: center; color: #111827; margin: 24px 0;">${esc(otp)}</p>
+        <p style="font-size: 13px; color: #9ca3af;">If you didn't request this, you can safely ignore this email.</p>
+      </div>
+      <p style="color: #9ca3af; font-size: 12px; margin-top: 16px;">Sent by the KIKY app.</p>
+    </div>
+  `;
+  try {
+    await tr.sendMail({ from: `KIKY App <${process.env.SMTP_USER}>`, to, subject, html });
+    return true;
+  } catch (error) {
+    console.error('Verification email failed:', error.message);
+    return false;
+  }
+};
+
 // Email a newly submitted idea to the admin inbox (defined by ADMIN_EMAIL).
 // Never throws: a failed email must not block saving the idea.
 export const sendIdeaMail = async ({ fromName, fromEmail, category, idea }) => {

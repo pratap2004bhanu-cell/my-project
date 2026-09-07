@@ -61,6 +61,17 @@ const userSchema = new mongoose.Schema({
     savedAt: { type: Date, default: Date.now },
   }],
   blockedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  verification: {
+    emailVerified: { type: Boolean, default: false },
+    emailOtp: { type: String, default: '' },
+    emailOtpExpires: { type: Date, default: null },
+  },
+  emergencyContacts: [{
+    name: { type: String, trim: true },
+    relation: { type: String, default: '' },
+    phone: { type: String, trim: true },
+    email: { type: String, trim: true, lowercase: true },
+  }],
   rating: [{
     rater: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     rating: { type: Number, min: 1, max: 5 },

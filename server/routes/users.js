@@ -6,6 +6,7 @@ import User from '../models/User.js';
 import { protect } from '../middleware/auth.js';
 import { notify } from '../utils/notify.js';
 import { getPublicKey } from '../utils/push.js';
+import { sendVerificationOtp, isEmailConfigured } from '../utils/email.js';
 
 const router = Router();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -153,6 +154,126 @@ router.get('/me/blocked', protect, async (req, res) => {
   try {
     const me = await User.findById(req.user._id).populate('blockedUsers', 'name avatar');
     res.json({ success: true, blocked: me.blockedUsers || [] });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Verification status
+router.get('/me/verification', protect, async (req, res) => {
+  try {
+    const me = await User.findById(req.user._id);
+    res.json({
+      success: true,
+      verified: !!me?.verification?.emailVerified,
+      emailConfigured: isEmailConfigured(),
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Send an email verification OTP
+router.post('/me/verification/send', protect, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ success: false, error: 'User not found' });
+    if (user.verification?.emailVerified) {
+      return res.json({ success: true, verified: true, alreadyVerified: true });
+    }
+    const otp = String(Math.floor(100000 + Math.random() * 900000));
+    user.verification.emailOtp = otp;
+    user.verification.emailOtpExpires = new Date(Date.now() + 10 * 60 * 1000);
+    await user.save();
+
+    const emailed = await sendVerificationOtp({ to: user.email, name: user.name, otp });
+    const emailConfigured = isEmailConfigured();
+
+    // When email isn't configured (no SMTP creds), surface the code in the
+    // response so verification still works for development/demo purposes.
+    const payload = { success: true, sent: emailed, emailConfigured };
+    if (!emailed) payload.devCode = emailConfigured ? undefined : otp;
+    res.json(payload);
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Confirm the email verification OTP
+router.post('/me/verification/confirm', protect, async (req, res) => {
+  try {
+    const { code } = req.body;
+    if (!code) return res.status(400).json({ success: false, error: 'Enter the verification code' });
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ success: false, error: 'User not found' });
+    const v = user.verification;
+    if (!v?.emailOtp || !v.emailOtpExpires || new Date(v.emailOtpExpires) < new Date()) {
+      return res.status(400).json({ success: false, error: 'Code expired. Request a new one.' });
+    }
+    if (String(code).trim() !== v.emailOtp) {
+      return res.status(400).json({ success: false, error: 'Incorrect code. Try again.' });
+    }
+    user.verification.emailVerified = true;
+    user.verification.emailOtp = '';
+    user.verification.emailOtpExpires = null;
+    await user.save();
+    res.json({ success: true, verified: true });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// My emergency contacts
+router.get('/me/emergency-contacts', protect, async (req, res) => {
+  try {
+    const me = await User.findById(req.user._id);
+    res.json({ success: true, contacts: me.emergencyContacts || [] });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Add an emergency contact
+router.post('/me/emergency-contacts', protect, async (req, res) => {
+  try {
+    const { name, phone } = req.body;
+    if (!name || !String(name).trim()) {
+      return res.status(400).json({ success: false, error: 'Contact name is required' });
+    }
+    if (!phone || !String(phone).trim()) {
+      return res.status(400).json({ success: false, error: 'Contact phone is required' });
+    }
+    const me = await User.findById(req.user._id);
+    if (!me) return res.status(404).json({ success: false, error: 'User not found' });
+    const contact = {
+      name: String(name).trim(),
+      relation: String(req.body.relation || '').trim(),
+      phone: String(phone).trim(),
+      email: String(req.body.email || '').trim().toLowerCase(),
+    };
+    if ((me.emergencyContacts || []).length >= 5) {
+      return res.status(400).json({ success: false, error: 'You can add up to 5 emergency contacts' });
+    }
+    me.emergencyContacts = [...(me.emergencyContacts || []), contact];
+    await me.save();
+    res.status(201).json({ success: true, contact, contacts: me.emergencyContacts });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Remove an emergency contact
+router.delete('/me/emergency-contacts/:index', protect, async (req, res) => {
+  try {
+    const me = await User.findById(req.user._id);
+    if (!me) return res.status(404).json({ success: false, error: 'User not found' });
+    const index = Number(req.params.index);
+    if (!Number.isInteger(index) || index < 0 || index >= (me.emergencyContacts || []).length) {
+      return res.status(400).json({ success: false, error: 'Invalid contact' });
+    }
+    me.emergencyContacts.splice(index, 1);
+    await me.save();
+    res.json({ success: true, contacts: me.emergencyContacts });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
