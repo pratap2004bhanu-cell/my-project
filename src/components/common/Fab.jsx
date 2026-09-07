@@ -8,7 +8,7 @@ const Fab = () => {
 
   const actions = [
     { to: '/create-activity', icon: FiTag, label: 'New Activity', color: 'bg-lime-500 text-dark-900', glow: 'shadow-glow-lime' },
-    { to: '/lets-go', icon: FiZap, label: "KIKY Now", color: 'bg-electric-500 text-white', glow: 'shadow-glow-electric' },
+    { to: '/kiky', icon: FiZap, label: "KIKY Now", color: 'bg-electric-500 text-white', glow: 'shadow-glow-electric' },
     { to: '/checkin', icon: FiCheckCircle, label: 'Check In', color: 'bg-ocean-500 text-white', glow: 'shadow-lg' },
     { to: '/calendar', icon: FiCalendar, label: 'Calendar', color: 'bg-hotpink-500 text-white', glow: 'shadow-glow-pink' },
   ];

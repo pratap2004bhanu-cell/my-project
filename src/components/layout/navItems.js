@@ -15,7 +15,7 @@ export const mainNavItems = [
   { to: '/events', icon: FiCalendar, label: 'Events' },
   { to: '/matching', icon: FiTarget, label: 'Matches' },
   { to: '/chat', icon: FiMessageCircle, label: 'Messages' },
-  { to: '/lets-go', icon: FiZap, label: "KIKY" },
+  { to: '/kiky', icon: FiZap, label: "KIKY" },
 ];
 
 export const secondaryNavItems = [

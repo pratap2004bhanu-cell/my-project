@@ -5,7 +5,7 @@ import MobileNav from './MobileNav';
 import Fab from '../common/Fab';
 
 const FabHiddenPages = [
-  '/nearby', '/lets-go', '/checkin',
+  '/nearby', '/kiky', '/checkin',
 ];
 
 const AppLayout = () => {

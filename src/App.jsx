@@ -24,7 +24,7 @@ const ChatPage = lazy(() => import('./pages/ChatPage'));
 const NotificationsPage = lazy(() => import('./pages/NotificationsPage'));
 const MatchingPage = lazy(() => import('./pages/MatchingPage'));
 const FeedPage = lazy(() => import('./pages/FeedPage'));
-const LetsGoNowPage = lazy(() => import('./pages/LetsGoNowPage'));
+const KikyPage = lazy(() => import('./pages/KikyPage'));
 const CommunitiesPage = lazy(() => import('./pages/CommunitiesPage'));
 const SafetyPage = lazy(() => import('./pages/SafetyPage'));
 const GamificationPage = lazy(() => import('./pages/GamificationPage'));
@@ -169,7 +169,8 @@ function App() {
             <Route path="notifications" element={<NotificationsPage />} />
             <Route path="matching" element={<MatchingPage />} />
             <Route path="feed" element={<FeedPage />} />
-            <Route path="lets-go" element={<LetsGoNowPage />} />
+            <Route path="kiky" element={<KikyPage />} />
+            <Route path="lets-go" element={<Navigate to="/kiky" replace />} />
             <Route path="communities" element={<CommunitiesPage />} />
             <Route path="communities/:id" element={<CommunityPage />} />
             <Route path="communities/:id/chat" element={<CommunityChatPage />} />

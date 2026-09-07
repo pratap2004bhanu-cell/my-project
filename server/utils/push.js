@@ -3,7 +3,7 @@ import User from '../models/User.js';
 
 const publicKey = process.env.VAPID_PUBLIC_KEY;
 const privateKey = process.env.VAPID_PRIVATE_KEY;
-const subject = process.env.VAPID_SUBJECT || 'mailto:letsgo@example.com';
+const subject = process.env.VAPID_SUBJECT || 'mailto:kiky@example.com';
 
 if (publicKey && privateKey) {
   webpush.setVapidDetails(subject, publicKey, privateKey);

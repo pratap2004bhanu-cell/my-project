@@ -1,4 +1,4 @@
-app = "letsgo-app"
+app = "kiky-app"
 primary_region = "bom"
 
 [build]

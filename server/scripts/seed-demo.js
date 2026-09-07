@@ -6,7 +6,7 @@ import Message from '../models/Message.js';
 import Notification from '../models/Notification.js';
 
 const PASSWORD = 'Demo@1234';
-const DOMAIN = 'letsgo.app';
+const DOMAIN = 'kiky.app';
 const DAY = 24 * 60 * 60 * 1000;
 const now = Date.now();
 const H = (h) => new Date(now + h * 60 * 60 * 1000);
@@ -22,18 +22,18 @@ const U = {
 };
 
 const people = [
-  { name: 'Aarav Shah', email: 'aarav@letsgo.app', interests: ['cricket', 'gym', 'food'], bio: 'Leg-spinner and gym rat. Always up for a match on the university ground.', coords: [73.207, 22.3058], avatar: '/uploads/avatar-demo-1.png', model: 'available', streak: 2 },
-  { name: 'Diya Patel', email: 'diya@letsgo.app', interests: ['coffee', 'reading', 'photography'], bio: 'Coffee hopper. I know every chai stall in Sayaji Baug. Let us capture golden hour.', coords: [73.1812, 22.2937], avatar: '/uploads/avatar-demo-2.png', model: 'available', streak: 4 },
-  { name: 'Rohan Mehta', email: 'rohan@letsgo.app', interests: ['running', 'gaming', 'cricket'], bio: 'Morning runner, night gamer. Training for the Vadodara half marathon.', coords: [73.234, 22.3215], avatar: '/uploads/avatar-demo-3.png', model: 'online', streak: 3 },
-  { name: 'Ananya Iyer', email: 'ananya@letsgo.app', interests: ['hiking', 'photography', 'travel'], bio: 'Trail finder and amateur photographer. Pavagadh sunrise is my happy place.', coords: [73.1589, 22.2821], avatar: '/uploads/avatar-demo-4.png', model: 'available', streak: 5 },
-  { name: 'Kabir Singh', email: 'kabir@letsgo.app', interests: ['football', 'food', 'cricket'], bio: 'Football pundit, food explorer. Chelsea fan, will fight you politely about it.', coords: [73.2157, 22.2989], avatar: '/uploads/avatar-demo-5.png', model: 'online', streak: 1 },
-  { name: 'Meera Joshi', email: 'meera@letsgo.app', interests: ['yoga', 'art', 'coffee'], bio: 'Yoga teacher-in-training. Sketching in Kamati Baug on weekends.', coords: [73.1795, 22.3128], avatar: '/uploads/avatar-demo-6.png', model: 'available', streak: 6 },
-  { name: 'Aditya Rao', email: 'aditya@letsgo.app', interests: ['movies', 'music', 'gaming'], bio: 'Sundays are for lazy brunches and first shows. Board game collector.', coords: [73.1923, 22.2876], avatar: '/uploads/avatar-demo-7.png', model: 'online', streak: 2 },
-  { name: 'Sara Fernandes', email: 'sara@letsgo.app', interests: ['badminton', 'baking', 'coffee'], bio: 'Smash then bake. Looking for regular badminton partners near Alkapuri.', coords: [73.1648, 22.2709], avatar: '/uploads/avatar-demo-8.png', model: 'available', streak: 3 },
-  { name: 'Vikram Nair', email: 'vikram@letsgo.app', interests: ['cycling', 'tech', 'hiking'], bio: 'Weekend cyclist exploring the outskirts. Also, terrible at losing in chess.', coords: [73.2385, 22.3342], avatar: '/uploads/avatar-demo-9.png', model: 'available', streak: 4 },
-  { name: 'Ishita Desai', email: 'ishita@letsgo.app', interests: ['dance', 'travel', 'art'], bio: 'Dance teacher. If it moves, I dance to it. Always planning the next trip.', coords: [73.1859, 22.2591], avatar: '/uploads/avatar-demo-10.png', model: 'available', streak: 2 },
-  { name: 'Nisha Kulkarni', email: 'nisha@letsgo.app', interests: ['yoga', 'badminton', 'food'], bio: 'Namaste on the mat, smashes on court. Open to food trails any evening.', coords: [73.1747, 22.3238], avatar: '/uploads/avatar-demo-11.png', model: 'online', streak: 1 },
-  { name: 'Arjun Chawla', email: 'arjun@letsgo.app', interests: ['gym', 'cricket', 'music'], bio: 'Pull-ups and my playlist are my whole personality. Gym buddies welcome.', coords: [73.2031, 22.2765], avatar: '/uploads/avatar-demo-12.png', model: 'available', streak: 2 },
+  { name: 'Aarav Shah', email: 'aarav@kiky.app', interests: ['cricket', 'gym', 'food'], bio: 'Leg-spinner and gym rat. Always up for a match on the university ground.', coords: [73.207, 22.3058], avatar: '/uploads/avatar-demo-1.png', model: 'available', streak: 2 },
+  { name: 'Diya Patel', email: 'diya@kiky.app', interests: ['coffee', 'reading', 'photography'], bio: 'Coffee hopper. I know every chai stall in Sayaji Baug. Let us capture golden hour.', coords: [73.1812, 22.2937], avatar: '/uploads/avatar-demo-2.png', model: 'available', streak: 4 },
+  { name: 'Rohan Mehta', email: 'rohan@kiky.app', interests: ['running', 'gaming', 'cricket'], bio: 'Morning runner, night gamer. Training for the Vadodara half marathon.', coords: [73.234, 22.3215], avatar: '/uploads/avatar-demo-3.png', model: 'online', streak: 3 },
+  { name: 'Ananya Iyer', email: 'ananya@kiky.app', interests: ['hiking', 'photography', 'travel'], bio: 'Trail finder and amateur photographer. Pavagadh sunrise is my happy place.', coords: [73.1589, 22.2821], avatar: '/uploads/avatar-demo-4.png', model: 'available', streak: 5 },
+  { name: 'Kabir Singh', email: 'kabir@kiky.app', interests: ['football', 'food', 'cricket'], bio: 'Football pundit, food explorer. Chelsea fan, will fight you politely about it.', coords: [73.2157, 22.2989], avatar: '/uploads/avatar-demo-5.png', model: 'online', streak: 1 },
+  { name: 'Meera Joshi', email: 'meera@kiky.app', interests: ['yoga', 'art', 'coffee'], bio: 'Yoga teacher-in-training. Sketching in Kamati Baug on weekends.', coords: [73.1795, 22.3128], avatar: '/uploads/avatar-demo-6.png', model: 'available', streak: 6 },
+  { name: 'Aditya Rao', email: 'aditya@kiky.app', interests: ['movies', 'music', 'gaming'], bio: 'Sundays are for lazy brunches and first shows. Board game collector.', coords: [73.1923, 22.2876], avatar: '/uploads/avatar-demo-7.png', model: 'online', streak: 2 },
+  { name: 'Sara Fernandes', email: 'sara@kiky.app', interests: ['badminton', 'baking', 'coffee'], bio: 'Smash then bake. Looking for regular badminton partners near Alkapuri.', coords: [73.1648, 22.2709], avatar: '/uploads/avatar-demo-8.png', model: 'available', streak: 3 },
+  { name: 'Vikram Nair', email: 'vikram@kiky.app', interests: ['cycling', 'tech', 'hiking'], bio: 'Weekend cyclist exploring the outskirts. Also, terrible at losing in chess.', coords: [73.2385, 22.3342], avatar: '/uploads/avatar-demo-9.png', model: 'available', streak: 4 },
+  { name: 'Ishita Desai', email: 'ishita@kiky.app', interests: ['dance', 'travel', 'art'], bio: 'Dance teacher. If it moves, I dance to it. Always planning the next trip.', coords: [73.1859, 22.2591], avatar: '/uploads/avatar-demo-10.png', model: 'available', streak: 2 },
+  { name: 'Nisha Kulkarni', email: 'nisha@kiky.app', interests: ['yoga', 'badminton', 'food'], bio: 'Namaste on the mat, smashes on court. Open to food trails any evening.', coords: [73.1747, 22.3238], avatar: '/uploads/avatar-demo-11.png', model: 'online', streak: 1 },
+  { name: 'Arjun Chawla', email: 'arjun@kiky.app', interests: ['gym', 'cricket', 'music'], bio: 'Pull-ups and my playlist are my whole personality. Gym buddies welcome.', coords: [73.2031, 22.2765], avatar: '/uploads/avatar-demo-12.png', model: 'available', streak: 2 },
 ];
 
 // Simple round number formatting

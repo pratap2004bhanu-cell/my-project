@@ -160,7 +160,7 @@ const DashboardPage = () => {
               </h2>
               <p className="text-dark-300">Find people for activities happening right now</p>
             </div>
-            <button onClick={() => navigate('/lets-go')} className="btn-primary flex items-center gap-2 text-lg px-8 py-4">
+            <button onClick={() => navigate('/kiky')} className="btn-primary flex items-center gap-2 text-lg px-8 py-4">
               <FiZap className="w-5 h-5" />
               Start Now
             </button>

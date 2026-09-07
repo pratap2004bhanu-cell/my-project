@@ -1,4 +1,4 @@
-# Let's Go
+# KIKY
 
 A social platform to find like-minded people nearby and do activities together — meet people through shared interests (cricket, coffee, gym, movies, gaming, food...) without dating pressure.
 
@@ -7,7 +7,7 @@ A social platform to find like-minded people nearby and do activities together �
 ## Quick Start (development)
 
 ```bash
-git clone <repo> letsgo && cd letsgo
+git clone <repo> kiky && cd kiky
 
 # 1. Install both workspaces
 npm run install:all
@@ -41,7 +41,7 @@ Production: `npm run build && npm start` serves the built frontend from the Expr
 ## Tech & Architecture
 
 ```
-letsgo/
+kiky/
 ├── server/           # Express API + Socket.io + Mongo models
 │   ├── config/       # DB + passport
 │   ├── middleware/   # auth (JWT) guards

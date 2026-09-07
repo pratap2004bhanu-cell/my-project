@@ -32,7 +32,7 @@ const ACTIVITY_OPTIONS = [
 
 const PALETTE = ['from-pink-500 to-rose-500', 'from-purple-500 to-violet-500', 'from-electric-500 to-cyan-500', 'from-lime-500 to-emerald-500'];
 
-const LetsGoNowPage = () => {
+const KikyPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [isActive, setIsActive] = useState(false);
@@ -307,4 +307,4 @@ const LetsGoNowPage = () => {
   );
 };
 
-export default LetsGoNowPage;
+export default KikyPage;

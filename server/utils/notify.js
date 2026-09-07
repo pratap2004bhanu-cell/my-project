@@ -23,7 +23,7 @@ export const notify = async (io, { recipient, actor, type, text, activity, commu
       const pushTitle = type === 'activity' ? 'Activity update'
         : type === 'message' ? 'New message'
           : type === 'event' ? 'KIKY Events'
-            : type === 'squad' ? 'Event Squad' : 'LetsGo';
+            : type === 'squad' ? 'Event Squad' : 'KIKY';
       sendPush(recipientUser, {
         type,
         title: pushTitle,
