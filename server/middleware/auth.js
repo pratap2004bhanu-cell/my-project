@@ -20,14 +20,25 @@ export const protect = async (req, res, next) => {
     if (!req.user) {
       return res.status(401).json({ success: false, error: 'User not found' });
     }
+    req.deviceId = decoded.deviceId;
+    // Touch the device's lastActive marker so the Active Sessions list stays
+    // current, and reject tokens whose device has been revoked.
+    if (decoded.deviceId) {
+      const device = req.user.devices?.id(decoded.deviceId);
+      if (!device) {
+        return res.status(401).json({ success: false, error: 'Session revoked' });
+      }
+      device.lastActive = new Date();
+      await req.user.save();
+    }
     next();
   } catch (error) {
     return res.status(401).json({ success: false, error: 'Token invalid' });
   }
 };
 
-export const generateToken = (userId) => {
-  return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
+export const generateToken = (userId, deviceId) => {
+  return jwt.sign({ id: userId, deviceId }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN || '7d',
   });
 };

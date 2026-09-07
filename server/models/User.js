@@ -80,6 +80,17 @@ const userSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now },
   }],
   fcmToken: { type: String },
+  phone: { type: String, trim: true, default: '' },
+  twoFactor: {
+    enabled: { type: Boolean, default: false },
+    otp: { type: String, default: '' },
+    otpExpires: { type: Date, default: null },
+  },
+  devices: [{
+    name: { type: String, default: '' },
+    ip: { type: String, default: '' },
+    lastActive: { type: Date, default: Date.now },
+  }],
   pushSubscriptions: [{
     endpoint: { type: String, required: true },
     keys: {

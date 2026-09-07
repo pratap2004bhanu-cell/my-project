@@ -11,14 +11,17 @@ const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [twoFactor, setTwoFactor] = useState(null);
+  const [twoFactorCode, setTwoFactorCode] = useState('');
   const [error, setError] = useState(
     searchParams.get('oauth_error')
       ? 'Google sign-in could not be completed. If this keeps failing, make sure this site is authorized in your Google Cloud console, or use email login.'
       : ''
   );
   const [loading, setLoading] = useState(false);
+  const [verifying, setVerifying] = useState(false);
   
-  const { login } = useAuth();
+  const { login, complete2FALogin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -26,6 +29,9 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (twoFactor) {
+      return handle2FASubmit(e);
+    }
     setError('');
     setLoading(true);
     
@@ -33,11 +39,30 @@ const LoginPage = () => {
     
     if (result.success) {
       navigate(from, { replace: true });
+    } else if (result.twoFactorRequired) {
+      setTwoFactor({
+        emailConfigured: result.emailConfigured,
+        devCode: result.devCode,
+        sent: true,
+      });
     } else {
       setError(result.error);
     }
     
     setLoading(false);
+  };
+
+  const handle2FASubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setVerifying(true);
+    const result = await complete2FALogin(email, twoFactorCode);
+    if (result.success) {
+      navigate(from, { replace: true });
+    } else {
+      setError(result.error);
+    }
+    setVerifying(false);
   };
 
   return (
@@ -139,20 +164,55 @@ const LoginPage = () => {
             </Link>
           </div>
 
-          <button 
-            type="submit" 
-            disabled={loading}
-            className="w-full btn-primary flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? (
-              <div className="w-5 h-5 border-2 border-dark-900 border-t-transparent rounded-full animate-spin"></div>
-            ) : (
-              <>
-                Sign In
-                <FiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </>
-            )}
-          </button>
+          {!twoFactor ? (
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full btn-primary flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? (
+                <div className="w-5 h-5 border-2 border-dark-900 border-t-transparent rounded-full animate-spin"></div>
+              ) : (
+                <>
+                  Sign In
+                  <FiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </>
+              )}
+            </button>
+          ) : (
+            <>
+              <div className="bg-lime-500/10 border border-lime-500/30 text-lime-300 px-4 py-3 rounded-xl text-sm">
+                Your account uses two-factor authentication. Enter the 6-digit code sent to your email
+                {!twoFactor.emailConfigured && twoFactor.devCode && (
+                  <span className="block mt-2 font-mono text-lg tracking-widest text-white">
+                    {twoFactor.devCode}
+                  </span>
+                )}
+              </div>
+              <input
+                type="text"
+                inputMode="numeric"
+                maxLength={6}
+                value={twoFactorCode}
+                onChange={(e) => setTwoFactorCode(e.target.value.replace(/\D/g, ''))}
+                placeholder="6-digit code"
+                autoFocus
+                className="input-field pl-12 text-center font-mono tracking-widest"
+              />
+              <button
+                type="button"
+                onClick={handle2FASubmit}
+                disabled={verifying || twoFactorCode.length < 6}
+                className="w-full btn-primary flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {verifying ? (
+                  <div className="w-5 h-5 border-2 border-dark-900 border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  <>Verify & Sign In</>
+                )}
+              </button>
+            </>
+          )}
         </form>
 
         {/* Footer */}

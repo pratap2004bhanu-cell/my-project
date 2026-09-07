@@ -41,6 +41,9 @@ const CommunityChatPage = lazy(() => import('./pages/CommunityChatPage'));
 const TemplatesPage = lazy(() => import('./pages/TemplatesPage'));
 const CalendarPage = lazy(() => import('./pages/CalendarPage'));
 const FeedbackPage = lazy(() => import('./pages/FeedbackPage'));
+const HelpPage = lazy(() => import('./pages/HelpPage'));
+const TermsPage = lazy(() => import('./pages/TermsPage'));
+const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
 const CheckInPage = lazy(() => import('./pages/CheckInPage'));
 const ExpensesPage = lazy(() => import('./pages/ExpensesPage'));
 const GalleryPage = lazy(() => import('./pages/GalleryPage'));
@@ -179,6 +182,9 @@ function App() {
             <Route path="activities" element={<ExplorePage />} />
             <Route path="activities/:id" element={<ActivityDetailsPage />} />
             <Route path="settings" element={<SettingsPage />} />
+            <Route path="help" element={<HelpPage />} />
+            <Route path="terms" element={<TermsPage />} />
+            <Route path="privacy-policy" element={<PrivacyPolicyPage />} />
             <Route path="profile/edit" element={<EditProfilePage />} />
             <Route path="saved" element={<SavedPage />} />
             <Route path="history" element={<HistoryPage />} />
