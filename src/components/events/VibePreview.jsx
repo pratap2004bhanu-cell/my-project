@@ -5,7 +5,7 @@ const VibePreview = ({ vibes = [], onChange, readOnly = false }) => {
   return (
     <div>
       {!readOnly && (
-        <label className="block text-sm font-medium text-gray-700 mb-2">Vibe <span className="text-gray-400">(how will it feel?)</span></label>
+        <label className="block text-sm font-medium text-dark-400 mb-2">Vibe <span className="text-dark-500">(how will it feel?)</span></label>
       )}
       <div className={`flex flex-wrap gap-2 ${readOnly ? '' : 'mt-1'}`}>
         {EVENT_VIBES.map((v) => {
@@ -26,7 +26,7 @@ const VibePreview = ({ vibes = [], onChange, readOnly = false }) => {
                   ? 'bg-lime-500 text-dark-900'
                   : readOnly
                     ? 'bg-dark-800 text-dark-400'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    : 'bg-dark-800 text-dark-400 hover:bg-dark-700 hover:text-white'
               }`}
             >
               <span>{v.emoji}</span>

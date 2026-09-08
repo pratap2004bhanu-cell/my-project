@@ -10,10 +10,10 @@ import VibePreview from '../components/events/VibePreview';
 const StepField = ({ label, hint, children, required }) => (
   <div>
     <div className="flex items-baseline gap-2 mb-2">
-      <label className="block text-sm font-medium text-gray-700">
-        {label} {required && <span className="text-red-500">*</span>}
+      <label className="block text-sm font-medium text-dark-300">
+        {label} {required && <span className="text-red-400">*</span>}
       </label>
-      {hint && <span className="text-xs text-gray-400">{hint}</span>}
+      {hint && <span className="text-xs text-dark-400">{hint}</span>}
     </div>
     {children}
   </div>
@@ -172,7 +172,7 @@ const CreateEventPage = () => {
     );
   }
 
-  const fieldCls = 'w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-lime-400 focus:border-transparent text-sm text-gray-800 bg-white';
+  const fieldCls = 'w-full px-4 py-2.5 rounded-lg border border-dark-700 bg-dark-800/50 text-white placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-lime-500/40 focus:border-transparent text-sm';
 
   return (
     <div className="max-w-3xl mx-auto p-4 lg:p-6">
@@ -209,7 +209,7 @@ const CreateEventPage = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl p-5 sm:p-6 shadow-card space-y-5">
+      <div className="card space-y-5">
         <div>
           <StepField label="Event name" required>
             <Input value={form.title} onChange={(e) => set({ title: e.target.value })} placeholder="e.g. Sunset Music Festival" maxLength={80} />
@@ -232,7 +232,7 @@ const CreateEventPage = () => {
                   type="button"
                   onClick={() => set({ emoji: e })}
                   className={`w-9 h-9 rounded-lg text-lg flex items-center justify-center border transition-colors ${
-                    form.emoji === e ? 'border-lime-500 bg-lime-50' : 'border-gray-200 hover:bg-gray-50'
+                    form.emoji === e ? 'border-lime-500 bg-lime-500/15 text-white' : 'border-dark-700 text-dark-300 hover:bg-dark-800'
                   }`}
                 >
                   {e}
@@ -266,7 +266,7 @@ const CreateEventPage = () => {
             </StepField>
           </div>
         </div>
-        <p className="text-xs text-gray-400 -mt-2">Tip: use 12-hour text like "7:00 PM" if your venue has fixed hours.</p>
+        <p className="text-xs text-dark-400 -mt-2">Tip: use 12-hour text like "7:00 PM" if your venue has fixed hours.</p>
 
         <div className="grid sm:grid-cols-2 gap-5">
           <StepField label="Venue name" required>
@@ -295,14 +295,14 @@ const CreateEventPage = () => {
               <button
                 type="button"
                 onClick={() => set({ free: true })}
-                className={`flex-1 py-2.5 rounded-xl text-sm font-semibold border transition-colors ${form.free ? 'bg-lime-500 text-white border-lime-500' : 'bg-white border-gray-300 text-gray-600'}`}
+                className={`flex-1 py-2.5 rounded-xl text-sm font-semibold border transition-colors ${form.free ? 'bg-lime-500 text-dark-900 border-lime-500' : 'bg-dark-800 text-dark-300 border-dark-700'}`}
               >
                 Free
               </button>
               <button
                 type="button"
                 onClick={() => set({ free: false })}
-                className={`flex-1 py-2.5 rounded-xl text-sm font-semibold border transition-colors ${!form.free ? 'bg-lime-500 text-white border-lime-500' : 'bg-white border-gray-300 text-gray-600'}`}
+                className={`flex-1 py-2.5 rounded-xl text-sm font-semibold border transition-colors ${!form.free ? 'bg-lime-500 text-dark-900 border-lime-500' : 'bg-dark-800 text-dark-300 border-dark-700'}`}
               >
                 Paid
               </button>
@@ -343,7 +343,7 @@ const CreateEventPage = () => {
                 <button
                   type="button"
                   onClick={() => set({ schedule: form.schedule.filter((_, j) => j !== i) })}
-                  className="w-10 h-11 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500"
+                  className="w-10 h-11 rounded-lg bg-dark-800 flex items-center justify-center text-dark-400 hover:text-white transition-colors"
                 >
                   <FiX className="w-4 h-4" />
                 </button>
@@ -352,7 +352,7 @@ const CreateEventPage = () => {
             <button
               type="button"
               onClick={() => set({ schedule: [...form.schedule, { title: '', time: '' }] })}
-              className="text-xs font-semibold text-lime-600 flex items-center gap-1"
+              className="text-xs font-semibold text-lime-400 flex items-center gap-1"
             >
               <FiPlus className="w-3.5 h-3.5" /> Add agenda item
             </button>
@@ -372,7 +372,7 @@ const CreateEventPage = () => {
                 <button
                   type="button"
                   onClick={() => set({ rules: form.rules.filter((_, j) => j !== i) })}
-                  className="w-10 h-12 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500 shrink-0"
+                  className="w-10 h-12 rounded-lg bg-dark-800 flex items-center justify-center text-dark-400 hover:text-white transition-colors shrink-0"
                 >
                   <FiX className="w-4 h-4" />
                 </button>
@@ -381,7 +381,7 @@ const CreateEventPage = () => {
             <button
               type="button"
               onClick={() => set({ rules: [...form.rules, ''] })}
-              className="text-xs font-semibold text-lime-600 flex items-center gap-1"
+              className="text-xs font-semibold text-lime-400 flex items-center gap-1"
             >
               <FiPlus className="w-3.5 h-3.5" /> Add rule
             </button>
@@ -394,21 +394,21 @@ const CreateEventPage = () => {
         </div>
 
         {error && (
-          <p className="text-sm text-red-500 bg-red-50 border border-red-200 rounded-lg px-4 py-3">{error}</p>
+          <p className="text-sm text-red-400 bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3">{error}</p>
         )}
 
         <div className="flex flex-col-reverse sm:flex-row gap-3 pt-2">
           <button
             onClick={() => submit(true)}
             disabled={saving}
-            className="flex-1 py-3 rounded-xl text-sm font-semibold bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50 transition-colors"
+            className="flex-1 py-3 rounded-xl text-sm font-semibold bg-dark-800 text-dark-300 hover:bg-dark-700 hover:text-white disabled:opacity-50 transition-colors"
           >
             Save as draft
           </button>
           <button
             onClick={() => submit(false)}
             disabled={saving || !form.title.trim() || !form.date || !form.startTime.trim() || !form.venueName.trim() || !position}
-            className="flex-1 py-3 rounded-xl text-sm font-semibold bg-lime-500 text-white hover:bg-lime-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="flex-1 py-3 rounded-xl text-sm font-semibold bg-lime-500 text-dark-900 hover:bg-lime-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {saving ? (
               <span className="flex items-center justify-center gap-2"><span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> Saving...</span>
@@ -417,7 +417,7 @@ const CreateEventPage = () => {
             )}
           </button>
         </div>
-        <p className="text-xs text-gray-400 text-center">
+        <p className="text-xs text-dark-400 text-center">
           {!position && 'Tip: tap the map to pin your venue before publishing.'} • Your event will appear instantly for nearby users.
         </p>
       </div>

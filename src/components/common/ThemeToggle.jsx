@@ -1,8 +1,10 @@
 import { FiSun, FiMoon, FiEdit2 } from 'react-icons/fi';
-import { useTheme } from '../../context/ThemeContext';
+import { useTheme, THEMES } from '../../context/ThemeContext';
+import { useAuth } from '../../context/AuthContext';
 
 const ThemeToggle = ({ className = '' }) => {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
+  const { user, updateUser } = useAuth();
 
   const themeMeta = {
     dark: { icon: FiSun, active: 'bg-dark-800 text-amber-400 hover:bg-dark-700', label: 'light mode' },
@@ -12,9 +14,17 @@ const ThemeToggle = ({ className = '' }) => {
 
   const meta = themeMeta[theme];
 
+  const cycle = () => {
+    const next = THEMES[(THEMES.indexOf(theme) + 1) % THEMES.length];
+    setTheme(next);
+    if (user && updateUser) {
+      updateUser({ preferences: { ...user.preferences, theme: next } }).catch(() => {});
+    }
+  };
+
   return (
     <button
-      onClick={toggleTheme}
+      onClick={cycle}
       className={`p-2 rounded-xl transition-all duration-200 ${meta.active} ${className}`}
       aria-label={`Switch to ${meta.label}`}
       title={`Switch to ${meta.label}`}

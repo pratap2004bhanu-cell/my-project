@@ -7,6 +7,7 @@ import {
   FiDownload, FiSmartphone, FiEye, FiEyeOff, FiX
 } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 
 const SettingsPage = () => {
   const { user, logout, updateUser, deleteAccount, changePassword, get2FA, send2FACode, confirm2FA, getDevices, revokeDevice, exportData } = useAuth();
@@ -62,6 +63,12 @@ const SettingsPage = () => {
   const persist = async (section, next) => {
     setSettings({ ...settings, [section]: next });
     await updateUser({ [section]: next });
+  };
+
+  const { theme, setTheme } = useTheme();
+  const pickTheme = (t) => {
+    setTheme(t);
+    persist('preferences', { ...settings.preferences, theme: t });
   };
 
   const toggleSetting = (section, key) => {
@@ -496,18 +503,18 @@ const SettingsPage = () => {
                   <label className="block text-white mb-2">Theme</label>
                   <div className="flex gap-3">
                     <button
-                      onClick={() => setSectionValue('preferences', 'theme', 'dark')}
+                      onClick={() => pickTheme('dark')}
                       className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-xl font-medium transition-all ${
-                        settings.preferences.theme === 'dark' ? 'bg-lime-500 text-dark-900' : 'bg-dark-700 text-dark-300 hover:bg-dark-600'
+                        theme === 'dark' ? 'bg-lime-500 text-dark-900' : 'bg-dark-700 text-dark-300 hover:bg-dark-600'
                       }`}
                     >
                       <FiMoon className="w-4 h-4" />
                       Dark
                     </button>
                     <button
-                      onClick={() => setSectionValue('preferences', 'theme', 'light')}
+                      onClick={() => pickTheme('light')}
                       className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-xl font-medium transition-all ${
-                        settings.preferences.theme === 'light' ? 'bg-lime-500 text-dark-900' : 'bg-dark-700 text-dark-300 hover:bg-dark-600'
+                        theme === 'light' ? 'bg-lime-500 text-dark-900' : 'bg-dark-700 text-dark-300 hover:bg-dark-600'
                       }`}
                     >
                       <FiSun className="w-4 h-4" />

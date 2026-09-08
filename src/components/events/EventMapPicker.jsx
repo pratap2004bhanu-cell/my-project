@@ -4,6 +4,7 @@ import { FiMapPin, FiCrosshair } from 'react-icons/fi';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { browserPos, reverseGeocode } from '../../utils/location';
+import { useTheme } from '../../context/ThemeContext';
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -28,6 +29,7 @@ const CenterRef = ({ onCenter }) => {
 };
 
 const EventMapPicker = ({ initial = [28.6139, 77.2090], onSelect, radius = 1, onRadius }) => {
+  const { theme } = useTheme();
   const start = Array.isArray(initial) ? { lat: initial[0], lng: initial[1] } : initial;
   const [position, setPosition] = useState(start);
   const [picking, setPicking] = useState(false);
@@ -58,23 +60,26 @@ const EventMapPicker = ({ initial = [28.6139, 77.2090], onSelect, radius = 1, on
   return (
     <div>
       <div className="flex items-center justify-between mb-2 gap-2">
-        <label className="text-sm font-medium text-gray-700">Venue location</label>
+        <label className="text-sm font-medium text-dark-400">
+          <span className="mr-1 inline-flex align-middle"><FiMapPin className="w-4 h-4 text-lime-400" /></span>
+          Venue location
+        </label>
         <button
           type="button"
           onClick={useMyLocation}
           disabled={picking}
-          className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors disabled:opacity-60"
+          className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-dark-800 border border-dark-700 text-dark-300 hover:bg-dark-700 hover:text-white transition-colors disabled:opacity-60"
         >
           <FiCrosshair className="w-3.5 h-3.5" />
           {picking ? 'Locating...' : 'Use my location'}
         </button>
       </div>
-      <div className="h-56 rounded-xl overflow-hidden border border-gray-200 relative z-0">
+      <div className="h-56 rounded-xl overflow-hidden border border-dark-700 relative z-0">
         <MapContainer
           center={center}
           zoom={13}
           scrollWheelZoom
-          className="w-full h-full"
+          className={`w-full h-full ${theme !== 'light' ? 'dark-tiles' : ''}`}
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -90,22 +95,22 @@ const EventMapPicker = ({ initial = [28.6139, 77.2090], onSelect, radius = 1, on
           />
         </MapContainer>
       </div>
-      <div className="flex items-center gap-2 mt-3 text-sm text-gray-600">
-        <FiMapPin className="w-4 h-4 text-gray-400" />
+      <div className="flex items-center gap-2 mt-3 text-sm text-dark-400">
+        <FiMapPin className="w-4 h-4 text-dark-500" />
         <span className="truncate flex-1">
           {position.lat.toFixed(5)}, {position.lng.toFixed(5)}
         </span>
         <select
           value={radius}
           onChange={(e) => onRadius?.(e.target.value)}
-          className="bg-gray-50 border border-gray-200 text-sm rounded-lg px-2 py-1 focus:outline-none"
+          className="bg-dark-800 border border-dark-700 text-white text-sm rounded-lg px-2 py-1 focus:outline-none"
         >
           {[1, 2, 5, 10, 25].map((r) => (
             <option key={r} value={r}>{r} km range</option>
           ))}
         </select>
       </div>
-      <p className="text-xs text-gray-400 mt-2">Tap the map to set the exact venue spot.</p>
+      <p className="text-xs text-dark-400 mt-2">Tap the map to set the exact venue spot.</p>
     </div>
   );
 };

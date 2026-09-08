@@ -846,6 +846,7 @@ html.doodle .activity-card {
 
 /* Remap all scattered dark tiles to paper so ink text stays readable */
 html.doodle .bg-dark-950,
+html.doodle .bg-dark-950\/70, html.doodle .bg-dark-950\/80, html.doodle .bg-dark-950\/60,
 html.doodle .bg-dark-900, html.doodle .bg-dark-900\/95, html.doodle .bg-dark-900\/90,
 html.doodle .bg-dark-900\/80, html.doodle .bg-dark-900\/70, html.doodle .bg-dark-900\/60,
 html.doodle .bg-dark-900\/50, html.doodle .bg-dark-900\/30,
