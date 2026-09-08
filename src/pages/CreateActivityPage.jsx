@@ -23,6 +23,8 @@ const CreateActivityPage = () => {
     maxParticipants: '',
     activityType: 'public',
     recurring: 'none',
+    approvalRequired: false,
+    requirements: '',
   });
   const [coords, setCoords] = useState(null);
   const [locating, setLocating] = useState(false);
@@ -130,7 +132,7 @@ const CreateActivityPage = () => {
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.type === 'checkbox' ? e.target.checked : e.target.value,
     });
   };
 
@@ -175,6 +177,8 @@ const CreateActivityPage = () => {
         maxParticipants: Number(formData.maxParticipants) || 10,
         activityType: formData.activityType,
         recurring: formData.recurring,
+        approvalRequired: formData.approvalRequired === true,
+        requirements: formData.requirements.trim(),
       };
 
       const res = await api.post('/api/activities', payload);
@@ -455,6 +459,44 @@ const CreateActivityPage = () => {
                 )}
               </label>
             ))}
+          </div>
+        </div>
+
+        {/* Good to know */}
+        <div className="card">
+          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <FiLock className="w-5 h-5 text-dark-400" />
+            Good to know
+          </h2>
+
+          <div className="space-y-5">
+            <div>
+              <label className="block text-sm font-medium text-dark-300 mb-2">What to bring / Requirements</label>
+              <textarea
+                name="requirements"
+                value={formData.requirements}
+                onChange={handleChange}
+                placeholder="e.g. Batting gloves, water bottle, comfortable shoes"
+                rows={2}
+                className="input-field resize-none"
+              ></textarea>
+            </div>
+
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                name="approvalRequired"
+                checked={formData.approvalRequired === true}
+                onChange={handleChange}
+                className="mt-1 w-4 h-4 accent-lime-500"
+              />
+              <div>
+                <p className="font-semibold text-white">Approve people before they join</p>
+                <p className="text-sm text-dark-400 mt-0.5">
+                  People send a join request and you approve each one. Pick this for smaller groups where the vibe matters.
+                </p>
+              </div>
+            </label>
           </div>
         </div>
 

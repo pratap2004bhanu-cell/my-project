@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { 
   FiMapPin, FiCalendar, FiUsers, FiTarget,
   FiHeart, FiShare2, FiFlag, FiArrowLeft, FiMessageCircle,
-  FiCheck, FiStar, FiNavigation, FiCheckCircle, FiDollarSign, FiEdit3, FiX
+  FiCheck, FiStar, FiNavigation, FiCheckCircle, FiDollarSign, FiEdit3, FiX, FiClock
 } from 'react-icons/fi';
 import api from '../api';
 import { useAuth } from '../context/AuthContext';
@@ -31,62 +31,65 @@ const ActivityDetailsPage = () => {
   const [shareCopied, setShareCopied] = useState(false);
   const fileInputRef = useRef(null);
 
-  useEffect(() => {
-    const load = async () => {
-      setLoading(true);
-      setError(null);
+  const fetchActivity = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await api.get(`/api/activities/${id}`);
+      const normalized = normalizeActivity(res.data.activity, user?.id);
+      const userId = user?.id;
+      const joined = normalized.attendees.some((a) => a.id === userId && a.status !== 'pending') || normalized.isCreator;
+      const requested = normalized.requested || (normalized.attendees.some((a) => a.id === userId && a.status === 'pending'));
+
+      let hostProfile = {};
       try {
-        const res = await api.get(`/api/activities/${id}`);
-        const normalized = normalizeActivity(res.data.activity);
-        const userId = user?.id;
-        const joined = normalized.attendees.some((a) => a.id === userId) || normalized.isCreator;
+        const hostRes = await api.get(`/api/users/${normalized.creatorId}`);
+        hostProfile = hostRes.data.user || {};
+      } catch { /* host profile optional */ }
+      const hostRatings = hostProfile.rating || [];
 
-        let hostProfile = {};
-        try {
-          const hostRes = await api.get(`/api/users/${normalized.creatorId}`);
-          hostProfile = hostRes.data.user || {};
-        } catch { /* host profile optional */ }
-        const hostRatings = hostProfile.rating || [];
+      setActivity({
+        ...normalized,
+        tags: [cap(normalized.category), cap(normalized.activityType), cap(normalized.recurring !== 'none' ? normalized.recurring : '')].filter(Boolean),
+        longDescription: normalized.description || 'No description provided yet.',
+        date: normalized.time || normalized.dateRaw,
+        time: normalized.timeRaw || '',
+        location: normalized.address,
+        distance: normalized.distanceLabel,
+        host: {
+          id: normalized.creatorId,
+          name: normalized.host,
+          avatar: normalized.hostAvatar || normalized.host[0] || '?',
+          gradient: 'from-lime-500 to-emerald-500',
+          rating: hostProfile.stats?.rating || 0,
+          ratingCount: hostRatings.length,
+          activities: hostProfile.stats?.activitiesJoined || 0,
+          bio: hostProfile.bio || 'Activity host',
+        },
+        reviews: (normalized.feedback || []).map((f) => ({
+          user: f.user?.name || 'Member',
+          rating: f.rating || 5,
+          comment: f.comment || '',
+          date: f.createdAt ? new Date(f.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : '',
+        })),
+        isJoined: joined,
+        isRequested: requested,
+        checkIns: normalized.checkIns || [],
+        feedback: normalized.feedback || [],
+        photos: res.data.activity.photos || [],
+      });
+      setIsSaved(!!normalized.saved);
+      const isCheckedIn = (normalized.checkIns || []).some((c) => userIdOf(c.user) === user?.id);
+      setCheckedIn(isCheckedIn);
+    } catch (err) {
+      setError(err?.response?.data?.error || 'Activity not found');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        setActivity({
-          ...normalized,
-          tags: [cap(normalized.category), cap(normalized.activityType), cap(normalized.recurring !== 'none' ? normalized.recurring : '')].filter(Boolean),
-          longDescription: normalized.description || 'No description provided yet.',
-          requirements: ['Come with enthusiasm', 'Bring a water bottle', 'Good vibes'],
-          date: normalized.time || normalized.dateRaw,
-          time: normalized.timeRaw || '',
-          location: normalized.address,
-          distance: normalized.distanceLabel,
-          host: {
-            name: normalized.host,
-            avatar: normalized.hostAvatar || normalized.host[0] || '?',
-            gradient: 'from-lime-500 to-emerald-500',
-            rating: hostProfile.stats?.rating || 0,
-            ratingCount: hostRatings.length,
-            activities: hostProfile.stats?.activitiesJoined || 0,
-            bio: hostProfile.bio || 'Activity host',
-          },
-          reviews: (normalized.feedback || []).map((f) => ({
-            user: f.user?.name || 'Member',
-            rating: f.rating || 5,
-            comment: f.comment || '',
-            date: f.createdAt ? new Date(f.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : '',
-          })),
-          isJoined: joined,
-          checkIns: normalized.checkIns || [],
-          feedback: normalized.feedback || [],
-          photos: res.data.activity.photos || [],
-        });
-        setIsSaved(!!normalized.saved);
-        const isCheckedIn = (normalized.checkIns || []).some((c) => userIdOf(c.user) === user?.id);
-        setCheckedIn(isCheckedIn);
-      } catch (err) {
-        setError(err?.response?.data?.error || 'Activity not found');
-      } finally {
-        setLoading(false);
-      }
-    };
-    load();
+  useEffect(() => {
+    fetchActivity();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
@@ -95,16 +98,43 @@ const ActivityDetailsPage = () => {
     setJoining(true);
     try {
       if (activity.isJoined) {
-        const res = await api.post(`/api/activities/${id}/leave`);
-        setActivity((a) => ({ ...a, isJoined: false, participants: res.data.activity.participants.filter((p) => p.status !== 'left').length }));
+        await api.post(`/api/activities/${id}/leave`);
       } else {
-        const res = await api.post(`/api/activities/${id}/join`);
-        setActivity((a) => ({ ...a, isJoined: true, participants: res.data.activity.participants.filter((p) => p.status !== 'left').length }));
+        await api.post(`/api/activities/${id}/join`);
       }
+      await fetchActivity();
     } catch (err) {
       alert(err?.response?.data?.error || 'Something went wrong');
     } finally {
       setJoining(false);
+    }
+  };
+
+  const handleApprove = async (personId) => {
+    try {
+      await api.post(`/api/activities/${id}/approve/${personId}`);
+      await fetchActivity();
+    } catch (err) {
+      alert(err?.response?.data?.error || 'Could not approve request');
+    }
+  };
+
+  const handleReject = async (personId) => {
+    try {
+      await api.post(`/api/activities/${id}/reject/${personId}`);
+      await fetchActivity();
+    } catch (err) {
+      alert(err?.response?.data?.error || 'Could not reject request');
+    }
+  };
+
+  const handleCancelActivity = async () => {
+    if (!window.confirm('Cancel this activity? All joined members will be notified.')) return;
+    try {
+      await api.post(`/api/activities/${id}/cancel`);
+      await fetchActivity();
+    } catch (err) {
+      alert(err?.response?.data?.error || 'Could not cancel activity');
     }
   };
 
@@ -340,15 +370,21 @@ const ActivityDetailsPage = () => {
               </div>
 
               <div className="mt-6 pt-6 border-t border-dark-700/50">
-                <h3 className="font-semibold text-white mb-3">Requirements</h3>
-                <ul className="space-y-2">
-                  {activity.requirements.map((req, idx) => (
-                    <li key={idx} className="flex items-center gap-2 text-dark-300">
-                      <FiCheck className="w-4 h-4 text-lime-400" />
-                      {req}
-                    </li>
-                  ))}
-                </ul>
+                <h3 className="font-semibold text-white mb-3">Good to know</h3>
+                {activity.requirements ? (
+                  <p className="text-dark-300 whitespace-pre-wrap leading-relaxed">{activity.requirements}</p>
+                ) : (
+                  <p className="text-dark-400">Nothing specified. Just show up with good vibes!</p>
+                )}
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <span className="badge-lime">{cap(activity.activityType)}</span>
+                  <span className="badge-lime">{activity.maxParticipants} spots</span>
+                  {activity.approvalRequired && (
+                    <span className="inline-flex items-center px-3 py-1 bg-amber-500/15 text-amber-400 rounded-full text-xs font-semibold">
+                      Host approves join requests
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
           )}
@@ -411,27 +447,51 @@ const ActivityDetailsPage = () => {
             <div className="card p-6">
               <h2 className="text-lg font-semibold text-white mb-4">
                 Attendees ({activity.participants}/{activity.maxParticipants})
+                {activity.pendingCount > 0 && (
+                  <span className="ml-2 text-sm font-normal text-amber-400">+{activity.pendingCount} pending</span>
+                )}
               </h2>
               <div className="space-y-3">
                 {activity.attendees.length > 0 ? activity.attendees.map((attendee, idx) => (
                   <div key={idx} className="flex items-center gap-3 p-3 bg-dark-800/50 rounded-xl">
-                    <RoundAvatar
-                      src={attendee.avatar}
-                      name={attendee.name}
-                      gradient={attendee.gradient || 'from-lime-500 to-emerald-500'}
-                      className="w-10 h-10"
-                    />
-                    <div className="flex-1">
+                    <Link to={`/users/${attendee.id}`}>
+                      <RoundAvatar
+                        src={attendee.avatar}
+                        name={attendee.name}
+                        gradient={attendee.gradient || 'from-lime-500 to-emerald-500'}
+                        className="w-10 h-10"
+                      />
+                    </Link>
+                    <Link to={`/users/${attendee.id}`} className="flex-1 hover:text-lime-400 transition-colors">
                       <h4 className="font-medium text-white">{attendee.name}</h4>
                       <p className="text-xs text-dark-400 capitalize">{attendee.status}</p>
-                    </div>
-                    <span className={`px-2 py-1 rounded-lg text-xs font-medium ${
-                      attendee.status === 'joined' 
-                        ? 'bg-lime-500/20 text-lime-400'
-                        : 'bg-amber-500/20 text-amber-400'
-                    }`}>
-                      {attendee.status}
-                    </span>
+                    </Link>
+                    {attendee.status === 'pending' ? (
+                      activity.isCreator ? (
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => handleApprove(attendee.id)}
+                            className="px-3 py-1.5 rounded-lg bg-lime-500/15 text-lime-400 hover:bg-lime-500/25 text-xs font-semibold flex items-center gap-1"
+                          >
+                            <FiCheck className="w-3 h-3" /> Approve
+                          </button>
+                          <button
+                            onClick={() => handleReject(attendee.id)}
+                            className="px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs font-semibold"
+                          >
+                            Reject
+                          </button>
+                        </div>
+                      ) : (
+                        <span className="px-2 py-1 rounded-lg text-xs font-medium bg-amber-500/20 text-amber-400">
+                          Pending
+                        </span>
+                      )
+                    ) : (
+                      <span className="px-2 py-1 rounded-lg text-xs font-medium bg-lime-500/20 text-lime-400">
+                        Joined
+                      </span>
+                    )}
                   </div>
                 )) : (
                   <p className="text-dark-400 text-center py-8">No one has joined yet. Be the first!</p>
@@ -510,17 +570,31 @@ const ActivityDetailsPage = () => {
 
             {/* Join Button */}
             {!activity.isCreator && (
-              <button
-                onClick={handleJoin}
-                disabled={joining}
-                className={`w-full mt-4 py-3 rounded-xl font-bold transition-all disabled:opacity-60 ${
-                  activity.isJoined
-                    ? 'bg-dark-700 text-dark-300 border border-dark-600'
-                    : 'btn-primary'
-                }`}
-              >
-                {joining ? 'Updating...' : activity.isJoined ? 'Leave Activity' : 'Join Activity'}
-              </button>
+              activity.isJoined ? (
+                <button
+                  onClick={handleJoin}
+                  disabled={joining}
+                  className="w-full mt-4 py-3 rounded-xl font-bold transition-all disabled:opacity-60 bg-dark-700 text-dark-300 border border-dark-600"
+                >
+                  {joining ? 'Updating...' : 'Leave Activity'}
+                </button>
+              ) : activity.isRequested ? (
+                <button
+                  disabled
+                  className="w-full mt-4 py-3 rounded-xl font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30 flex items-center justify-center gap-2 disabled:opacity-80 cursor-default"
+                >
+                  <FiClock className="w-4 h-4" />
+                  Requested — awaiting host approval
+                </button>
+              ) : (
+                <button
+                  onClick={handleJoin}
+                  disabled={joining}
+                  className="w-full mt-4 py-3 rounded-xl font-bold transition-all disabled:opacity-60 btn-primary"
+                >
+                  {joining ? 'Updating...' : activity.approvalRequired ? 'Request to Join' : 'Join Activity'}
+                </button>
+              )
             )}
 
             {activity.isCreator ? (
@@ -586,18 +660,59 @@ const ActivityDetailsPage = () => {
               </div>
             )}
 
+          {/* Host Manage Panel */}
+          {activity.isCreator && activity.status !== 'cancelled' && activity.status !== 'completed' && (
+            <div className="card p-6">
+              <h3 className="font-semibold text-white mb-4">Manage Activity</h3>
+              {activity.pendingCount > 0 ? (
+                <div className="space-y-3 mb-4">
+                  <p className="text-sm text-amber-400 font-medium">Pending join requests ({activity.pendingCount})</p>
+                  {activity.attendees.filter((a) => a.status === 'pending').map((person) => (
+                    <div key={person.id} className="flex items-center gap-3 p-2 bg-dark-800/50 rounded-xl">
+                      <RoundAvatar src={person.avatar} name={person.name} className="w-9 h-9" />
+                      <span className="flex-1 text-sm font-medium text-white">{person.name}</span>
+                      <button
+                        onClick={() => handleApprove(person.id)}
+                        className="w-9 h-9 rounded-lg bg-lime-500/15 text-lime-400 hover:bg-lime-500/25 flex items-center justify-center"
+                        title="Approve"
+                      >
+                        <FiCheck className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleReject(person.id)}
+                        className="w-9 h-9 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 flex items-center justify-center"
+                        title="Reject"
+                      >
+                        <FiX className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-dark-400 mb-4">No pending join requests.</p>
+              )}
+              <button
+                onClick={handleCancelActivity}
+                className="w-full py-2.5 rounded-xl text-sm font-semibold bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 flex items-center justify-center gap-2 transition-colors"
+              >
+                <FiX className="w-4 h-4" />
+                Cancel Activity
+              </button>
+            </div>
+          )}
+
           {/* Host Card */}
           <div className="card p-6">
             <h3 className="font-semibold text-white mb-4">Host</h3>
-            <div className="flex items-center gap-3 mb-4">
+            <Link to={`/users/${activity.host.id}`} className="flex items-center gap-3 mb-4">
               <RoundAvatar
                 src={activity.host.avatar}
                 name={activity.host.name}
                 gradient={activity.host.gradient}
                 className="w-12 h-12"
               />
-              <div>
-                <h4 className="font-medium text-white">{activity.host.name}</h4>
+              <div className="group">
+                <h4 className="font-medium text-white group-hover:text-lime-400 transition-colors">{activity.host.name}</h4>
                 <div className="flex items-center gap-1 text-sm text-dark-400">
                   <FiStar className="w-3 h-3 text-amber-400 fill-current" />
                   {activity.host.rating > 0 ? (
@@ -613,7 +728,7 @@ const ActivityDetailsPage = () => {
                   {activity.host.activities || 0} activities
                 </div>
               </div>
-            </div>
+            </Link>
             <p className="text-sm text-dark-400">{activity.host.bio}</p>
           </div>
 

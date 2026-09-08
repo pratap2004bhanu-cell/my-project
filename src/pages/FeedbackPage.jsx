@@ -24,7 +24,7 @@ const FeedbackPage = () => {
       const res = await api.get('/api/activities');
       const mine = (res.data.activities || []).filter((a) =>
         a.status === 'completed' &&
-        (a.isCreator || (a.participants || []).some((p) => String(userIdOf(p.user)) === String(me?.id)))
+        (a.isCreator || (a.participants || []).some((p) => String(userIdOf(p.user)) === String(me?.id) && p.status !== 'pending'))
       );
       const pending = mine
         .filter((a) => !(a.feedback || []).some((f) => String(userIdOf(f.user)) === String(me?.id)))

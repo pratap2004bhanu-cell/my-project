@@ -32,10 +32,12 @@ export const formatDateLabel = (iso, time) => {
 export const formatDistance = (km) =>
   km == null ? null : km < 1 ? `${Math.round(km * 1000)}m` : `${km.toFixed(1)}km`;
 
-export const normalizeActivity = (a) => {
+export const normalizeActivity = (a, meId = null) => {
   const participants = Array.isArray(a.participants)
     ? a.participants.filter((p) => p && p.status !== 'left')
     : [];
+  const joined = participants.filter((p) => p.status !== 'pending');
+  const pendingRequests = participants.filter((p) => p.status === 'pending');
   const host = a.creator && typeof a.creator === 'object' ? a.creator : { _id: a.creator, name: a.hostName || 'Someone', avatar: null };
   const distance = formatDistance(a.distance);
   return {
@@ -54,8 +56,11 @@ export const normalizeActivity = (a) => {
     coordinates: a.location?.coordinates
       ? [a.location.coordinates[1], a.location.coordinates[0]]
       : null,
-    participants: participants.length,
+    participants: joined.length,
+    pendingCount: pendingRequests.length,
     maxParticipants: a.maxParticipants || 10,
+    requirements: a.requirements || '',
+    approvalRequired: a.approvalRequired === true,
     match: getMatchScore(a),
     color: categoryColor(a.category),
     host: host.name,
@@ -66,6 +71,8 @@ export const normalizeActivity = (a) => {
     status: a.status || 'upcoming',
     isCreator: a.isCreator === true,
     joined: a.joined === true,
+    requested: meId ? participants.some((p) =>
+      String(p.user?._id || p.user) === String(meId) && p.status === 'pending') : false,
     saved: a.saved === true,
     checkIns: a.checkIns || [],
     expenses: a.expenses || [],

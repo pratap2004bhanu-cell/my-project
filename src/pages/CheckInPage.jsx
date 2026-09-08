@@ -34,7 +34,7 @@ const CheckInPage = () => {
         const res = await api.get('/api/activities');
         if (cancelled) return;
         const mine = (res.data.activities || []).filter((a) =>
-          a.isCreator || (a.participants || []).some((p) => String(userIdOf(p.user)) === String(user?.id))
+          a.isCreator || (a.participants || []).some((p) => String(userIdOf(p.user)) === String(user?.id) && p.status !== 'pending')
         );
         setActivities(mine);
       } catch (err) {
@@ -60,7 +60,7 @@ const CheckInPage = () => {
         time: a.time || '',
         location: a.location?.address || 'Location TBA',
         distance: '',
-        participants: (a.participants || []).length,
+        participants: (a.participants || []).filter((p) => p.status !== 'pending' && p.status !== 'left').length,
         checkedInCount: checkIns.length,
         canCheckIn: !mine,
         status: a.status,

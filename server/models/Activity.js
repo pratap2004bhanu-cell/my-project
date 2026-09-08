@@ -21,6 +21,8 @@ const activitySchema = new mongoose.Schema({
   },
   activityType: { type: String, enum: ['public', 'friends', 'private'], default: 'public' },
   recurring: { type: String, enum: ['none', 'daily', 'weekly', 'monthly'], default: 'none' },
+  approvalRequired: { type: Boolean, default: false },
+  requirements: { type: String, default: '' },
   status: { type: String, enum: ['upcoming', 'ongoing', 'completed', 'cancelled'], default: 'upcoming' },
   checkIns: [{
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },

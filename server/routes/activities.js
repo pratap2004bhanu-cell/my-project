@@ -6,7 +6,7 @@ import Activity from '../models/Activity.js';
 import User from '../models/User.js';
 import { protect } from '../middleware/auth.js';
 import { notify } from '../utils/notify.js';
-import { refreshActivityStatuses } from '../utils/lifecycle.js';
+import { refreshActivityStatuses, scheduledAt } from '../utils/lifecycle.js';
 import { filterValidImages } from '../utils/uploads.js';
 
 const router = Router();
@@ -65,7 +65,33 @@ const canViewActivity = (activity, myId, friendIds) => {
 
 const isMember = (activity, myId) =>
   String(activity.creator?._id || activity.creator) === String(myId) ||
-  (activity.participants || []).some((p) => String(p.user) === String(myId));
+  joinedMembers(activity).some((p) => String(p.user) === String(myId));
+
+// Participants that actually joined (excludes pending requests)
+const joinedMembers = (activity) =>
+  (activity.participants || []).filter((p) => p.status !== 'pending' && p.status !== 'left');
+
+const isHost = (activity, myId) => String(activity.creator?._id || activity.creator) === String(myId);
+
+// Bump activity-engagement stats (streak + joined count) for a user
+const bumpEngagement = async (userId) => {
+  const u = await User.findById(userId);
+  if (!u) return;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const last = u.stats.lastActivityAt ? new Date(u.stats.lastActivityAt) : null;
+  if (last) {
+    last.setHours(0, 0, 0, 0);
+    const diffDays = Math.round((today - last) / 86400000);
+    if (diffDays === 1) u.stats.streak = (u.stats.streak || 0) + 1;
+    else if (diffDays > 1) u.stats.streak = 1;
+  } else {
+    u.stats.streak = 1;
+  }
+  u.stats.lastActivityAt = new Date();
+  u.stats.activitiesJoined = (u.stats.activitiesJoined || 0) + 1;
+  await u.save();
+};
 
 // Get all activities (with filters)
 router.get('/', protect, async (req, res) => {
@@ -89,6 +115,7 @@ router.get('/', protect, async (req, res) => {
 
     if (joined === '1') {
       query['participants.user'] = req.user._id;
+      query['participants.status'] = 'joined';
     }
 
     if (authored === '1') {
@@ -119,7 +146,7 @@ router.get('/', protect, async (req, res) => {
       if (plain.saved && savedAtMap[a._id.toString()]) plain.savedAt = savedAtMap[a._id.toString()];
       plain.joined = (a.participants || []).some((p) => {
         const uid = p.user && typeof p.user === 'object' ? p.user._id : p.user;
-        return uid && uid.toString() === myId;
+        return uid && uid.toString() === myId && p.status !== 'pending';
       });
       plain.isCreator = a.creator && a.creator._id ? a.creator._id.toString() === myId : a.creator?.toString() === myId;
       return plain;
@@ -178,7 +205,7 @@ router.get('/:id', protect, async (req, res) => {
     plain.saved = savedIds.has(activity._id.toString());
     plain.joined = (activity.participants || []).some((p) => {
       const uid = p.user && typeof p.user === 'object' ? p.user._id : p.user;
-      return uid && uid.toString() === myId;
+      return uid && uid.toString() === myId && p.status !== 'pending';
     });
     plain.isCreator = activity.creator && activity.creator._id ? activity.creator._id.toString() === myId : activity.creator?.toString() === myId;
 
@@ -210,26 +237,14 @@ router.post('/', protect, async (req, res) => {
       description: typeof description === 'string' ? description : '',
       creator: req.user._id,
       participants: [{ user: req.user._id, status: 'joined' }],
+      approvalRequired: req.body.approvalRequired === true,
+      requirements: typeof req.body.requirements === 'string' ? req.body.requirements.trim() : '',
       location: location && Array.isArray(location.coordinates) 
         ? location 
         : { type: 'Point', coordinates: [0, 0], address: location?.address || '' },
     });
 
-    const creator = await User.findById(req.user._id);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const last = creator.stats.lastActivityAt ? new Date(creator.stats.lastActivityAt) : null;
-    if (last) {
-      last.setHours(0, 0, 0, 0);
-      const diffDays = Math.round((today - last) / 86400000);
-      if (diffDays === 1) creator.stats.streak = (creator.stats.streak || 0) + 1;
-      else if (diffDays > 1) creator.stats.streak = 1;
-    } else {
-      creator.stats.streak = 1;
-    }
-    creator.stats.lastActivityAt = new Date();
-    creator.stats.activitiesJoined = (creator.stats.activitiesJoined || 0) + 1;
-    await creator.save();
+    await bumpEngagement(req.user._id);
 
     const populated = await activity.populate('creator', 'name avatar');
     res.status(201).json({ success: true, activity: populated });
@@ -249,7 +264,14 @@ router.put('/:id', protect, async (req, res) => {
       return res.status(403).json({ success: false, error: 'Not authorized' });
     }
 
-    const updated = await Activity.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+    const allowed = ['title', 'description', 'category', 'emoji', 'date', 'time', 'location', 'maxParticipants', 'activityType', 'recurring', 'requirements'];
+    const patch = {};
+    for (const key of allowed) {
+      if (req.body[key] !== undefined) patch[key] = req.body[key];
+    }
+    if (req.body.approvalRequired !== undefined) patch.approvalRequired = req.body.approvalRequired === true;
+
+    const updated = await Activity.findByIdAndUpdate(req.params.id, patch, { new: true, runValidators: true })
       .populate('creator', 'name avatar');
 
     res.json({ success: true, activity: updated });
@@ -270,43 +292,60 @@ router.post('/:id/join', protect, async (req, res) => {
     const friendIds = (me.friends || []).map(String);
     const myId = req.user._id.toString();
     const creatorId = String(activity.creator);
-    const alreadyJoined = activity.participants.some((p) => p.user.toString() === myId);
+    const existing = activity.participants.find((p) => p.user.toString() === myId);
+    const requesting = activity.approvalRequired && activity.creator.toString() !== myId;
 
     const canJoin =
       !activity.activityType || activity.activityType === 'public' ||
+      requesting ||
       (activity.activityType === 'friends' && (creatorId === myId || friendIds.includes(creatorId))) ||
-      (activity.activityType === 'private' && alreadyJoined);
+      (activity.activityType === 'private' && !!existing);
 
     if (!canJoin) {
       return res.status(403).json({ success: false, error: 'This activity is not open to join' });
     }
 
-    if (alreadyJoined) {
-      return res.status(400).json({ success: false, error: 'Already joined' });
+    if (existing && existing.status !== 'left') {
+      return res.status(400).json({
+        success: false,
+        error: existing.status === 'pending' ? 'Request already sent — waiting for host approval' : 'Already joined',
+      });
     }
 
-    if (activity.participants.length >= activity.maxParticipants) {
+    if (joinedMembers(activity).length >= activity.maxParticipants) {
       return res.status(400).json({ success: false, error: 'Activity is full' });
     }
 
-    activity.participants.push({ user: req.user._id, status: 'joined' });
+    // Activities that require host approval: join as a pending request
+    if (activity.approvalRequired && activity.creator.toString() !== myId) {
+      if (existing) {
+        existing.status = 'pending';
+      } else {
+        activity.participants.push({ user: req.user._id, status: 'pending' });
+      }
+      await activity.save();
+
+      const io = req.app.get('io');
+      await notify(io, {
+        recipient: activity.creator,
+        actor: req.user._id,
+        type: 'activity',
+        text: `requested to join "${activity.title}"`,
+        activity: activity._id,
+        link: `/activities/${activity._id}`,
+      });
+
+      return res.json({ success: true, activity });
+    }
+
+    if (existing) {
+      existing.status = 'joined';
+    } else {
+      activity.participants.push({ user: req.user._id, status: 'joined' });
+    }
     await activity.save();
 
-    const joiner = await User.findById(req.user._id);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const last = joiner.stats.lastActivityAt ? new Date(joiner.stats.lastActivityAt) : null;
-    if (last) {
-      last.setHours(0, 0, 0, 0);
-      const diffDays = Math.round((today - last) / 86400000);
-      if (diffDays === 1) joiner.stats.streak = (joiner.stats.streak || 0) + 1;
-      else if (diffDays > 1) joiner.stats.streak = 1;
-    } else {
-      joiner.stats.streak = 1;
-    }
-    joiner.stats.lastActivityAt = new Date();
-    joiner.stats.activitiesJoined = (joiner.stats.activitiesJoined || 0) + 1;
-    await joiner.save();
+    await bumpEngagement(req.user._id);
 
     // Notify creator (unless creator is joining their own activity)
     if (activity.creator.toString() !== req.user._id.toString()) {
@@ -344,6 +383,99 @@ router.post('/:id/leave', protect, async (req, res) => {
     leaver.stats.activitiesJoined = Math.max(0, (leaver.stats.activitiesJoined || 0) - 1);
     await leaver.save();
 
+    res.json({ success: true, activity });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Approve a pending join request (host only)
+router.post('/:id/approve/:userId', protect, async (req, res) => {
+  try {
+    const activity = await Activity.findById(req.params.id);
+    if (!activity) return res.status(404).json({ success: false, error: 'Activity not found' });
+    if (!isHost(activity, req.user._id.toString())) return res.status(403).json({ success: false, error: 'Only the host can approve requests' });
+
+    const entry = activity.participants.find((p) =>
+      p.user.toString() === req.params.userId.toString() && p.status === 'pending'
+    );
+    if (!entry) return res.status(400).json({ success: false, error: 'No pending request from this user' });
+    if (joinedMembers(activity).length >= activity.maxParticipants) {
+      return res.status(400).json({ success: false, error: 'Activity is full' });
+    }
+
+    entry.status = 'joined';
+    await activity.save();
+    await bumpEngagement(req.params.userId);
+
+    const io = req.app.get('io');
+    await notify(io, {
+      recipient: req.params.userId,
+      actor: req.user._id,
+      type: 'activity',
+      text: `approved your request to join "${activity.title}"`,
+      activity: activity._id,
+      link: `/activities/${activity._id}`,
+    });
+    res.json({ success: true, activity });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Reject a pending join request (host only)
+router.post('/:id/reject/:userId', protect, async (req, res) => {
+  try {
+    const activity = await Activity.findById(req.params.id);
+    if (!activity) return res.status(404).json({ success: false, error: 'Activity not found' });
+    if (!isHost(activity, req.user._id.toString())) return res.status(403).json({ success: false, error: 'Only the host can reject requests' });
+
+    const idx = activity.participants.findIndex((p) =>
+      p.user.toString() === req.params.userId.toString() && p.status === 'pending'
+    );
+    if (idx === -1) return res.status(400).json({ success: false, error: 'No pending request from this user' });
+
+    const [removed] = activity.participants.splice(idx, 1);
+    await activity.save();
+
+    const io = req.app.get('io');
+    await notify(io, {
+      recipient: req.params.userId,
+      actor: req.user._id,
+      type: 'activity',
+      text: `did not approve your request to join "${activity.title}"`,
+      activity: activity._id,
+      link: `/activities/${activity._id}`,
+    });
+    res.json({ success: true, activity });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Cancel an activity (host only)
+router.post('/:id/cancel', protect, async (req, res) => {
+  try {
+    const activity = await Activity.findById(req.params.id);
+    if (!activity) return res.status(404).json({ success: false, error: 'Activity not found' });
+    if (!isHost(activity, req.user._id.toString())) return res.status(403).json({ success: false, error: 'Not authorized' });
+    if (activity.status === 'cancelled') return res.status(400).json({ success: false, error: 'Activity is already cancelled' });
+
+    activity.status = 'cancelled';
+    await activity.save();
+
+    const io = req.app.get('io');
+    const userIds = [activity.creator, ...joinedMembers(activity).map((p) => p.user)];
+    for (const uid of new Set(userIds.map(String))) {
+      await notify(io, {
+        recipient: uid,
+        actor: req.user._id,
+        type: 'activity',
+        text: `cancelled "${activity.title}"`,
+        activity: activity._id,
+        link: `/activities/${activity._id}`,
+      });
+    }
     res.json({ success: true, activity });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -413,6 +545,25 @@ router.post('/:id/checkin', protect, async (req, res) => {
     );
     if (alreadyCheckedIn) {
       return res.status(400).json({ success: false, error: 'Already checked in' });
+    }
+
+    // Check-in is only allowed on the activity's calendar day
+    const scheduled = scheduledAt(activity);
+    const sameDay = scheduled.toDateString() === new Date().toDateString();
+    if (!sameDay) {
+      const label = scheduled.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' });
+      return res.status(400).json({ success: false, error: `Check-in opens on the day of the activity (${label})` });
+    }
+
+    // If both the activity and the user report coordinates, require proximity (<= 2km)
+    const venueCoords = activity.location?.coordinates;
+    const userCoords = req.body.location?.coordinates;
+    if (venueCoords && Array.isArray(venueCoords) && venueCoords.length === 2
+      && userCoords && Array.isArray(userCoords) && userCoords.length === 2) {
+      const dist = haversineMeters(userCoords[1], userCoords[0], venueCoords[1], venueCoords[0]);
+      if (dist > 2000) {
+        return res.status(400).json({ success: false, error: 'You seem far from the activity venue. Check in only works nearby.' });
+      }
     }
 
     activity.checkIns.push({ user: req.user._id, location: req.body.location });
