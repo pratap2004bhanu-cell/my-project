@@ -19,7 +19,7 @@ const PeopleGoing = ({ people = [], meInterests = [] }) => {
           const shown = shared.length ? shared.slice(0, 3) : (p.interests || []).slice(0, 2);
           return (
             <div key={p.id} className="flex items-start gap-2.5 p-2.5 rounded-xl border border-dark-700/50 bg-dark-800/40">
-              <Link to={`/people/${p.id}`} className="flex-shrink-0">
+              <Link to={`/users/${p.id}`} className="flex-shrink-0">
                 <RoundAvatar
                   src={p.avatar}
                   name={p.name}
@@ -27,7 +27,7 @@ const PeopleGoing = ({ people = [], meInterests = [] }) => {
                 />
               </Link>
               <div className="min-w-0 flex-1">
-                <Link to={`/people/${p.id}`} className="text-sm font-medium text-white truncate block hover:text-lime-300 transition-colors">
+                <Link to={`/users/${p.id}`} className="text-sm font-medium text-white truncate block hover:text-lime-300 transition-colors">
                   {p.name}
                 </Link>
                 <div className="flex flex-wrap gap-1 mt-1">

@@ -27,7 +27,12 @@ const GroupChatPage = () => {
   const [loading, setLoading] = useState(true);
   const [emojiOpen, setEmojiOpen] = useState(false);
   const [pendingAttachment, setPendingAttachment] = useState(null);
+  const [typingName, setTypingName] = useState(null);
   const messagesEndRef = useRef(null);
+  const typingTimer = useRef(null);
+  const typingSent = useRef(false);
+  const activeGroupRef = useRef(activeGroup);
+  useEffect(() => { activeGroupRef.current = activeGroup; }, [activeGroup]);
 
   // Load my activities as group chats
   useEffect(() => {
@@ -101,7 +106,18 @@ const GroupChatPage = () => {
       scrollToBottom();
     };
     socket.on('activity:message', onActivityMessage);
-    return () => socket.off('activity:message', onActivityMessage);
+    const onActivityTyping = (data) => {
+      if (!data) return;
+      if (String(data.userId) === String(me?.id)) return;
+      if (String(data.activityId) !== String(activeGroupRef.current)) return;
+      if (data.isTyping) {
+        setTypingName(data.name || 'Someone');
+      } else {
+        setTypingName((prev) => (prev === (data.name || 'Someone') ? null : prev));
+      }
+    };
+    socket.on('activity:typing', onActivityTyping);
+    return () => { socket.off('activity:message', onActivityMessage); socket.off('activity:typing', onActivityTyping); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket, activeGroup]);
 
@@ -119,11 +135,28 @@ const GroupChatPage = () => {
     setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 50);
   };
 
+  const handleTyping = (value) => {
+    setMessage(value);
+    if (!socket?.connected || !activeGroup) return;
+    if (!typingSent.current) {
+      socket.emit('activity:typing', { activityId: activeGroup });
+      typingSent.current = true;
+    }
+    clearTimeout(typingTimer.current);
+    typingTimer.current = setTimeout(() => {
+      typingSent.current = false;
+      if (socket?.connected) socket.emit('activity:typing:stop', { activityId: activeGroup });
+    }, 1500);
+  };
+
   const handleSend = async (e) => {
     e.preventDefault();
     const content = message.trim();
     if ((!content && !pendingAttachment) || !activeGroup) return;
+    clearTimeout(typingTimer.current);
+    typingSent.current = false;
     if (socket?.connected) {
+      socket.emit('activity:typing:stop', { activityId: activeGroup });
       socket.emit('activity:message', { activityId: activeGroup, content, attachment: pendingAttachment || undefined });
     } else {
       try {
@@ -186,9 +219,14 @@ const GroupChatPage = () => {
               <div className="w-6 h-6 border-2 border-lime-500 border-t-transparent rounded-full animate-spin"></div>
             </div>
           ) : filteredGroups.length === 0 ? (
-            <p className="text-center text-dark-400 text-sm py-12 px-6">
-              No activity groups yet. Join or create an activity to start chatting.
-            </p>
+            <div className="text-center py-14 px-6">
+              <span className="text-5xl block mb-3">👥</span>
+              <h3 className="text-white font-semibold mb-1">No activity groups yet</h3>
+              <p className="text-dark-400 text-sm mb-5">Join or create an activity to start chatting.</p>
+              <Link to="/create-activity" className="btn-primary text-sm px-4 py-2.5 inline-flex items-center gap-2">
+                <FiUsers className="w-4 h-4" /> Create an activity
+              </Link>
+            </div>
           ) : filteredGroups.map((group) => (
             <button
               key={group.id}
@@ -239,8 +277,14 @@ const GroupChatPage = () => {
               <div className="flex-1">
                 <h2 className="font-semibold text-white">{activeGroupData?.name}</h2>
                 <p className="text-xs text-dark-400 flex items-center gap-1">
-                  <FiUsers className="w-3 h-3" />
-                  {activeGroupData?.members} members • {activeGroupData?.activity}
+                  {typingName ? (
+                    <span className="text-lime-400">{typingName} is typing...</span>
+                  ) : (
+                    <>
+                      <FiUsers className="w-3 h-3" />
+                      {activeGroupData?.members} members • {activeGroupData?.activity}
+                    </>
+                  )}
                 </p>
               </div>
               <div className="flex items-center gap-2">
@@ -316,7 +360,7 @@ const GroupChatPage = () => {
                       <input
                         type="text"
                         value={message}
-                        onChange={(e) => setMessage(e.target.value)}
+                        onChange={(e) => handleTyping(e.target.value)}
                         placeholder="Type a message..."
                         className="w-full px-4 py-2.5 pr-10 bg-dark-800 border border-dark-700 rounded-xl text-white placeholder-dark-400 focus:outline-none focus:border-lime-500/50 text-sm"
                       />

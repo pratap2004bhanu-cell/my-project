@@ -223,6 +223,41 @@ const configureSocket = (io) => {
       io.to(data.receiver).emit('typing:stop', { userId: socket.user._id });
     });
 
+    // Group typing indicators (activity + community rooms)
+    socket.on('activity:typing', (data) => {
+      io.to(`activity:${data.activityId}`).emit('activity:typing', {
+        activityId: data.activityId,
+        userId: socket.user._id,
+        name: socket.user.name,
+        isTyping: true,
+      });
+    });
+
+    socket.on('activity:typing:stop', (data) => {
+      io.to(`activity:${data.activityId}`).emit('activity:typing', {
+        activityId: data.activityId,
+        userId: socket.user._id,
+        isTyping: false,
+      });
+    });
+
+    socket.on('community:typing', (data) => {
+      io.to(`community:${data.communityId}`).emit('community:typing', {
+        communityId: data.communityId,
+        userId: socket.user._id,
+        name: socket.user.name,
+        isTyping: true,
+      });
+    });
+
+    socket.on('community:typing:stop', (data) => {
+      io.to(`community:${data.communityId}`).emit('community:typing', {
+        communityId: data.communityId,
+        userId: socket.user._id,
+        isTyping: false,
+      });
+    });
+
     // Async setup after handlers are registered
     fibSetup(io, socket);
 

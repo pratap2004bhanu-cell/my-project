@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { 
   FiSend, FiSmile,
   FiMoreVertical, FiArrowLeft, FiX
@@ -7,6 +7,7 @@ import {
 import api from '../api';
 import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
+import { useMessageUnread } from '../context/MessageUnreadContext';
 import { RoundAvatar } from '../components/common';
 import { MessageBubble, EmojiPicker, AttachmentButton } from '../components/chat';
 import { normalizeMessage, messagePreview } from '../utils/normalize';
@@ -21,8 +22,10 @@ const gradients = [
 
 const ChatPage = () => {
   const { userId } = useParams();
+  const navigate = useNavigate();
   const { user: me } = useAuth();
   const socket = useSocket();
+  const { refresh: refreshUnread } = useMessageUnread();
   const [message, setMessage] = useState('');
   const [activeChat, setActiveChat] = useState(userId || null);
   const [conversations, setConversations] = useState([]);
@@ -136,10 +139,12 @@ const ChatPage = () => {
     const onReceive = (m) => {
       const fromId = m.sender?._id || m.sender;
       const nm = normalizeMessage(m);
+      const isActive = String(activeChatRef.current) === String(fromId);
       appendMessage(fromId, { id: nm.id, sender: 'them', text: nm.text, image: nm.image, attachment: nm.attachment, time: nm.time, status: 'delivered' });
-      bumpConversation(fromId, messagePreview(nm));
-      if (socket?.connected && activeChatRef.current === fromId) {
+      bumpConversation(fromId, messagePreview(nm), { increment: !isActive });
+      if (isActive && socket?.connected) {
         socket.emit('message:read', { receiver: fromId });
+        refreshUnread();
       }
     };
     const onRead = (data) => {
@@ -183,14 +188,15 @@ const ChatPage = () => {
     scrollToBottom();
   };
 
-  const bumpConversation = (chatId, lastMessage) => {
+  const bumpConversation = (chatId, lastMessage, { increment = false } = {}) => {
     setConversations((prev) => {
       const existing = prev.find((c) => c.id === chatId);
       const time = new Date().toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' });
+      const unread = increment ? (existing?.unread || 0) + 1 : 0;
       if (existing) {
-        return prev.map((c) => (c.id === chatId ? { ...c, lastMessage, time } : c));
+        return prev.map((c) => (c.id === chatId ? { ...c, lastMessage, time, unread } : c));
       }
-      return [...prev, { id: chatId, name: 'New chat', avatar: '?', gradient: gradients[0], lastMessage, time, unread: 0, online: false }];
+      return [...prev, { id: chatId, name: 'New chat', avatar: '?', gradient: gradients[0], lastMessage, time, unread, online: false }];
     });
   };
 
@@ -201,6 +207,9 @@ const ChatPage = () => {
   useEffect(() => {
     if (!socket?.connected || !activeChat) return;
     socket.emit('message:read', { receiver: activeChat });
+    setConversations((prev) => prev.map((c) => (c.id === activeChat ? { ...c, unread: 0 } : c)));
+    refreshUnread();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeChat, socket]);
 
   const handleTyping = (value) => {
@@ -275,9 +284,14 @@ const ChatPage = () => {
               <div className="w-6 h-6 border-2 border-lime-500 border-t-transparent rounded-full animate-spin"></div>
             </div>
           ) : conversations.length === 0 ? (
-            <p className="text-center text-dark-400 text-sm py-12 px-6">
-              No conversations yet. Start by messaging someone from People.
-            </p>
+            <div className="text-center py-14 px-6">
+              <span className="text-5xl block mb-3">💬</span>
+              <h3 className="text-white font-semibold mb-1">No conversations yet</h3>
+              <p className="text-dark-400 text-sm mb-5">Start by messaging someone from People.</p>
+              <button onClick={() => navigate('/people')} className="btn-primary text-sm px-4 py-2.5">
+                Find people
+              </button>
+            </div>
           ) : conversations.map((conv) => (
             <button
               key={conv.id}

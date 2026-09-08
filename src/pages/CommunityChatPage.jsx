@@ -20,7 +20,10 @@ const CommunityChatPage = () => {
   const [community, setCommunity] = useState(null);
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [typingName, setTypingName] = useState(null);
   const messagesEndRef = useRef(null);
+  const typingTimer = useRef(null);
+  const typingSent = useRef(false);
 
   const scrollToBottom = () => {
     setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 50);
@@ -91,16 +94,46 @@ const CommunityChatPage = () => {
       scrollToBottom();
     };
     socket.on('community:message', onMessage);
-    return () => socket.off('community:message', onMessage);
+    const onTyping = (data) => {
+      if (!data) return;
+      if (String(data.userId) === String(me?.id)) return;
+      if (data.isTyping) {
+        setTypingName(data.name || 'Someone');
+      } else {
+        setTypingName((prev) => (prev === (data.name || 'Someone') ? null : prev));
+      }
+    };
+    socket.on('community:typing', onTyping);
+    return () => {
+      socket.off('community:message', onMessage);
+      socket.off('community:typing', onTyping);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket, me?.id]);
+
+  const handleTyping = (value) => {
+    setMessage(value);
+    if (!socket?.connected || !id) return;
+    if (!typingSent.current) {
+      socket.emit('community:typing', { communityId: id });
+      typingSent.current = true;
+    }
+    clearTimeout(typingTimer.current);
+    typingTimer.current = setTimeout(() => {
+      typingSent.current = false;
+      if (socket?.connected) socket.emit('community:typing:stop', { communityId: id });
+    }, 1500);
+  };
 
   const handleSend = (e) => {
     e.preventDefault();
     const text = message.trim();
     const attachment = pendingAttachment || undefined;
     if ((!text && !attachment) || !community) return;
+    clearTimeout(typingTimer.current);
+    typingSent.current = false;
     if (socket?.connected) {
+      socket.emit('community:typing:stop', { communityId: id });
       socket.emit('community:message', { communityId: id, content: text, attachment });
     } else {
       api.post(`/api/messages/community/${id}`, { content: text, attachment }).then((res) => {
@@ -134,8 +167,14 @@ const CommunityChatPage = () => {
         <div className="flex-1 min-w-0">
           <h2 className="font-semibold text-white truncate">{community?.name || 'Community Chat'}</h2>
           <p className="text-xs text-dark-400 flex items-center gap-1">
-            <FiUsers className="w-3 h-3" />
-            {community?.memberCount ?? 0} members
+            {typingName ? (
+              <span className="text-lime-400">{typingName} is typing...</span>
+            ) : (
+              <>
+                <FiUsers className="w-3 h-3" />
+                {community?.memberCount ?? 0} members
+              </>
+            )}
           </p>
         </div>
       </div>
@@ -224,7 +263,7 @@ const CommunityChatPage = () => {
             <input
               type="text"
               value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              onChange={(e) => handleTyping(e.target.value)}
               placeholder="Message the community..."
               className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-xl text-white placeholder-dark-400 focus:outline-none focus:border-lime-500/50 text-sm"
             />

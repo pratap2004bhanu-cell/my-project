@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { SocketProvider } from './context/SocketContext';
 import { NotificationProvider } from './context/NotificationContext';
+import { MessageUnreadProvider } from './context/MessageUnreadContext';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import { AppLayout } from './components/layout';
 import { Logo } from './components/common';
@@ -60,6 +61,7 @@ const EventsPage = lazy(() => import('./pages/EventsPage'));
 const EventDetailsPage = lazy(() => import('./pages/EventDetailsPage'));
 const CreateEventPage = lazy(() => import('./pages/CreateEventPage'));
 const MyEventsPage = lazy(() => import('./pages/MyEventsPage'));
+const AdminEventsPage = lazy(() => import('./pages/AdminEventsPage'));
 const UserProfilePage = lazy(() => import('./pages/UserProfilePage'));
 
 const PageLoader = () => (
@@ -98,6 +100,7 @@ function App() {
       <AuthProvider>
         <SocketProvider>
           <NotificationProvider>
+            <MessageUnreadProvider>
         <Router>
         <Suspense fallback={<PageLoader />}>
         <Routes>
@@ -225,6 +228,7 @@ function App() {
             <Route path="events/edit/:id" element={<CreateEventPage />} />
             <Route path="events/:id" element={<EventDetailsPage />} />
             <Route path="my-events" element={<MyEventsPage />} />
+            <Route path="admin/events" element={<AdminEventsPage />} />
           </Route>
           
           {/* Catch all - redirect to home */}
@@ -232,6 +236,7 @@ function App() {
         </Routes>
         </Suspense>
       </Router>
+      </MessageUnreadProvider>
       </NotificationProvider>
       </SocketProvider>
     </AuthProvider>

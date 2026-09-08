@@ -3,8 +3,11 @@ import {
   FiPlus, FiTarget
 } from 'react-icons/fi';
 import { mainNavItems, secondaryNavItems, bottomNavItems } from './navItems';
+import { useMessageUnread } from '../../context/MessageUnreadContext';
 
 const Sidebar = () => {
+  const { total: chatUnread } = useMessageUnread();
+
   return (
     <aside className="sidebar sidebar-glass overflow-y-auto">
       <div className="flex flex-col min-h-full">
@@ -20,6 +23,11 @@ const Sidebar = () => {
             >
               <item.icon className="w-5 h-5" />
               <span>{item.label}</span>
+              {item.to === '/chat' && chatUnread > 0 && (
+                <span className="ml-auto w-5 h-5 rounded-full bg-hotpink-500 text-[10px] font-bold text-white flex items-center justify-center">
+                  {chatUnread > 9 ? '9+' : chatUnread}
+                </span>
+              )}
             </NavLink>
           ))}
         </nav>

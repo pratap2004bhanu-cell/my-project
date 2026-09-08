@@ -60,8 +60,14 @@ const MessageBubble = ({ text, image, attachment, time, status, isMe, showName }
           <span className="text-[10px]">{time}</span>
           {isMe && status && (
             <span className={`flex items-center ${status === 'read' ? 'text-lime-600' : ''}`}>
-              <FiCheck className="w-3 h-3 -mr-1" />
-              <FiCheck className="w-3 h-3" />
+              {status === 'read' ? (
+                <>
+                  <FiCheck className="w-3 h-3 -mr-1" />
+                  <FiCheck className="w-3 h-3" />
+                </>
+              ) : (
+                <FiCheck className="w-3 h-3" />
+              )}
             </span>
           )}
         </div>

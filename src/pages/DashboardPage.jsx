@@ -3,11 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { 
   FiArrowRight, FiMapPin, FiUsers, FiCalendar, 
-  FiZap, FiPlus
+  FiZap, FiPlus, FiX
 } from 'react-icons/fi';
 import api from '../api';
-import { normalizeActivity, normalizeUser } from '../utils/normalize';
+import { normalizeActivity, normalizeUser, normalizeEvent } from '../utils/normalize';
 import { hasRealCoords, getPosition, browserPos } from '../utils/location';
+import EventCard from '../components/events/EventCard';
 
 const DashboardPage = () => {
   const { user, updateUser } = useAuth();
@@ -15,9 +16,26 @@ const DashboardPage = () => {
   const [happeningNearYou, setHappeningNearYou] = useState([]);
   const [recommendedForYou, setRecommendedForYou] = useState([]);
   const [peopleYouMayLike, setPeopleYouMayLike] = useState([]);
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
   const [needsLocation, setNeedsLocation] = useState(false);
   const [savingLocation, setSavingLocation] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [nudgeDismissed, setNudgeDismissed] = useState(
+    () => localStorage.getItem('kiky_profile_nudge_dismissed') === '1'
+  );
+
+  const profileMissing = (() => {
+    const items = [];
+    if (!user?.bio || user.bio.trim().length < 10) items.push({ key: 'bio', label: 'Add a bio' });
+    if ((user?.interests || []).length < 3) items.push({ key: 'interests', label: 'Pick 3+ interests' });
+    if (!user?.avatar) items.push({ key: 'avatar', label: 'Add a photo' });
+    return items;
+  })();
+
+  const dismissNudge = () => {
+    localStorage.setItem('kiky_profile_nudge_dismissed', '1');
+    setNudgeDismissed(true);
+  };
 
   const myInterests = (user?.interests || []).map((i) => i.toLowerCase());
 
@@ -71,6 +89,9 @@ const DashboardPage = () => {
           return { ...n, compatibility: Math.min(98, 45 + shared * 17 + (n.isFriend ? 10 : 0)) };
         }).slice(0, 3));
       }
+
+      const evRes = await api.get('/api/events', { params: { filter: 'upcoming' } });
+      setUpcomingEvents((evRes.data.events || []).map(normalizeEvent).slice(0, 3));
     } catch (err) {
       // Dashboard renders empty states gracefully; no hard error UI needed
     } finally {
@@ -172,6 +193,34 @@ const DashboardPage = () => {
         </div>
       )}
 
+      {/* Profile completeness nudge */}
+      {!nudgeDismissed && profileMissing.length > 0 && (
+        <div className="card p-5 mb-8 flex flex-col sm:flex-row sm:items-center gap-4 border border-electric-500/25">
+          <div className="w-12 h-12 rounded-2xl bg-electric-500/15 flex items-center justify-center flex-shrink-0 text-2xl">✨</div>
+          <div className="flex-1 min-w-0">
+            <h2 className="font-semibold text-white">Make your profile shine</h2>
+            <div className="flex flex-wrap items-center gap-2 mt-2">
+              {profileMissing.map((m) => (
+                <span key={m.key} className="text-xs px-2.5 py-1 rounded-full bg-dark-800 text-dark-300">
+                  {m.label}
+                </span>
+              ))}
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => navigate('/profile/edit')}
+              className="btn-primary text-sm px-5 py-2.5 flex items-center gap-2"
+            >
+              Complete profile
+            </button>
+            <button onClick={dismissNudge} className="btn-icon" aria-label="Dismiss">
+              <FiX className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* KIKY Now Card - cleaner gradient */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-lime-500 via-electric-500 to-hotpink-500 p-[1.5px] mb-12">
         <div className="relative bg-dark-900 rounded-[calc(1.5rem-1.5px)] p-8 lg:p-10 overflow-hidden">
@@ -188,6 +237,38 @@ const DashboardPage = () => {
               Start Now
             </button>
           </div>
+        </div>
+      </div>
+
+      {/* Events coming up */}
+      <div className="mb-12">
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-base font-semibold text-white">
+            Events coming up
+          </h2>
+          <Link to="/events" className="text-sm text-lime-400 hover:text-lime-300 font-medium flex items-center gap-1">
+            Browse events <FiArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {loading ? (
+            <p className="text-dark-400 text-sm p-2 flex items-center gap-3">
+              <div className="w-5 h-5 border-2 border-lime-500 border-t-transparent rounded-full animate-spin"></div>
+              Loading events...
+            </p>
+          ) : upcomingEvents.length === 0 ? (
+            <div className="sm:col-span-2 lg:col-span-3 rounded-2xl glass-strong p-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+              <div>
+                <p className="text-dark-300 text-sm mb-1">No events announced yet.</p>
+                <p className="text-dark-400 text-xs">Host a jam, a match, a market — start the hype.</p>
+              </div>
+              <Link to="/events/new" className="btn-outline text-sm px-4 py-2.5 flex items-center gap-2">
+                <FiPlus className="w-4 h-4" /> Create an event
+              </Link>
+            </div>
+          ) : upcomingEvents.map((event) => (
+            <EventCard key={event.id} event={event} compact />
+          ))}
         </div>
       </div>
 

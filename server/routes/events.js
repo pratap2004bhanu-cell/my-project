@@ -900,6 +900,7 @@ router.get('/:id/moments', async (req, res) => {
     const limit = Math.min(50, parseInt(req.query.limit, 10) || 20);
     const moments = await EventMoment.find({ event: req.params.id })
       .populate('user', 'name avatar')
+      .populate('comments.user', 'name avatar')
       .sort({ createdAt: -1 })
       .limit(limit);
     res.json({ success: true, moments });
@@ -920,6 +921,22 @@ router.post('/:id/moments/:momentId/like', async (req, res) => {
     }
     await moment.save();
     res.json({ success: true, liked: (moment.likes || []).some((l) => String(l) === meId), count: (moment.likes || []).length });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Comment on a moment
+router.post('/:id/moments/:momentId/comments', async (req, res) => {
+  try {
+    const moment = await EventMoment.findById(req.params.momentId);
+    if (!moment) return res.status(404).json({ success: false, error: 'Moment not found' });
+    const text = typeof req.body.text === 'string' ? req.body.text.trim() : '';
+    if (!text) return res.status(400).json({ success: false, error: 'Comment cannot be empty' });
+    moment.comments.push({ user: req.user._id, text: text.slice(0, 300), createdAt: new Date() });
+    await moment.save();
+    const populated = await moment.populate('comments.user', 'name avatar');
+    res.status(201).json({ success: true, moment: populated });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }

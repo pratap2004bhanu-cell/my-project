@@ -10,7 +10,7 @@ const EventMomentCard = ({ moment, onLike, onOpenComments }) => {
       )}
       <div className="p-4">
         <div className="flex items-center gap-2.5 mb-2.5">
-          <Link to={`/people/${moment.authorId}`}>
+          <Link to={`/users/${moment.authorId}`}>
             <RoundAvatar src={moment.avatar} name={moment.author} className="w-9 h-9 text-sm" />
           </Link>
           <div className="flex-1 min-w-0">

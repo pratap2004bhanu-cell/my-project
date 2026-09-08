@@ -2,15 +2,18 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   FiCalendar, FiPlus, FiUsers, FiEye, FiHeart,
-  FiTrash2, FiRepeat, FiEdit,
+  FiTrash2, FiRepeat, FiEdit, FiShield, FiArrowRight,
 } from 'react-icons/fi';
 import api from '../api';
 import { normalizeEvent } from '../utils/normalize';
 import EventCard from '../components/events/EventCard';
 
 const MyEventsPage = () => {
+  const [tab, setTab] = useState('hosting');
   const [events, setEvents] = useState([]);
   const [stats, setStats] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [pendingCount, setPendingCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -18,24 +21,42 @@ const MyEventsPage = () => {
     setLoading(true);
     setError(null);
     try {
-      const { data } = await api.get('/api/events?mine=1');
-      setEvents((data.events || []).map(normalizeEvent));
-      try {
-        const s = await api.get('/api/events/organizer/stats');
-        setStats(s.data.stats);
-      } catch {
+      if (tab === 'attending') {
+        const { data } = await api.get('/api/events?attending=1');
+        setEvents((data.events || []).map(normalizeEvent));
         setStats(null);
+      } else {
+        const { data } = await api.get('/api/events?mine=1');
+        setEvents((data.events || []).map(normalizeEvent));
+        try {
+          const s = await api.get('/api/events/organizer/stats');
+          setStats(s.data.stats);
+        } catch {
+          setStats(null);
+        }
       }
     } catch (err) {
       setError(err?.response?.data?.error || 'Could not load your events');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [tab]);
 
   useEffect(() => {
     load();
   }, [load]);
+
+  // Admin moderation probe — only succeeds for ADMIN_EMAIL users
+  useEffect(() => {
+    api.get('/api/events/moderation')
+      .then((res) => {
+        if (res.data?.events) {
+          setIsAdmin(true);
+          setPendingCount((res.data.events || []).filter((e) => e.moderationStatus === 'pending').length);
+        }
+      })
+      .catch(() => { /* not admin */ });
+  }, []);
 
   const cancel = async (event) => {
     if (!window.confirm(`Cancel "${event.title}"? This tells attendees the event is off.`)) return;
@@ -57,10 +78,45 @@ const MyEventsPage = () => {
             <FiCalendar className="text-lime-400" />
             My events
           </h1>
-          <p className="text-dark-400 mt-1">Everything you're hosting on KIKY.</p>
+          <p className="text-dark-400 mt-1">
+            {tab === 'attending' ? "Events you're going to." : "Everything you're hosting on KIKY."}
+          </p>
         </div>
-        <Link to="/events/new" className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-lime-500 text-dark-900 font-bold text-sm hover:bg-lime-400 transition-colors">
-          <FiPlus className="w-4 h-4" /> New event
+        <div className="flex items-center gap-3">
+          {isAdmin && (
+            <Link
+              to="/admin/events"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-electric-500/15 border border-electric-500/25 text-electric-300 font-semibold text-sm hover:bg-electric-500/25 transition-colors"
+            >
+              <FiShield className="w-4 h-4" /> Moderation
+              {pendingCount > 0 && (
+                <span className="w-5 h-5 rounded-full bg-hotpink-500 text-[10px] font-bold text-white flex items-center justify-center">{pendingCount}</span>
+              )}
+            </Link>
+          )}
+          <Link to="/events/new" className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-lime-500 text-dark-900 font-bold text-sm hover:bg-lime-400 transition-colors">
+            <FiPlus className="w-4 h-4" /> New event
+          </Link>
+        </div>
+      </div>
+
+      {/* Tabs */}
+      <div className="flex items-center gap-2 mb-6">
+        {['hosting', 'attending'].map((t) => (
+          <button
+            key={t}
+            onClick={() => setTab(t)}
+            className={`px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
+              tab === t
+                ? 'bg-lime-500 text-dark-900'
+                : 'bg-dark-800/50 text-dark-300 hover:text-white'
+            }`}
+          >
+            {t === 'hosting' ? 'Hosting' : 'Attending'}
+          </button>
+        ))}
+        <Link to="/events" className="ml-auto text-sm text-lime-400 hover:text-lime-300 font-medium flex items-center gap-1">
+          Browse all <FiArrowRight className="w-4 h-4" />
         </Link>
       </div>
 
@@ -94,15 +150,24 @@ const MyEventsPage = () => {
       {events.length === 0 ? (
         <div className="text-center py-16">
           <span className="text-6xl mb-4 block">🎪</span>
-          <h3 className="text-xl font-bold text-white mb-2">You haven't hosted anything yet</h3>
-          <p className="text-dark-400 mb-6">Start with a small thing — a jam, a market stall, a match.</p>
-          <Link to="/events/new" className="btn-primary">Create your first event</Link>
+          <h3 className="text-xl font-bold text-white mb-2">
+            {tab === 'attending' ? "You haven't RSVP'd to any events yet" : "You haven't hosted anything yet"}
+          </h3>
+          <p className="text-dark-400 mb-6">
+            {tab === 'attending'
+              ? 'Find something fun and hit "I\'m going".'
+              : 'Start with a small thing — a jam, a market stall, a match.'}
+          </p>
+          <Link to={tab === 'attending' ? '/events' : '/events/new'} className="btn-primary">
+            {tab === 'attending' ? 'Browse events' : 'Create your first event'}
+          </Link>
         </div>
       ) : (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {events.map((event) => (
             <div key={event.id}>
               <EventCard event={event} />
+              {tab === 'hosting' && (
               <div className="flex items-center gap-2 mt-2 px-1">
                 {event.status === 'cancelled' ? (
                   <span className="text-xs text-hotpink-400 font-semibold">Cancelled</span>
@@ -130,6 +195,7 @@ const MyEventsPage = () => {
                   )}
                 </div>
               </div>
+              )}
             </div>
           ))}
         </div>
