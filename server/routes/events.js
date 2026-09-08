@@ -1,7 +1,5 @@
 import { Router } from 'express';
 import multer from 'multer';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import Event from '../models/Event.js';
 import EventSquad from '../models/EventSquad.js';
 import EventMoment from '../models/EventMoment.js';
@@ -10,32 +8,24 @@ import User from '../models/User.js';
 import Report from '../models/Report.js';
 import { protect } from '../middleware/auth.js';
 import { notify } from '../utils/notify.js';
+import { isImageBuffer } from '../utils/uploads.js';
+import { storeFile } from '../config/gridfs.js';
 
 const router = Router();
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const uploadDir = path.join(__dirname, '..', 'uploads');
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadDir),
-  filename: (req, file, cb) => cb(null, `event-${Date.now()}-${Math.round(Math.random() * 1e9)}${path.extname(file.originalname)}`),
-});
-const uploadCover = multer({
-  storage,
+// Event covers/photos are kept in memory and persisted to MongoDB GridFS so they
+// survive redeploys (the filesystem on Render is ephemeral). The stored URL is
+// `/uploads/<gridfs-id>` and is served by `serveFile` in config/gridfs.js.
+const imageMu = multer({
+  storage: multer.memoryStorage(),
   limits: { fileSize: 8 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     if (/image\/(jpeg|png|webp|gif)/.test(file.mimetype)) return cb(null, true);
     cb(new Error('Only image files are allowed'));
   },
 });
-const uploadPhotos = multer({
-  storage,
-  limits: { fileSize: 8 * 1024 * 1024 },
-  fileFilter: (req, file, cb) => {
-    if (/image\/(jpeg|png|webp|gif)/.test(file.mimetype)) return cb(null, true);
-    cb(new Error('Only image files are allowed'));
-  },
-});
+const uploadCover = imageMu;
+const uploadPhotos = imageMu;
 
 // Extensible category system (mirrored on the client in src/data/eventCategories.js)
 export const EVENT_CATEGORIES = [
@@ -379,12 +369,26 @@ router.post('/', uploadCover.single('coverImage'), async (req, res) => {
       ? { name: venue.name || '', address: venue.address || '', location: venue.location }
       : { name: venue?.name || '', address: venue?.address || '', location: { type: 'Point', coordinates: [0, 0] } };
 
+    let cover = typeof coverImage === 'string' ? coverImage : '';
+    if (req.file) {
+      if (!isImageBuffer(req.file.buffer)) {
+        return res.status(400).json({ success: false, error: 'The uploaded image is not valid' });
+      }
+      const fileId = await storeFile({
+        name: req.file.originalname,
+        type: req.file.mimetype,
+        size: req.file.size,
+        data: req.file.buffer,
+      });
+      cover = `/uploads/${fileId}`;
+    }
+
     const event = await Event.create({
       title: title.trim(),
       description: typeof description === 'string' ? description : '',
       category,
       emoji: emoji || '🎟️',
-      coverImage: req.file ? `/uploads/${req.file.filename}` : (typeof coverImage === 'string' ? coverImage : ''),
+      coverImage: cover,
       organizer: req.user._id,
       organizerName: organizerName || req.user.name || '',
       organizerContact: organizerContact || '',
@@ -445,7 +449,18 @@ router.put('/:id', uploadCover.single('coverImage'), async (req, res) => {
     if (status !== undefined && !['draft', 'published', 'cancelled', 'completed'].includes(status)) {
       return res.status(400).json({ success: false, error: 'Invalid status' });
     }
-    if (req.file) event.coverImage = `/uploads/${req.file.filename}`;
+    if (req.file) {
+      if (!isImageBuffer(req.file.buffer)) {
+        return res.status(400).json({ success: false, error: 'The uploaded image is not valid' });
+      }
+      const fileId = await storeFile({
+        name: req.file.originalname,
+        type: req.file.mimetype,
+        size: req.file.size,
+        data: req.file.buffer,
+      });
+      event.coverImage = `/uploads/${fileId}`;
+    }
     if (title !== undefined) event.title = title.trim();
     if (description !== undefined) event.description = description;
     if (category !== undefined) event.category = category;
@@ -877,16 +892,29 @@ router.post('/:id/moments', uploadPhotos.array('photos', 6), async (req, res) =>
     if (!going && String(event.organizer) !== meId) {
       return res.status(403).json({ success: false, error: 'Only attendees can share moments' });
     }
-    const text = typeof req.body.text === 'string' ? req.body.text.trim() : '';
+const text = typeof req.body.text === 'string' ? req.body.text.trim() : '';
     if (!text && (!req.files || req.files.length === 0)) {
       return res.status(400).json({ success: false, error: 'Add some text or a photo' });
+    }
+    const momentPhotos = [];
+    for (const f of (req.files || [])) {
+      if (!isImageBuffer(f.buffer)) {
+        continue;
+      }
+      const fileId = await storeFile({
+        name: f.originalname,
+        type: f.mimetype,
+        size: f.size,
+        data: f.buffer,
+      });
+      momentPhotos.push(`/uploads/${fileId}`);
     }
     const moment = await EventMoment.create({
       event: event._id,
       user: req.user._id,
       text,
       rating: Math.min(5, Math.max(0, Number(req.body.rating) || 0)),
-      photos: (req.files || []).map((f) => `/uploads/${f.filename}`),
+      photos: momentPhotos,
     });
     const populated = await moment.populate('user', 'name avatar');
     res.status(201).json({ success: true, moment: populated });

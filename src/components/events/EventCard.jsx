@@ -20,7 +20,12 @@ const EventCard = ({ event, compact = false }) => {
       {/* Cover */}
       <div className={`relative bg-gradient-to-br ${gradient} h-32 flex items-center justify-center`}>
         {event.coverImage ? (
-          <img src={event.coverImage} alt={event.title} className="w-full h-full object-cover" />
+          <img
+            src={event.coverImage}
+            alt={event.title}
+            className="w-full h-full object-cover"
+            onError={e => { e.target.style.display = 'none' }}
+          />
         ) : (
           <span className="text-5xl drop-shadow-lg">{event.emoji || meta.emoji}</span>
         )}

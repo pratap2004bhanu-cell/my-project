@@ -212,7 +212,12 @@ const EventDetailsPage = () => {
       {/* Cover */}
       <div className={`relative rounded-3xl overflow-hidden bg-gradient-to-br ${gradient} h-44 sm:h-56 lg:h-72 flex items-center justify-center`}>
         {event.coverImage ? (
-          <img src={event.coverImage} alt={event.title} className="absolute inset-0 w-full h-full object-cover" />
+          <img
+            src={event.coverImage}
+            alt={event.title}
+            className="absolute inset-0 w-full h-full object-cover"
+            onError={e => { e.target.style.display = 'none' }}
+          />
         ) : (
           <span className="text-7xl lg:text-8xl drop-shadow-xl">{event.emoji || meta.emoji}</span>
         )}
