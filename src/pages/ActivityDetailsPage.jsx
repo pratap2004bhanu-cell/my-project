@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { 
   FiMapPin, FiCalendar, FiUsers, FiTarget,
   FiHeart, FiShare2, FiFlag, FiArrowLeft, FiMessageCircle,
-  FiCheck, FiStar, FiNavigation, FiCheckCircle, FiDollarSign, FiEdit3, FiX, FiClock
+  FiCheck, FiStar, FiNavigation, FiCheckCircle, FiDollarSign, FiEdit3, FiX, FiClock, FiLock
 } from 'react-icons/fi';
 import api from '../api';
 import { useAuth } from '../context/AuthContext';
@@ -568,6 +568,13 @@ const ActivityDetailsPage = () => {
               </div>
             </div>
 
+            {activity.approvalRequired && (
+              <div className="mt-3 flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-amber-500/10 text-amber-400 text-xs font-medium">
+                <FiLock className="w-3.5 h-3.5" />
+                Approval required — the host approves who joins
+              </div>
+            )}
+
             {/* Join Button */}
             {!activity.isCreator && (
               activity.isJoined ? (
@@ -663,7 +670,12 @@ const ActivityDetailsPage = () => {
           {/* Host Manage Panel */}
           {activity.isCreator && activity.status !== 'cancelled' && activity.status !== 'completed' && (
             <div className="card p-6">
-              <h3 className="font-semibold text-white mb-4">Manage Activity</h3>
+              <h3 className="font-semibold text-white mb-2">Manage Activity</h3>
+              <p className="text-sm text-dark-400 mb-4">
+                {activity.approvalRequired
+                  ? 'People tap "Request to Join" and their request appears here for you to approve or reject.'
+                  : 'Approval is currently off, so people join instantly. Recreate the activity with the approval toggle to change this.'}
+              </p>
               {activity.pendingCount > 0 ? (
                 <div className="space-y-3 mb-4">
                   <p className="text-sm text-amber-400 font-medium">Pending join requests ({activity.pendingCount})</p>

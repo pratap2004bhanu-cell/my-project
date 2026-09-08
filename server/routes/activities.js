@@ -148,6 +148,10 @@ router.get('/', protect, async (req, res) => {
         const uid = p.user && typeof p.user === 'object' ? p.user._id : p.user;
         return uid && uid.toString() === myId && p.status !== 'pending';
       });
+      plain.requested = (a.participants || []).some((p) => {
+        const uid = p.user && typeof p.user === 'object' ? p.user._id : p.user;
+        return uid && uid.toString() === myId && p.status === 'pending';
+      });
       plain.isCreator = a.creator && a.creator._id ? a.creator._id.toString() === myId : a.creator?.toString() === myId;
       return plain;
     });
@@ -206,6 +210,10 @@ router.get('/:id', protect, async (req, res) => {
     plain.joined = (activity.participants || []).some((p) => {
       const uid = p.user && typeof p.user === 'object' ? p.user._id : p.user;
       return uid && uid.toString() === myId && p.status !== 'pending';
+    });
+    plain.requested = (activity.participants || []).some((p) => {
+      const uid = p.user && typeof p.user === 'object' ? p.user._id : p.user;
+      return uid && uid.toString() === myId && p.status === 'pending';
     });
     plain.isCreator = activity.creator && activity.creator._id ? activity.creator._id.toString() === myId : activity.creator?.toString() === myId;
 

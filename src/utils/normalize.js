@@ -71,8 +71,8 @@ export const normalizeActivity = (a, meId = null) => {
     status: a.status || 'upcoming',
     isCreator: a.isCreator === true,
     joined: a.joined === true,
-    requested: meId ? participants.some((p) =>
-      String(p.user?._id || p.user) === String(meId) && p.status === 'pending') : false,
+    requested: a.requested === true || (meId ? participants.some((p) =>
+      String(p.user?._id || p.user) === String(meId) && p.status === 'pending') : false),
     saved: a.saved === true,
     checkIns: a.checkIns || [],
     expenses: a.expenses || [],
