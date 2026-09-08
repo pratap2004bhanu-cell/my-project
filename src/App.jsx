@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { SocketProvider } from './context/SocketContext';
+import { NotificationProvider } from './context/NotificationContext';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import { AppLayout } from './components/layout';
 import { Logo } from './components/common';
@@ -96,6 +97,7 @@ function App() {
     <ThemeProvider>
       <AuthProvider>
         <SocketProvider>
+          <NotificationProvider>
         <Router>
         <Suspense fallback={<PageLoader />}>
         <Routes>
@@ -230,6 +232,7 @@ function App() {
         </Routes>
         </Suspense>
       </Router>
+      </NotificationProvider>
       </SocketProvider>
     </AuthProvider>
     </ThemeProvider>

@@ -22,7 +22,7 @@ router.get('/', protect, async (req, res) => {
 router.post('/read-all', protect, async (req, res) => {
   try {
     await Notification.updateMany({ user: req.user._id, read: false }, { read: true });
-    res.json({ success: true });
+    res.json({ success: true, unreadCount: 0 });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
@@ -32,7 +32,8 @@ router.post('/read-all', protect, async (req, res) => {
 router.post('/:id/read', protect, async (req, res) => {
   try {
     await Notification.updateOne({ _id: req.params.id, user: req.user._id }, { read: true });
-    res.json({ success: true });
+    const unreadCount = await Notification.countDocuments({ user: req.user._id, read: false });
+    res.json({ success: true, unreadCount });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
@@ -42,7 +43,8 @@ router.post('/:id/read', protect, async (req, res) => {
 router.delete('/:id', protect, async (req, res) => {
   try {
     await Notification.deleteOne({ _id: req.params.id, user: req.user._id });
-    res.json({ success: true });
+    const unreadCount = await Notification.countDocuments({ user: req.user._id, read: false });
+    res.json({ success: true, unreadCount });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
@@ -52,7 +54,7 @@ router.delete('/:id', protect, async (req, res) => {
 router.delete('/', protect, async (req, res) => {
   try {
     await Notification.deleteMany({ user: req.user._id });
-    res.json({ success: true });
+    res.json({ success: true, unreadCount: 0 });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }

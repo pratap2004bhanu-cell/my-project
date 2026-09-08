@@ -1,21 +1,18 @@
-import { useState, useEffect, useCallback } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useState, useCallback } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { useSocket } from '../../context/SocketContext';
+import { useNotifications } from '../../context/NotificationContext';
 import { 
   FiBell, FiSearch, FiMapPin, FiMenu
 } from 'react-icons/fi';
 import ThemeToggle from '../common/ThemeToggle';
 import { Logo, RoundAvatar } from '../common';
 import MobileMenu from './MobileMenu';
-import api from '../../api';
 
 const Header = () => {
   const { user, logout } = useAuth();
-  const socket = useSocket();
-  const location = useLocation();
   const navigate = useNavigate();
-  const [unread, setUnread] = useState(0);
+  const { unreadCount: unread } = useNotifications();
   const [query, setQuery] = useState('');
   const [mobileSearch, setMobileSearch] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -29,30 +26,6 @@ const Header = () => {
     else navigate('/search');
     setMobileSearch(false);
   };
-
-  useEffect(() => {
-    if (!user) return;
-    let cancelled = false;
-    const load = async () => {
-      try {
-        const res = await api.get('/api/notifications');
-        if (!cancelled) setUnread(res.data.unreadCount || 0);
-      } catch { /* ignore */ }
-    };
-    load();
-    return () => { cancelled = true; };
-  }, [user, location.pathname]);
-
-  useEffect(() => {
-    if (!socket) return;
-    const handler = (n) => {
-      if (n.user?._id?.toString() === user?.id) {
-        setUnread((u) => u + 1);
-      }
-    };
-    socket.on('notification:new', handler);
-    return () => { socket.off('notification:new', handler); };
-  }, [socket, user?.id]);
 
   return (
     <header className="sticky top-0 z-40 bg-dark-950/80 backdrop-blur-xl border-b border-dark-800/50">

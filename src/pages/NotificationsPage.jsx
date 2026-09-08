@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
+import { useNotifications } from '../context/NotificationContext';
 import { 
   FiBell, FiUserPlus, FiMessageCircle, FiCalendar, 
   FiHeart, FiStar, FiCheck, FiX,
@@ -41,9 +42,19 @@ const timeAgo = (date) => {
   return new Date(date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
 };
 
+const getNotificationDest = (n) => {
+  if (n.link) return n.link;
+  if (n.activity) return `/activities/${n.activity}`;
+  if (n.event) return `/events/${n.event}`;
+  if (n.community) return `/communities/${n.community}`;
+  return null;
+};
+
 const NotificationsPage = () => {
   const { user } = useAuth();
   const socket = useSocket();
+  const navigate = useNavigate();
+  const { setUnread } = useNotifications();
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -140,6 +151,7 @@ const NotificationsPage = () => {
         const res = await api.get('/api/notifications');
         if (cancelled) return;
         setNotifications(res.data.notifications || []);
+        if (typeof res.data.unreadCount === 'number') setUnread(res.data.unreadCount);
       } catch (err) {
         if (!cancelled) setError(err?.response?.data?.error || 'Could not load notifications');
       } finally {
@@ -148,6 +160,7 @@ const NotificationsPage = () => {
     };
     load();
     return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -166,22 +179,40 @@ const NotificationsPage = () => {
 
   const markAsRead = async (id) => {
     setNotifications(notifications.map((n) => (n._id === id ? { ...n, read: true } : n)));
-    try { await api.post(`/api/notifications/${id}/read`); } catch { /* best effort */ }
+    try {
+      const res = await api.post(`/api/notifications/${id}/read`);
+      if (typeof res.data.unreadCount === 'number') setUnread(res.data.unreadCount);
+    } catch { /* best effort */ }
+  };
+
+  const openNotification = (n) => {
+    markAsRead(n._id);
+    const dest = getNotificationDest(n);
+    if (dest) navigate(dest);
   };
 
   const markAllAsRead = async () => {
     setNotifications(notifications.map((n) => ({ ...n, read: true })));
-    try { await api.post('/api/notifications/read-all'); } catch { /* best effort */ }
+    try {
+      const res = await api.post('/api/notifications/read-all');
+      if (typeof res.data.unreadCount === 'number') setUnread(res.data.unreadCount);
+    } catch { /* best effort */ }
   };
 
   const clearNotification = async (id) => {
     setNotifications(notifications.filter((n) => n._id !== id));
-    try { await api.delete(`/api/notifications/${id}`); } catch { /* best effort */ }
+    try {
+      const res = await api.delete(`/api/notifications/${id}`);
+      if (typeof res.data.unreadCount === 'number') setUnread(res.data.unreadCount);
+    } catch { /* best effort */ }
   };
 
   const clearAll = async () => {
     setNotifications([]);
-    try { await api.delete('/api/notifications'); } catch { /* best effort */ }
+    try {
+      const res = await api.delete('/api/notifications');
+      if (typeof res.data.unreadCount === 'number') setUnread(res.data.unreadCount);
+    } catch { /* best effort */ }
   };
 
   const actorName = (n) => n.actor?.name || 'Someone';
@@ -249,10 +280,10 @@ const NotificationsPage = () => {
         {notifications.map((notification) => (
           <div
             key={notification._id}
-            className={`card flex items-start gap-4 p-4 group ${
+            className={`card flex items-start gap-4 p-4 group cursor-pointer ${
               !notification.read ? 'border-lime-500/50 bg-lime-500/5' : ''
             }`}
-            onClick={() => markAsRead(notification._id)}
+            onClick={() => openNotification(notification._id)}
           >
             {/* Avatar/Icon */}
             <div className="relative flex-shrink-0">
@@ -279,6 +310,10 @@ const NotificationsPage = () => {
               {notification.activity && (
                 <Link
                   to={`/activities/${notification.activity}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    markAsRead(notification._id);
+                  }}
                   className="text-sm text-lime-400 hover:text-lime-300 font-medium mt-0.5 inline-block"
                 >
                   View activity →
