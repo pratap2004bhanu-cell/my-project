@@ -42,11 +42,14 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Get single template
+// Get single template (own, or public/default templates)
 router.get('/:id', async (req, res) => {
   try {
     const template = await Template.findById(req.params.id);
     if (!template) return res.status(404).json({ success: false, error: 'Template not found' });
+    if (!template.isDefault && String(template.owner || '') !== String(req.user._id)) {
+      return res.status(403).json({ success: false, error: 'Not authorized' });
+    }
     res.json({ success: true, template });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -93,16 +96,21 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-// Log a "use" of a template (increments counter, sets lastUsed)
+// Log a "use" of a template (increments counter, sets lastUsed). Anyone may
+// bump a default/popular template, but only owners bump their own.
 router.post('/:id/use', async (req, res) => {
   try {
-    const template = await Template.findByIdAndUpdate(
+    const template = await Template.findById(req.params.id);
+    if (!template) return res.status(404).json({ success: false, error: 'Template not found' });
+    if (!template.isDefault && String(template.owner || '') !== String(req.user._id)) {
+      return res.status(403).json({ success: false, error: 'Not authorized' });
+    }
+    const updated = await Template.findByIdAndUpdate(
       req.params.id,
       { $inc: { uses: 1 }, lastUsedAt: new Date() },
       { new: true }
     );
-    if (!template) return res.status(404).json({ success: false, error: 'Template not found' });
-    res.json({ success: true, template });
+    res.json({ success: true, template: updated });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }

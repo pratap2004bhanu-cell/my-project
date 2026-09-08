@@ -17,7 +17,6 @@ const userIdOf = (c) => (c && typeof c === 'object' ? c._id || c.id : c);
 
 const CheckInPage = () => {
   const { user } = useAuth();
-  const [checkedIn, setCheckedIn] = useState(false);
   const [showCamera, setShowCamera] = useState(false);
   const [checkedInActivityId, setCheckedInActivityId] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -108,16 +107,13 @@ const CheckInPage = () => {
         const checkIns = a.checkIns || [];
         return { ...a, checkIns: [...checkIns, { user: user?.id }] };
       }));
-      setCheckedIn(true);
       setCheckedInActivityId(activityId);
       setShowCamera(true);
-      setTimeout(() => setShowCamera(false), 2500);
     } catch (err) {
       alert(err?.response?.data?.error || 'Could not check in');
     } finally {
       setNowChecking(false);
       setActiveId(null);
-      setCheckedIn(false);
     }
   };
 

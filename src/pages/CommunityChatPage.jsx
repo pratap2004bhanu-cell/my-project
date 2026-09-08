@@ -1,12 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
-  FiSend, FiPaperclip, FiArrowLeft, FiUsers
+  FiSend, FiX, FiArrowLeft, FiUsers
 } from 'react-icons/fi';
 import api from '../api';
 import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
 import { RoundAvatar } from '../components/common';
+import { AttachmentButton } from '../components/chat';
 import { normalizeMessage } from '../utils/normalize';
 
 const CommunityChatPage = () => {
@@ -15,6 +16,7 @@ const CommunityChatPage = () => {
   const { user: me } = useAuth();
   const socket = useSocket();
   const [message, setMessage] = useState('');
+  const [pendingAttachment, setPendingAttachment] = useState(null);
   const [community, setCommunity] = useState(null);
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -46,6 +48,8 @@ const CommunityChatPage = () => {
               id: nm.senderId,
             },
             text: nm.text,
+            image: nm.image,
+            attachment: nm.attachment,
             time: nm.time,
             isMe: nm.senderId === me?.id,
           };
@@ -75,6 +79,8 @@ const CommunityChatPage = () => {
           id: nm.senderId,
         },
         text: nm.text,
+        image: nm.image,
+        attachment: nm.attachment,
         time: nm.time,
         isMe: nm.senderId === me?.id,
       };
@@ -92,16 +98,19 @@ const CommunityChatPage = () => {
   const handleSend = (e) => {
     e.preventDefault();
     const text = message.trim();
-    if (!text || !community) return;
+    const attachment = pendingAttachment || undefined;
+    if ((!text && !attachment) || !community) return;
     if (socket?.connected) {
-      socket.emit('community:message', { communityId: id, content: text });
+      socket.emit('community:message', { communityId: id, content: text, attachment });
     } else {
-      api.post(`/api/messages/community/${id}`, { content: text }).then((res) => {
+      api.post(`/api/messages/community/${id}`, { content: text, attachment }).then((res) => {
         const nm = normalizeMessage(res.data.message);
         setMessages((prev) => [...prev, {
           id: nm.id,
           sender: { name: nm.senderName || 'You', avatar: nm.senderAvatar || 'Y', id: nm.senderId },
           text: nm.text,
+          image: nm.image,
+          attachment: nm.attachment,
           time: nm.time,
           isMe: true,
         }]);
@@ -109,6 +118,7 @@ const CommunityChatPage = () => {
       }).catch(() => alert('Could not send message'));
     }
     setMessage('');
+    setPendingAttachment(null);
   };
 
   return (
@@ -161,7 +171,20 @@ const CommunityChatPage = () => {
                     ? 'bg-lime-500 text-dark-900 rounded-br-md'
                     : 'bg-dark-800 text-white rounded-bl-md'
                 }`}>
-                  <p>{msg.text}</p>
+                  {msg.image && (
+                    <img src={msg.image} alt="attachment" className="rounded-xl mb-2 max-w-full max-h-64 object-contain" />
+                  )}
+                  {(!msg.image && msg.attachment) && (
+                    <a
+                      href={msg.attachment.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className={`text-sm flex items-center gap-2 mb-2 ${msg.isMe ? 'text-dark-900' : 'text-lime-400'} underline`}
+                    >
+                      📎 {msg.attachment.name}
+                    </a>
+                  )}
+                  {msg.text && <p>{msg.text}</p>}
                 </div>
                 <p className={`text-[10px] text-dark-400 mt-1 ${msg.isMe ? 'text-right mr-1' : 'ml-1'}`}>
                   {msg.time}
@@ -176,9 +199,27 @@ const CommunityChatPage = () => {
       {/* Input */}
       <div className="px-4 pt-3 pb-4 pb-[calc(1rem+env(safe-area-inset-bottom))] border-t border-dark-800">
         <form onSubmit={handleSend} className="flex items-center gap-3">
-          <button type="button" className="btn-icon w-8 h-8">
-            <FiPaperclip className="w-4 h-4" />
-          </button>
+          <AttachmentButton
+            onAttach={setPendingAttachment}
+            buttonClass="btn-icon w-8 h-8"
+            iconClass="w-4 h-4"
+          />
+          {pendingAttachment && (
+            <span className="flex items-center gap-2 max-w-[150px] bg-dark-800 border border-dark-700 rounded-xl px-3 py-2 text-sm text-white flex-shrink-0">
+              <span className="truncate">
+                {pendingAttachment.type?.startsWith('image/') ? '📷 ' : '📎 '}
+                {pendingAttachment.name}
+              </span>
+              <button
+                type="button"
+                onClick={() => setPendingAttachment(null)}
+                className="text-dark-400 hover:text-white flex-shrink-0"
+                aria-label="Remove attachment"
+              >
+                <FiX className="w-4 h-4" />
+              </button>
+            </span>
+          )}
           <div className="flex-1 relative">
             <input
               type="text"
@@ -190,7 +231,7 @@ const CommunityChatPage = () => {
           </div>
           <button
             type="submit"
-            disabled={!message.trim()}
+            disabled={!message.trim() && !pendingAttachment}
             className="btn-primary px-3 py-2.5 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <FiSend className="w-4 h-4" />

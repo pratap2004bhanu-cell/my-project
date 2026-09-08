@@ -5,7 +5,7 @@ import Activity from '../models/Activity.js';
 import Message from '../models/Message.js';
 import Notification from '../models/Notification.js';
 
-const PASSWORD = 'Demo@1234';
+const PASSWORD = process.env.DEMO_PASSWORD || 'Demo@1234';
 const DOMAIN = 'kiky.app';
 const DAY = 24 * 60 * 60 * 1000;
 const now = Date.now();
@@ -53,8 +53,11 @@ if (demoIds.length) {
   console.log(`cleaned previous seed (${demoIds.length} users)`);
 }
 
-const bhanu = await User.findOne({ email: 'pratap2004bhanu@gmail.com' }).lean();
-if (!bhanu) console.warn('NOTE: bhanu not found - skipping real-user wiring');
+// Wire in the developer/admin account (optional). Set DEMO_ADMIN_EMAIL to
+// connect the seed's demo graph to a real account. Never hard-coded.
+const ADMIN_EMAIL = (process.env.DEMO_ADMIN_EMAIL || '').trim().toLowerCase();
+const bhanu = ADMIN_EMAIL ? await User.findOne({ email: ADMIN_EMAIL }).lean() : null;
+if (ADMIN_EMAIL && !bhanu) console.warn(`NOTE: ${ADMIN_EMAIL} not found - skipping real-user wiring`);
 
 // ---- Create demo users ----
 const users = {};
@@ -191,18 +194,18 @@ if (bhanu) {
 const msg = async (from, to, content, read, at) => {
   await Message.create({ sender: from._id, receiver: to._id, content, read, createdAt: new Date(at) });
 };
-const conv = (from, to, lines, lastUnreadForTo = false) => {
+const conv = async (from, to, lines, lastUnreadForTo = false) => {
   let i = 0;
   for (const [senderKey, content] of lines) {
     const sender = senderKey === 'a' ? from : to;
     const receiver = senderKey === 'a' ? to : from;
     const isLast = i === lines.length - 1;
-    msg(sender, receiver, content, isLast && lastUnreadForTo ? false : true, now - (lines.length - i) * 7 * 60000);
+    await msg(sender, receiver, content, isLast && lastUnreadForTo ? false : true, now - (lines.length - i) * 7 * 60000);
     i++;
   }
 };
 if (bhanu) {
-  conv(bhanu, diya, [
+  await conv(bhanu, diya, [
     ['a', 'Hey Diya! Saw you host the coffee meetup — looks fun.'],
     ['b', 'Hey! Yeah it should be chill, soft launch of my people-watching spots 😄'],
     ['a', 'Haha, I am in. Do you need anything for it?'],
@@ -211,24 +214,24 @@ if (bhanu) {
     ['b', 'Sleep is sacred, but ... fine. I will take penalty laps.'],
     ['a', 'Deal. See you at Kotambi at 6 🏃'],
   ], true);
-  conv(bhanu, aarav, [
+  await conv(bhanu, aarav, [
     ['a', 'Cricket night this Friday? You open?'],
     ['b', 'Yeah man, already added you to the list. Bring your leather ball bat.'],
     ['a', 'Need a ride? I can pick you up from university gate.'],
     ['b', 'Perfect. That saves me the auto chaos.'],
   ], false);
 }
-conv(diya, meera, [
+await conv(diya, meera, [
   ['a', 'Yoga in the park was actually life-changing.'],
   ['b', 'Told you! The trees make all the difference.'],
   ['a', 'Next Sunday again? I will bring chai.'],
 ]);
-conv(aarav, kabir, [
+await conv(aarav, kabir, [
   ['a', 'Bro, that sweep shot on Saturday 😂'],
   ['b', 'Green turner though. My defense was not ready.'],
   ['a', 'Rematch this week. Serve revenge hot.'],
 ]);
-conv(rohan, vikram, [
+await conv(rohan, vikram, [
   ['a', 'Cycle ride route map for Sunday sent. 40 km, gentle hills.'],
   ['b', 'Got it. Starting earlier so we catch the sunrise?'],
   ['a', '5:30 at Ajwa gate.'],
@@ -243,7 +246,7 @@ if (bhanu) {
   await Notification.create({ user: bhanu._id, type: 'achievement', text: 'You unlocked the "Weekend Warrior" badge!', read: true, createdAt: new Date(now - 2 * DAY) });
 }
 await note(users['kabir'], users['nisha'], 'like', 'liked your profile');
-await note(users['diya'], bhanu, 'message', 'sent you a message');
+if (bhanu) await note(users['diya'], bhanu, 'message', 'sent you a message');
 
 // Final connection counts for demo users (recompute explicitly)
 for (const key of Object.keys(users)) {

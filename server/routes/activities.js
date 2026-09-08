@@ -7,6 +7,7 @@ import User from '../models/User.js';
 import { protect } from '../middleware/auth.js';
 import { notify } from '../utils/notify.js';
 import { refreshActivityStatuses } from '../utils/lifecycle.js';
+import { filterValidImages } from '../utils/uploads.js';
 
 const router = Router();
 
@@ -35,6 +36,36 @@ const haversineMeters = (lat1, lon1, lat2, lon2) => {
   const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
   return 2 * R * Math.asin(Math.sqrt(a));
 };
+
+// Access control: public -> everyone; friends -> creator + their friends + participants;
+// private -> creator + participants only.
+const accessFilter = (myId, friendIds) => ({
+  $or: [
+    { activityType: 'public' },
+    { activityType: { $exists: false } },
+    { activityType: 'friends', creator: { $in: [myId, ...friendIds] } },
+    { activityType: 'private', creator: myId },
+    { activityType: 'private', 'participants.user': myId },
+  ],
+});
+
+const canViewActivity = (activity, myId, friendIds) => {
+  if (!activity) return false;
+  const creatorId = String(activity.creator?._id || activity.creator);
+  if (activity.activityType === 'friends') {
+    return creatorId === myId || friendIds.includes(creatorId) ||
+      (activity.participants || []).some((p) => String(p.user) === String(myId));
+  }
+  if (activity.activityType === 'private') {
+    return creatorId === myId ||
+      (activity.participants || []).some((p) => String(p.user) === String(myId));
+  }
+  return true;
+};
+
+const isMember = (activity, myId) =>
+  String(activity.creator?._id || activity.creator) === String(myId) ||
+  (activity.participants || []).some((p) => String(p.user) === String(myId));
 
 // Get all activities (with filters)
 router.get('/', protect, async (req, res) => {
@@ -67,19 +98,25 @@ router.get('/', protect, async (req, res) => {
     const near = query._nearby;
     delete query._nearby;
 
+    const me = await User.findById(req.user._id).select('friends savedActivities');
+    const friendIds = (me.friends || []).map(String);
+    const myId = req.user._id.toString();
+    if (!query.$or) query.$or = accessFilter(myId, friendIds).$or;
+
     const activities = await Activity.find(query)
       .populate('creator', 'name avatar')
       .populate('participants.user', 'name avatar')
       .sort({ createdAt: -1 })
       .limit(50);
 
-    const me = await User.findById(req.user._id).select('savedActivities');
     const savedIds = new Set((me.savedActivities || []).map((s) => s.activity.toString()));
-    const myId = req.user._id.toString();
+    const savedAtMap = {};
+    (me.savedActivities || []).forEach((s) => { savedAtMap[s.activity.toString()] = s.savedAt; });
 
     let list = activities.map((a) => {
       const plain = a.toObject ? a.toObject() : a;
       plain.saved = savedIds.has(a._id.toString());
+      if (plain.saved && savedAtMap[a._id.toString()]) plain.savedAt = savedAtMap[a._id.toString()];
       plain.joined = (a.participants || []).some((p) => {
         const uid = p.user && typeof p.user === 'object' ? p.user._id : p.user;
         return uid && uid.toString() === myId;
@@ -128,7 +165,12 @@ router.get('/:id', protect, async (req, res) => {
       return res.status(404).json({ success: false, error: 'Activity not found' });
     }
 
-    const me = await User.findById(req.user._id).select('savedActivities');
+    const me = await User.findById(req.user._id).select('friends savedActivities');
+    const friendIds = (me.friends || []).map(String);
+    if (!canViewActivity(activity, req.user._id.toString(), friendIds)) {
+      return res.status(403).json({ success: false, error: 'This activity is not open to you' });
+    }
+
     const savedIds = new Set((me.savedActivities || []).map((s) => s.activity.toString()));
     const myId = req.user._id.toString();
 
@@ -224,9 +266,21 @@ router.post('/:id/join', protect, async (req, res) => {
       return res.status(404).json({ success: false, error: 'Activity not found' });
     }
 
-    const alreadyJoined = activity.participants.some(
-      (p) => p.user.toString() === req.user._id.toString()
-    );
+    const me = await User.findById(req.user._id).select('friends');
+    const friendIds = (me.friends || []).map(String);
+    const myId = req.user._id.toString();
+    const creatorId = String(activity.creator);
+    const alreadyJoined = activity.participants.some((p) => p.user.toString() === myId);
+
+    const canJoin =
+      !activity.activityType || activity.activityType === 'public' ||
+      (activity.activityType === 'friends' && (creatorId === myId || friendIds.includes(creatorId))) ||
+      (activity.activityType === 'private' && alreadyJoined);
+
+    if (!canJoin) {
+      return res.status(403).json({ success: false, error: 'This activity is not open to join' });
+    }
+
     if (alreadyJoined) {
       return res.status(400).json({ success: false, error: 'Already joined' });
     }
@@ -350,6 +404,9 @@ router.post('/:id/checkin', protect, async (req, res) => {
     if (!activity) {
       return res.status(404).json({ success: false, error: 'Activity not found' });
     }
+    if (!isMember(activity, req.user._id.toString())) {
+      return res.status(403).json({ success: false, error: 'Join the activity first' });
+    }
 
     const alreadyCheckedIn = activity.checkIns.some(
       (c) => c.user.toString() === req.user._id.toString()
@@ -374,8 +431,24 @@ router.post('/:id/expenses', protect, async (req, res) => {
     if (!activity) {
       return res.status(404).json({ success: false, error: 'Activity not found' });
     }
+    if (!isMember(activity, req.user._id.toString())) {
+      return res.status(403).json({ success: false, error: 'Join the activity first' });
+    }
+    const amount = Number(req.body.amount);
+    const description = typeof req.body.description === 'string' ? req.body.description.trim() : '';
+    if (!description) {
+      return res.status(400).json({ success: false, error: 'Expense description is required' });
+    }
+    if (!Number.isFinite(amount) || amount <= 0) {
+      return res.status(400).json({ success: false, error: 'Expense amount must be greater than zero' });
+    }
 
-    activity.expenses.push({ ...req.body, paidBy: req.user._id });
+    activity.expenses.push({
+      description,
+      amount,
+      paidBy: req.user._id,
+      splitAmong: Array.isArray(req.body.splitAmong) ? req.body.splitAmong : [],
+    });
     await activity.save();
 
     res.json({ success: true, activity });
@@ -391,8 +464,13 @@ router.post('/:id/feedback', protect, async (req, res) => {
     if (!activity) {
       return res.status(404).json({ success: false, error: 'Activity not found' });
     }
+    if (!isMember(activity, req.user._id.toString())) {
+      return res.status(403).json({ success: false, error: 'Join the activity first' });
+    }
+    const rating = Math.min(5, Math.max(1, Number(req.body.rating) || 0));
+    const comment = typeof req.body.comment === 'string' ? req.body.comment.trim() : '';
 
-    activity.feedback.push({ ...req.body, user: req.user._id });
+    activity.feedback.push({ rating, comment, user: req.user._id });
     await activity.save();
 
     res.json({ success: true, activity });
@@ -406,10 +484,14 @@ router.post('/:id/photos', protect, upload.array('photos', 10), async (req, res)
   try {
     const activity = await Activity.findById(req.params.id);
     if (!activity) return res.status(404).json({ success: false, error: 'Activity not found' });
-    if (!req.files || req.files.length === 0) {
-      return res.status(400).json({ success: false, error: 'No files uploaded' });
+    if (!isMember(activity, req.user._id.toString())) {
+      return res.status(403).json({ success: false, error: 'Only participants can add photos' });
     }
-    const urls = req.files.map((f) => `/uploads/${f.filename}`);
+    const valid = filterValidImages(req.files || []);
+    if (valid.length === 0) {
+      return res.status(400).json({ success: false, error: 'No valid image files uploaded' });
+    }
+    const urls = valid.map((f) => `/uploads/${f.filename}`);
     activity.photos.push(...urls);
     await activity.save();
     res.json({ success: true, photos: activity.photos });

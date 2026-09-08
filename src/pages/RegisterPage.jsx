@@ -14,6 +14,7 @@ const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
   
   const { register } = useAuth();
   const navigate = useNavigate();
@@ -42,6 +43,11 @@ const RegisterPage = () => {
     
     if (formData.password.length < 6) {
       setError('Password must be at least 6 characters');
+      return;
+    }
+
+    if (!termsAccepted) {
+      setError('You must accept the Terms of Service and Privacy Policy');
       return;
     }
     
@@ -194,6 +200,8 @@ const RegisterPage = () => {
           <div className="flex items-start gap-2">
             <input 
               type="checkbox" 
+              checked={termsAccepted}
+              onChange={(e) => setTermsAccepted(e.target.checked)}
               className="mt-1 w-4 h-4 rounded border-dark-600 bg-dark-800 text-lime-500 focus:ring-lime-500 focus:ring-offset-0" 
               required
             />
@@ -203,7 +211,7 @@ const RegisterPage = () => {
                 Terms of Service
               </Link>{' '}
               and{' '}
-              <Link to="/privacy" className="text-lime-400 hover:text-lime-300 font-medium">
+              <Link to="/privacy-policy" className="text-lime-400 hover:text-lime-300 font-medium">
                 Privacy Policy
               </Link>
             </span>

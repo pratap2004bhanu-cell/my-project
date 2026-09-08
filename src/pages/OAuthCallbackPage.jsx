@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { FiArrowRight, FiShield, FiChevronLeft } from 'react-icons/fi';
 import { Logo } from '../components/common';
 
 const OAuthCallbackPage = () => {
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { completeOAuth, complete2FALogin, get2FAChallenge } = useAuth();
   const [error, setError] = useState('');
@@ -13,8 +12,9 @@ const OAuthCallbackPage = () => {
   const [code, setCode] = useState('');
   const [verifying, setVerifying] = useState(false);
 
-  const token = searchParams.get('token');
-  const needs2FA = searchParams.get('2fa') === '1';
+  const params = new URLSearchParams(window.location.hash.slice(1));
+  const token = params.get('token');
+  const needs2FA = params.get('2fa') === '1';
 
   useEffect(() => {
     if (!token) {

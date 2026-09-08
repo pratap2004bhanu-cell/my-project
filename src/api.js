@@ -10,8 +10,29 @@ const api = axios.create({
 });
 
 // Attach token to every request
+export const tokenStore = () => {
+  const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+  return token;
+};
+
+export const setToken = (token, persist = true) => {
+  if (persist) {
+    localStorage.setItem('token', token);
+    sessionStorage.removeItem('token');
+  } else {
+    sessionStorage.setItem('token', token);
+    localStorage.removeItem('token');
+  }
+};
+
+export const clearTokens = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  sessionStorage.removeItem('token');
+};
+
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
+  const token = tokenStore();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -23,8 +44,7 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      clearTokens();
       window.location.href = '/login';
     }
     return Promise.reject(error);

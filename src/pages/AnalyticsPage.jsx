@@ -55,27 +55,25 @@ const AnalyticsPage = () => {
       .sort((a, b) => b.count - a.count)
       .slice(0, 6);
 
-    // Time buckets
+    // Time buckets (sized to the selected window)
     const buckets = [];
-    if (timeRange === 'week') {
-      for (let i = 6; i >= 0; i--) {
-        const d = dayAgo(i);
-        const label = d.toLocaleDateString('en-US', { weekday: 'short' });
-        buckets.push({ label, count: inRange.filter((a) => a.dateRaw && new Date(a.dateRaw).toDateString() === d.toDateString()).length });
-      }
-    } else {
-      const months = timeRange === 'month' ? 6 : 12;
-      for (let i = months - 1; i >= 0; i--) {
-        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-        buckets.push({
-          label: d.toLocaleDateString('en-US', { month: 'short' }),
-          count: inRange.filter((a) => {
-            if (!a.dateRaw) return false;
-            const ad = new Date(a.dateRaw);
-            return ad.getFullYear() === d.getFullYear() && ad.getMonth() === d.getMonth();
-          }).length,
-        });
-      }
+    const bucketDays = timeRange === 'week' ? 7 : timeRange === 'month' ? 30 : 52;
+    const bucketSpan = timeRange === 'year' ? 7 : 1;
+    for (let i = bucketDays - 1; i >= 0; i--) {
+      const start = dayAgo(i * bucketSpan + bucketSpan - 1);
+      const end = dayAgo(i * bucketSpan);
+      const bucketDates = inRange.filter((a) => {
+        if (!a.dateRaw) return false;
+        const ad = new Date(a.dateRaw);
+        return ad <= end && ad >= start;
+      });
+      const anchor = i * bucketSpan === 0 ? end : start;
+      buckets.push({
+        label: timeRange === 'year'
+          ? `${anchor.toLocaleDateString('en-US', { month: 'short' })} ${anchor.getDate()}`
+          : anchor.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        count: bucketDates.length,
+      });
     }
     const maxBucket = Math.max(1, ...buckets.map((b) => b.count));
 
@@ -209,22 +207,27 @@ const AnalyticsPage = () => {
               <div className="flex items-center gap-2 mb-6">
                 <FiBarChart2 className="w-5 h-5 text-lime-400" />
                 <h2 className="text-lg font-semibold text-white">
-                  {timeRange === 'week' ? 'Daily Activity' : 'Monthly Activity'}
+                  {timeRange === 'week' ? 'Daily Activity' : timeRange === 'year' ? 'Weekly Activity' : 'Daily Activity (30 days)'}
                 </h2>
               </div>
               {data.monthlyActivity.some((b) => b.count > 0) ? (
-                <div className="flex items-end justify-between h-40 gap-2">
-                  {data.monthlyActivity.map((item) => (
-                    <div key={item.label} className="flex-1 flex flex-col items-center">
+                <div className="flex items-end justify-between h-40 gap-[2px]">
+                  {data.monthlyActivity.map((item, bi) => {
+                    const labelEvery = timeRange === 'week' ? 1 : timeRange === 'month' ? 5 : 4;
+                    return (
+                    <div key={`${item.label}-${bi}`} className="flex-1 flex flex-col items-center">
                       <div 
                         className="w-full bg-gradient-to-t from-lime-500 to-lime-400 rounded-t-lg transition-all duration-500"
                         style={{ height: `${(item.count / data.maxBucket) * 100}%` }}
-                        title={`${item.count}`}
+                        title={`${item.label}: ${item.count}`}
                       />
-                      <span className="text-xs text-dark-400 mt-2">{item.label}</span>
-                      <span className="text-sm text-white font-medium">{item.count}</span>
+                      {bi % labelEvery === 0 ? (
+                        <span className="text-[10px] text-dark-400 mt-2 whitespace-nowrap">{item.label}</span>
+                      ) : <span className="mt-2" />}
+                      <span className="text-[10px] text-white font-medium">{item.count}</span>
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
               ) : (
                 <p className="text-dark-400 text-sm">No activity in this period yet.</p>

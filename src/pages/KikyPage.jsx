@@ -25,7 +25,7 @@ const ACTIVITY_OPTIONS = [
   { id: 'coffee', name: 'Coffee', emoji: '☕', color: 'from-amber-500 to-orange-500' },
   { id: 'food', name: 'Food', emoji: '🍕', color: 'from-red-500 to-pink-500' },
   { id: 'movies', name: 'Movie', emoji: '🎬', color: 'from-purple-500 to-violet-500' },
-  { id: 'walking', name: 'Walk', emoji: '🚶', color: 'from-emerald-500 to-teal-500' },
+  { id: 'outdoor', name: 'Outdoor', emoji: '🏞️', color: 'from-emerald-500 to-teal-500' },
   { id: 'gaming', name: 'Gaming', emoji: '🎮', color: 'from-pink-500 to-rose-500' },
   { id: 'gym', name: 'Gym', emoji: '🏋️', color: 'from-blue-500 to-cyan-500' },
 ];
@@ -152,7 +152,7 @@ const KikyPage = () => {
           </div>
         </button>
         <p className={`mt-4 font-semibold ${isActive ? 'text-lime-400' : 'text-dark-400'}`}>
-          {isActive ? (searching ? 'Searching for matches...' : 'Searching for matches...') : 'Tap to start searching'}
+          {isActive ? (searching ? 'Searching for matches...' : 'Standing by for nearby matches') : 'Tap to start searching'}
         </p>
       </div>
 

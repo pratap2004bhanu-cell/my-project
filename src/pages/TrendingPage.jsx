@@ -64,6 +64,7 @@ const TrendingPage = () => {
   });
 
   const total = ranged.length;
+  const maxCategoryParticipants = Object.values(categoryCounts).reduce((m, c) => Math.max(m, c.participants), 0);
   const trending = Object.entries(categoryCounts)
     .map(([cat, v]) => ({
       id: cat,
@@ -74,7 +75,7 @@ const TrendingPage = () => {
       participants: v.participants,
       locations: v.locations.size,
       description: `${v.count} ${cat} activit${v.count === 1 ? 'y' : 'ies'} in this period`,
-      isHot: v.participants >= Math.max(...Object.values(categoryCounts).map((c) => c.participants)),
+      isHot: v.participants >= maxCategoryParticipants,
     }))
     .sort((a, b) => b.participants - a.participants)
     .slice(0, 6);

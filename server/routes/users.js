@@ -7,6 +7,34 @@ import { protect } from '../middleware/auth.js';
 import { notify } from '../utils/notify.js';
 import { getPublicKey } from '../utils/push.js';
 import { sendVerificationOtp, isEmailConfigured } from '../utils/email.js';
+import { filterValidImages } from '../utils/uploads.js';
+
+// Fields a viewer is never allowed to see on another user's profile.
+const SENSITIVE_SELECT = '-password -fcmToken -phone -email -emergencyContacts -devices -pushSubscriptions -verification -twoFactor -resetPassword -likes -likedBy -requestsSent -requestsReceived -savedActivities -blockedUsers -googleId';
+
+// Minimal profile shown when privacy settings block the full profile.
+const MINIMAL_PROFILE = (user) => ({
+  _id: user._id,
+  name: user.name,
+  avatar: user.avatar,
+  bio: user.bio,
+  interests: user.interests,
+  status: { current: user.status?.current, spontaneous: user.status?.spontaneous },
+  stats: user.stats,
+});
+
+// In-memory guard for OTP verification attempts (per account, 15-min window).
+const otpAttempts = new Map();
+const tryOtpAttempt = (key) => {
+  const now = Date.now();
+  const rec = otpAttempts.get(key);
+  if (!rec || now > rec.resetAt) {
+    otpAttempts.set(key, { count: 1, resetAt: now + 15 * 60 * 1000 });
+    return true;
+  }
+  rec.count += 1;
+  return rec.count <= 5;
+};
 
 const router = Router();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -110,6 +138,8 @@ router.get('/nearby', protect, async (req, res) => {
 
     const people = await User.find({
       _id: { $ne: req.user._id },
+      'privacy.showLocation': true,
+      'privacy.profileVisibility': { $ne: 'private' },
       location: {
         $near: {
           $geometry: { type: 'Point', coordinates: [parseFloat(lng), parseFloat(lat)] },
@@ -128,7 +158,7 @@ router.get('/nearby', protect, async (req, res) => {
 // Leaderboard (top by activity participation)
 router.get('/leaderboard', protect, async (req, res) => {
   try {
-    const users = await User.find({})
+    const users = await User.find({ 'privacy.profileVisibility': { $ne: 'private' } })
       .select('name avatar bio interests location status stats')
       .sort({ 'stats.activitiesJoined': -1, 'stats.streak': -1 })
       .limit(20);
@@ -206,6 +236,9 @@ router.post('/me/verification/confirm', protect, async (req, res) => {
     if (!code) return res.status(400).json({ success: false, error: 'Enter the verification code' });
     const user = await User.findById(req.user._id);
     if (!user) return res.status(404).json({ success: false, error: 'User not found' });
+    if (!tryOtpAttempt(String(user._id))) {
+      return res.status(429).json({ success: false, error: 'Too many attempts. Request a new code in a little while.' });
+    }
     const v = user.verification;
     if (!v?.emailOtp || !v.emailOtpExpires || new Date(v.emailOtpExpires) < new Date()) {
       return res.status(400).json({ success: false, error: 'Code expired. Request a new one.' });
@@ -279,16 +312,52 @@ router.delete('/me/emergency-contacts/:index', protect, async (req, res) => {
   }
 });
 
-// Get user profile
+// Get user profile (privacy-aware)
 router.get('/:id', protect, async (req, res) => {
   try {
-    const user = await User.findById(req.params.id)
-      .select('-blockedUsers -fcmToken -password')
-      .populate('rating.rater', 'name avatar');
+    const user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).json({ success: false, error: 'User not found' });
     }
-    res.json({ success: true, user });
+
+    const viewerId = req.user._id.toString();
+    const isSelf = String(user._id) === viewerId;
+    const privacy = user.privacy || {};
+    const isFriend = (user.friends || []).map(String).includes(viewerId);
+    const restrict =
+      privacy.profileVisibility === 'private' ||
+      (privacy.profileVisibility === 'connections' && !isSelf && !isFriend);
+
+    if (restrict && !isSelf) {
+      const idStr2 = String(user._id);
+      return res.json({
+        success: true,
+        user: {
+          ...MINIMAL_PROFILE(user),
+          isFriend: (req.user.friends || []).map(String).includes(idStr2),
+          requestSent: (req.user.requestsSent || []).map(String).includes(idStr2),
+          requestReceived: (req.user.requestsReceived || []).map(String).includes(idStr2),
+        },
+        restricted: true,
+      });
+    }
+
+    const full = await User.findById(req.params.id)
+      .select(SENSITIVE_SELECT)
+      .populate('rating.rater', 'name avatar');
+    if (!full) {
+      return res.status(404).json({ success: false, error: 'User not found' });
+    }
+    const idStr = String(full._id);
+    res.json({
+      success: true,
+      user: {
+        ...(typeof full.toObject === 'function' ? full.toObject() : full),
+        isFriend: (req.user.friends || []).map(String).includes(idStr),
+        requestSent: (req.user.requestsSent || []).map(String).includes(idStr),
+        requestReceived: (req.user.requestsReceived || []).map(String).includes(idStr),
+      },
+    });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
@@ -301,9 +370,13 @@ router.get('/match/:userId', protect, async (req, res) => {
     if (!user) {
       return res.status(404).json({ success: false, error: 'User not found' });
     }
+    if ((user.privacy || {}).profileVisibility === 'private') {
+      return res.json({ success: true, matches: [] });
+    }
 
     const matches = await User.find({
       _id: { $ne: user._id },
+      'privacy.profileVisibility': { $ne: 'private' },
       interests: { $in: user.interests },
     })
       .select('name avatar bio interests location status stats')
@@ -631,8 +704,12 @@ router.post('/me/gallery', protect, upload.array('photos', 12), async (req, res)
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ success: false, error: 'No files uploaded' });
     }
+    const valid = filterValidImages(req.files);
+    if (valid.length === 0) {
+      return res.status(400).json({ success: false, error: 'The uploaded files are not valid images' });
+    }
     const user = await User.findById(req.user._id);
-    const urls = req.files.map((f) => `/uploads/${f.filename}`);
+    const urls = valid.map((f) => `/uploads/${f.filename}`);
     user.gallery.push(...urls);
     await user.save();
     res.json({ success: true, gallery: user.gallery });

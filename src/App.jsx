@@ -59,6 +59,7 @@ const EventsPage = lazy(() => import('./pages/EventsPage'));
 const EventDetailsPage = lazy(() => import('./pages/EventDetailsPage'));
 const CreateEventPage = lazy(() => import('./pages/CreateEventPage'));
 const MyEventsPage = lazy(() => import('./pages/MyEventsPage'));
+const UserProfilePage = lazy(() => import('./pages/UserProfilePage'));
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center">
@@ -204,6 +205,7 @@ function App() {
             <Route path="analytics" element={<AnalyticsPage />} />
             <Route path="group-chat" element={<GroupChatPage />} />
             <Route path="group-chat/:activityId" element={<GroupChatPage />} />
+            <Route path="users/:id" element={<UserProfilePage />} />
             <Route path="templates" element={<TemplatesPage />} />
             <Route path="calendar" element={<CalendarPage />} />
             <Route path="feedback" element={<FeedbackPage />} />

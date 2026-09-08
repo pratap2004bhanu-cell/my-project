@@ -20,6 +20,7 @@ const LoginPage = () => {
   );
   const [loading, setLoading] = useState(false);
   const [verifying, setVerifying] = useState(false);
+  const [remember, setRemember] = useState(true);
   
   const { login, complete2FALogin } = useAuth();
   const navigate = useNavigate();
@@ -35,7 +36,7 @@ const LoginPage = () => {
     setError('');
     setLoading(true);
     
-    const result = await login(email, password);
+    const result = await login(email, password, remember);
     
     if (result.success) {
       navigate(from, { replace: true });
@@ -57,7 +58,7 @@ const LoginPage = () => {
     e.preventDefault();
     setError('');
     setVerifying(true);
-    const result = await complete2FALogin(twoFactorCode, twoFactor?.challengeToken);
+    const result = await complete2FALogin(twoFactorCode, twoFactor?.challengeToken, remember);
     if (result.success) {
       navigate(from, { replace: true });
     } else {
@@ -157,7 +158,12 @@ const LoginPage = () => {
 
           <div className="flex items-center justify-between">
             <label className="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" className="w-4 h-4 rounded border-dark-600 bg-dark-800 text-lime-500 focus:ring-lime-500 focus:ring-offset-0" />
+              <input
+                type="checkbox"
+                checked={remember}
+                onChange={(e) => setRemember(e.target.checked)}
+                className="w-4 h-4 rounded border-dark-600 bg-dark-800 text-lime-500 focus:ring-lime-500 focus:ring-offset-0"
+              />
               <span className="text-sm text-dark-300">Remember me</span>
             </label>
             <Link to="/forgot-password" className="text-sm font-medium text-lime-400 hover:text-lime-300 transition-colors">

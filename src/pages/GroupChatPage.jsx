@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { 
   FiSend, FiSmile,
   FiArrowLeft, FiMapPin, FiX,
@@ -20,6 +20,7 @@ const GroupChatPage = () => {
   const [message, setMessage] = useState('');
   const [activeGroup, setActiveGroup] = useState(activityId || null);
   const [showInfo, setShowInfo] = useState(false);
+  const [groupSearch, setGroupSearch] = useState('');
   const [groups, setGroups] = useState([]);
   const [activityMap, setActivityMap] = useState({});
   const [messagesByGroup, setMessagesByGroup] = useState({});
@@ -118,12 +119,30 @@ const GroupChatPage = () => {
     setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 50);
   };
 
-  const handleSend = (e) => {
+  const handleSend = async (e) => {
     e.preventDefault();
     const content = message.trim();
     if ((!content && !pendingAttachment) || !activeGroup) return;
     if (socket?.connected) {
       socket.emit('activity:message', { activityId: activeGroup, content, attachment: pendingAttachment || undefined });
+    } else {
+      try {
+        const res = await api.post('/api/messages/', {
+          activity: activeGroup,
+          content,
+          attachment: pendingAttachment || undefined,
+        });
+        const msg = mappedMessage(res.data.message);
+        setMessagesByGroup((prev) => {
+          const existing = prev[activeGroup] || [];
+          if (existing.some((m) => m.id === msg.id)) return prev;
+          return { ...prev, [activeGroup]: [...existing, msg] };
+        });
+        scrollToBottom();
+      } catch (err) {
+        console.error('Failed to send message:', err);
+        return;
+      }
     }
     setMessage('');
     setPendingAttachment(null);
@@ -132,6 +151,9 @@ const GroupChatPage = () => {
 
   const activeGroupData = groups.find(g => g.id === activeGroup);
   const activeActivity = activeGroup ? activityMap[activeGroup] : null;
+  const filteredGroups = groupSearch
+    ? groups.filter((g) => g.name.toLowerCase().includes(groupSearch.toLowerCase()))
+    : groups;
 
   return (
     <div className="flex chat-viewport lg:h-[calc(100vh-5rem)]">
@@ -148,6 +170,8 @@ const GroupChatPage = () => {
           <div className="relative">
             <input
               type="text"
+              value={groupSearch}
+              onChange={(e) => setGroupSearch(e.target.value)}
               placeholder="Search groups..."
               className="w-full pl-10 pr-4 py-2.5 bg-dark-800/50 border border-dark-700/50 rounded-xl text-white placeholder-dark-400 focus:outline-none focus:border-lime-500/50 text-sm"
             />
@@ -161,11 +185,11 @@ const GroupChatPage = () => {
             <div className="flex items-center justify-center py-12 text-dark-400">
               <div className="w-6 h-6 border-2 border-lime-500 border-t-transparent rounded-full animate-spin"></div>
             </div>
-          ) : groups.length === 0 ? (
+          ) : filteredGroups.length === 0 ? (
             <p className="text-center text-dark-400 text-sm py-12 px-6">
               No activity groups yet. Join or create an activity to start chatting.
             </p>
-          ) : groups.map((group) => (
+          ) : filteredGroups.map((group) => (
             <button
               key={group.id}
               onClick={() => setActiveGroup(group.id)}
@@ -366,10 +390,10 @@ const GroupChatPage = () => {
                         </div>
                       </div>
 
-                      <button className="w-full btn-outline text-sm">
-                        <FiSettings className="w-4 h-4 mr-2" />
-                        Group Settings
-                      </button>
+                      <Link to={`/activities/${activeGroupData?.id || activeGroup}`} className="w-full btn-outline text-sm flex items-center justify-center gap-2">
+                        <FiSettings className="w-4 h-4" />
+                        View Activity
+                      </Link>
                     </div>
                   </div>
                 </div>

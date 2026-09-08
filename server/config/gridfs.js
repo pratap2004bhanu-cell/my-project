@@ -42,8 +42,10 @@ export const serveFile = async (req, res, fileId, fallback) => {
     res.setHeader('Content-Type', file.contentType || 'application/octet-stream');
     res.setHeader('Content-Disposition', `inline; filename="${encodeURIComponent(file.filename)}"`);
     res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
     bucket.openDownloadStream(id).on('error', () => {
       if (!res.headersSent) res.status(404).json({ success: false, error: 'Not found' });
+      res.end();
     }).pipe(res);
   } catch {
     if (fallback) return fallback(req, res);

@@ -6,11 +6,25 @@ import crypto from 'crypto';
 import User from '../models/User.js';
 import { generateToken, generateChallengeToken, protect } from '../middleware/auth.js';
 import { storeFile } from '../config/gridfs.js';
+import { isImageBuffer } from '../utils/uploads.js';
 import { sendOtpMail, sendResetMail, isEmailConfigured } from '../utils/email.js';
 
 const router = Router();
 
 const sha256 = (s) => crypto.createHash('sha256').update(String(s)).digest('hex');
+
+// In-memory guard against OTP brute force (per account, 15-min window).
+const otpAttempts = new Map();
+const tryOtpAttempt = (key) => {
+  const now = Date.now();
+  const rec = otpAttempts.get(key);
+  if (!rec || now > rec.resetAt) {
+    otpAttempts.set(key, { count: 1, resetAt: now + 15 * 60 * 1000 });
+    return true;
+  }
+  rec.count += 1;
+  return rec.count <= 5;
+};
 
 const clientIp = (req) => {
   const fwd = req.headers['x-forwarded-for'];
@@ -173,6 +187,10 @@ router.post('/login/2fa', async (req, res) => {
     }
     if (!user) return res.status(401).json({ success: false, error: 'Invalid email or code' });
 
+    if (!tryOtpAttempt(String(user._id))) {
+      return res.status(429).json({ success: false, error: 'Too many attempts. Please sign in again in a little while.' });
+    }
+
     const t = user.twoFactor;
     if (!t?.otp || !t.otpExpires || new Date(t.otpExpires) < new Date()) {
       return res.status(400).json({ success: false, error: 'Code expired. Please sign in again to get a new one.' });
@@ -286,8 +304,8 @@ router.post('/reset-password', async (req, res) => {
 });
 
 // Google OAuth - initiate
-const getOrigin = (req) => `https://${req.get('host')}`;
-const googleCallbackUrl = (req) => `${getOrigin(req)}/auth/google/callback`;
+const getOrigin = (req) => process.env.FRONTEND_URL || `https://${req.get('host')}`;
+const googleCallbackUrl = (req) => process.env.GOOGLE_CALLBACK_URL || `${getOrigin(req)}/auth/google/callback`;
 
 router.get('/google', (req, res, next) => {
   passport.authenticate('google', {
@@ -316,11 +334,11 @@ router.get('/google/callback', (req, res, next) => {
         purpose: 'two-factor login to your KIKY account',
       });
       const challengeToken = generateChallengeToken(user._id);
-      return res.redirect(`${getOrigin(req)}/oauth/callback?2fa=1&token=${challengeToken}`);
+      return res.redirect(`${getOrigin(req)}/oauth/callback#2fa=1&token=${challengeToken}`);
     }
     const deviceId = await touchDevice(user, deviceInfo(req));
     const token = generateToken(user._id, deviceId);
-    res.redirect(`${getOrigin(req)}/oauth/callback?token=${token}`);
+    res.redirect(`${getOrigin(req)}/oauth/callback#token=${token}`);
   })(req, res, next);
 });
 
@@ -349,6 +367,9 @@ router.post('/me/avatar', protect, upload.single('avatar'), async (req, res) => 
   try {
     if (!req.file) {
       return res.status(400).json({ success: false, error: 'No file uploaded' });
+    }
+    if (!isImageBuffer(req.file.buffer)) {
+      return res.status(400).json({ success: false, error: 'The uploaded file is not a valid image' });
     }
     const id = await storeFile({
       name: req.file.originalname,
@@ -429,6 +450,9 @@ router.post('/me/2fa/confirm', protect, async (req, res) => {
       return res.status(400).json({ success: false, error: 'Action and code are required' });
     }
     const user = req.user;
+    if (!tryOtpAttempt(String(user._id))) {
+      return res.status(429).json({ success: false, error: 'Too many attempts. Request a new code in a little while.' });
+    }
     const t = user.twoFactor;
     if (!t?.otp || !t.otpExpires || new Date(t.otpExpires) < new Date()) {
       return res.status(400).json({ success: false, error: 'Code expired. Request a new one.' });

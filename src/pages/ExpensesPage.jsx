@@ -280,8 +280,8 @@ const ExpensesPage = () => {
                 {/* Actions */}
                 <div className="flex gap-2 mt-4">
                   <Link
-                    to={`/chat/${String(userIdOf(activity.creator))}`}
-                    className="flex-1 btn-outline text-sm flex items-center justify-center gap-1"
+                    to={`/chat/${String(userIdOf(activity.creatorId))}`}
+                    className={`flex-1 btn-outline text-sm flex items-center justify-center gap-1 ${activity.creatorId ? '' : 'opacity-50 pointer-events-none'}`}
                   >
                     <FiSend className="w-3 h-3" />
                     Settle Up

@@ -14,9 +14,17 @@ const PLACE_EMOJI = {
   'default': '📍',
 };
 
+const savedDateLabel = (savedAt) => {
+    if (!savedAt) return 'Recently';
+    const days = Math.floor((Date.now() - new Date(savedAt).getTime()) / 86400000);
+    if (days < 1) return 'Today';
+    if (days < 7) return `${days}d ago`;
+    if (days < 30) return `${Math.floor(days / 7)}w ago`;
+    return `${Math.floor(days / 30)}mo ago`;
+  };
+
 const SavedPage = () => {
   const [savedActivities, setSavedActivities] = useState([]);
-  const [savedRaw, setSavedRaw] = useState([]);
   const [connections, setConnections] = useState([]);
   const [savedPlaces, setSavedPlaces] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -26,7 +34,6 @@ const SavedPage = () => {
     return api.get('/api/activities?saved=1')
       .then((res) => {
         const raw = res.data.activities || [];
-        setSavedRaw(raw);
         const list = raw.map((a) => {
           const n = normalizeActivity(a);
           return {
@@ -39,7 +46,7 @@ const SavedPage = () => {
             participants: `${n.participants}/${n.maxParticipants}`,
             match: getMatchScore(n),
             host: n.host,
-            savedDate: 'Recently',
+            savedDate: savedDateLabel(raw.savedAt),
           };
         });
         setSavedActivities(list);
@@ -236,7 +243,7 @@ const SavedPage = () => {
                     <Link to={`/chat/${person._id}`} className="btn-icon">
                       <FiMessageCircle className="w-5 h-5" />
                     </Link>
-                    <Link to={`/people`} className="btn-primary text-sm px-4 py-2">
+                    <Link to={`/users/${person._id}`} className="btn-primary text-sm px-4 py-2">
                       View
                     </Link>
                   </div>

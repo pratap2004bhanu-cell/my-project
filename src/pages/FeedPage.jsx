@@ -36,7 +36,7 @@ const FeedPage = () => {
               date: a.time,
             },
             content: a.description,
-            likes: a.feedback.length,
+            likes: a.checkIns.length,
             comments: a.feedback.length,
             shares: 0,
             time: a.dateRaw ? new Date(a.dateRaw).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) + ', ' + (a.timeRaw || '') : a.time,
@@ -81,6 +81,17 @@ const FeedPage = () => {
       setPosts(posts.map(post => 
         post.id === postId ? { ...post, saved: prev } : post
       ));
+    }
+  };
+
+  const sharePost = (postId) => {
+    const url = `${window.location.origin}/activities/${postId}`;
+    if (navigator.share) {
+      navigator.share({ title: 'Check out this KIKY activity', url }).catch(() => {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(url)
+        .then(() => alert('Activity link copied!'))
+        .catch(() => {});
     }
   };
 
@@ -224,7 +235,7 @@ const FeedPage = () => {
                     <FiMessageCircle className="w-5 h-5" />
                     <span>{post.comments}</span>
                   </Link>
-                  <button className="flex items-center gap-1.5 text-sm text-dark-400 hover:text-lime-400 transition-colors">
+                  <button onClick={() => sharePost(post.id)} className="flex items-center gap-1.5 text-sm text-dark-400 hover:text-lime-400 transition-colors">
                     <FiShare2 className="w-5 h-5" />
                     <span>{post.shares}</span>
                   </button>

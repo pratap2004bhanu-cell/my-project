@@ -78,6 +78,28 @@ const HistoryPage = () => {
       ? history.filter(h => h.role === 'host')
       : history.filter(h => h.status === filter);
 
+  const exportHistory = () => {
+    if (history.length === 0) {
+      alert('Nothing to export yet.');
+      return;
+    }
+    const esc = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
+    const rows = [
+      ['Title', 'Category', 'Date', 'Time', 'Location', 'Role', 'Status', 'Participants', 'Rating'],
+      ...filteredHistory.map((h) => [h.title, h.category, h.date, h.time, h.location, h.role, h.status, h.participants, h.rating ?? '']),
+    ];
+    const csv = rows.map((r) => r.map(esc).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `kiky-history-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="p-4 lg:p-6 max-w-6xl mx-auto">
       {/* Header */}
@@ -88,7 +110,7 @@ const HistoryPage = () => {
           </h1>
           <p className="text-dark-400">Your past activities and stats</p>
         </div>
-        <button className="btn-outline flex items-center gap-2">
+        <button onClick={exportHistory} className="btn-outline flex items-center gap-2">
           <FiDownload className="w-4 h-4" />
           Export
         </button>

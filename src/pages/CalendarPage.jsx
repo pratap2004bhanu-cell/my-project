@@ -1,17 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
-  FiCalendar, FiClock, FiMapPin, FiUsers, FiPlus,
-  FiChevronLeft, FiChevronRight, FiTarget
+  FiClock, FiMapPin, FiUsers, FiPlus,
+  FiChevronLeft, FiChevronRight
 } from 'react-icons/fi';
-import { useAuth } from '../context/AuthContext';
 import { normalizeActivity } from '../utils/normalize';
 import api from '../api';
 
 const CalendarPage = () => {
-  const { user } = useAuth();
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [viewMode, setViewMode] = useState('month');
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
 

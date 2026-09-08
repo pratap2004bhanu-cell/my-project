@@ -1,16 +1,35 @@
 import { Router } from 'express';
 import multer from 'multer';
 import Message from '../models/Message.js';
+import Activity from '../models/Activity.js';
+import Community from '../models/Community.js';
 import { protect } from '../middleware/auth.js';
 import { notify } from '../utils/notify.js';
 import { storeFile } from '../config/gridfs.js';
+import { chatFileFilter, isImageBuffer } from '../utils/uploads.js';
 
 const router = Router();
 
 const chatUpload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter: chatFileFilter,
 });
+
+// Can the user access this activity's group chat? (creator or joined participant)
+const canAccessActivity = async (activityId, userId) => {
+  const activity = await Activity.findById(activityId).select('creator participants');
+  if (!activity) return false;
+  if (String(activity.creator) === String(userId)) return true;
+  return (activity.participants || []).some((p) => String(p.user) === String(userId));
+};
+
+const isCommunityMember = async (communityId, userId) => {
+  const community = await Community.findById(communityId).select('members isPublic');
+  if (!community) return false;
+  if (community.isPublic) return true;
+  return (community.members || []).some((m) => String(m.user) === String(userId));
+};
 
 // Upload a chat attachment (any file type, max 10MB) -> stored in MongoDB GridFS
 router.post('/upload', protect, (req, res) => {
@@ -21,6 +40,9 @@ router.post('/upload', protect, (req, res) => {
     }
     if (!req.file) {
       return res.status(400).json({ success: false, error: 'No file uploaded' });
+    }
+    if (/^image\//.test(req.file.mimetype) && !isImageBuffer(req.file.buffer)) {
+      return res.status(400).json({ success: false, error: 'The uploaded file is not a valid image' });
     }
     try {
       const id = await storeFile({
@@ -95,6 +117,9 @@ router.get('/:userId', protect, async (req, res) => {
 // Get activity group messages
 router.get('/activity/:activityId', protect, async (req, res) => {
   try {
+    if (!(await canAccessActivity(req.params.activityId, req.user._id))) {
+      return res.status(403).json({ success: false, error: 'You are not part of this activity' });
+    }
     const messages = await Message.find({ activity: req.params.activityId })
       .populate('sender', 'name avatar')
       .sort({ createdAt: -1 })
@@ -109,6 +134,9 @@ router.get('/activity/:activityId', protect, async (req, res) => {
 // Get community group messages
 router.get('/community/:communityId', protect, async (req, res) => {
   try {
+    if (!(await isCommunityMember(req.params.communityId, req.user._id))) {
+      return res.status(403).json({ success: false, error: 'You are not a member of this community' });
+    }
     const messages = await Message.find({ community: req.params.communityId })
       .populate('sender', 'name avatar')
       .sort({ createdAt: -1 })
@@ -123,6 +151,9 @@ router.get('/community/:communityId', protect, async (req, res) => {
 // Send community message (REST fallback)
 router.post('/community/:communityId', protect, async (req, res) => {
   try {
+    if (!(await isCommunityMember(req.params.communityId, req.user._id))) {
+      return res.status(403).json({ success: false, error: 'You are not a member of this community' });
+    }
     const message = await Message.create({
       sender: req.user._id,
       community: req.params.communityId,
@@ -140,11 +171,18 @@ router.post('/community/:communityId', protect, async (req, res) => {
 // Send message (REST fallback)
 router.post('/', protect, async (req, res) => {
   try {
+    if (req.body.activity && !(await canAccessActivity(req.body.activity, req.user._id))) {
+      return res.status(403).json({ success: false, error: 'You are not part of this activity' });
+    }
+    const content = typeof req.body.content === 'string' ? req.body.content.trim() : '';
+    if (!content && !req.body.attachment) {
+      return res.status(400).json({ success: false, error: 'Message content is required' });
+    }
     const message = await Message.create({
       sender: req.user._id,
       receiver: req.body.receiver,
       activity: req.body.activity,
-      content: req.body.content || '',
+      content,
       attachment: req.body.attachment,
     });
 

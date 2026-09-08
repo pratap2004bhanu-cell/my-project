@@ -2,7 +2,24 @@ import { Server } from 'socket.io';
 import jwt from 'jsonwebtoken';
 import Message from '../models/Message.js';
 import User from '../models/User.js';
+import Activity from '../models/Activity.js';
+import Event from '../models/Event.js';
+import Community from '../models/Community.js';
 import { notify } from '../utils/notify.js';
+
+const isActivityMember = (activity, userId) =>
+  String(activity?.creator) === String(userId) ||
+  (activity?.participants || []).some((p) => String(p.user) === String(userId));
+
+const isEventParticipant = (event, userId) => {
+  if (String(event?.organizer?._id || event?.organizer) === String(userId)) return true;
+  return (event?.attendees || []).some(
+    (a) => a.status !== 'left' && String(a.user?._id || a.user) === String(userId)
+  );
+};
+
+const isCommunityMember = (community, userId) =>
+  (community?.members || []).some((m) => String(m.user) === String(userId));
 
 const configureSocket = (io) => {
   // Auth middleware for Socket.io
@@ -29,8 +46,11 @@ const configureSocket = (io) => {
     socket.join(socket.user._id.toString());
 
     // Join activity room
-    socket.on('activity:join', (activityId) => {
-      socket.join(`activity:${activityId}`);
+    socket.on('activity:join', async (activityId) => {
+      const activity = await Activity.findById(activityId).select('creator participants').lean();
+      if (activity && isActivityMember(activity, socket.user._id)) {
+        socket.join(`activity:${activityId}`);
+      }
     });
 
     // Leave activity room
@@ -39,8 +59,11 @@ const configureSocket = (io) => {
     });
 
     // Join community room
-    socket.on('community:join', (communityId) => {
-      socket.join(`community:${communityId}`);
+    socket.on('community:join', async (communityId) => {
+      const community = await Community.findById(communityId).select('members').lean();
+      if (community && isCommunityMember(community, socket.user._id)) {
+        socket.join(`community:${communityId}`);
+      }
     });
 
     // Leave community room
@@ -49,8 +72,11 @@ const configureSocket = (io) => {
     });
 
     // Join event room
-    socket.on('event:join', (eventId) => {
-      socket.join(`event:${eventId}`);
+    socket.on('event:join', async (eventId) => {
+      const event = await Event.findById(eventId).select('organizer attendees').lean();
+      if (event && isEventParticipant(event, socket.user._id)) {
+        socket.join(`event:${eventId}`);
+      }
     });
 
     // Leave event room
@@ -61,10 +87,14 @@ const configureSocket = (io) => {
     // Event discussion message
     socket.on('event:message', async (data) => {
       try {
+        const event = await Event.findById(data.eventId).select('organizer attendees').lean();
+        if (!event || !isEventParticipant(event, socket.user._id)) {
+          return socket.emit('error', { message: 'You are not part of this event' });
+        }
         const message = await Message.create({
           sender: socket.user._id,
           event: data.eventId,
-          content: data.content || '',
+          content: typeof data.content === 'string' ? data.content.trim() : '',
           attachment: data.attachment,
         });
 
@@ -78,10 +108,14 @@ const configureSocket = (io) => {
     // Community group message
     socket.on('community:message', async (data) => {
       try {
+        const community = await Community.findById(data.communityId).select('members').lean();
+        if (!community || !isCommunityMember(community, socket.user._id)) {
+          return socket.emit('error', { message: 'You are not a member of this community' });
+        }
         const message = await Message.create({
           sender: socket.user._id,
           community: data.communityId,
-          content: data.content || '',
+          content: typeof data.content === 'string' ? data.content.trim() : '',
           attachment: data.attachment,
         });
 
@@ -127,10 +161,14 @@ const configureSocket = (io) => {
     // Activity group message
     socket.on('activity:message', async (data) => {
       try {
+        const activity = await Activity.findById(data.activityId).select('creator participants').lean();
+        if (!activity || !isActivityMember(activity, socket.user._id)) {
+          return socket.emit('error', { message: 'You are not part of this activity' });
+        }
         const message = await Message.create({
           sender: socket.user._id,
           activity: data.activityId,
-          content: data.content || '',
+          content: typeof data.content === 'string' ? data.content.trim() : '',
           attachment: data.attachment,
         });
 
@@ -141,18 +179,24 @@ const configureSocket = (io) => {
       }
     });
 
-    // Activity update (participant joined/left)
-    socket.on('activity:update', (data) => {
-      io.to(`activity:${data.activityId}`).emit('activity:update', data);
+    // Activity update (participant joined/left) — only members may broadcast
+    socket.on('activity:update', async (data) => {
+      const activity = await Activity.findById(data.activityId).select('creator participants').lean();
+      if (activity && isActivityMember(activity, socket.user._id)) {
+        io.to(`activity:${data.activityId}`).emit('activity:update', data);
+      }
     });
 
-    // Location sharing
-    socket.on('location:share', (data) => {
-      io.to(`activity:${data.activityId}`).emit('location:update', {
-        userId: socket.user._id,
-        lat: data.lat,
-        lng: data.lng,
-      });
+    // Location sharing — only members may publish their location into an activity
+    socket.on('location:share', async (data) => {
+      const activity = await Activity.findById(data.activityId).select('creator participants').lean();
+      if (activity && isActivityMember(activity, socket.user._id)) {
+        io.to(`activity:${data.activityId}`).emit('location:update', {
+          userId: socket.user._id,
+          lat: data.lat,
+          lng: data.lng,
+        });
+      }
     });
 
     // Read receipts: mark the conversation as read + notify the sender

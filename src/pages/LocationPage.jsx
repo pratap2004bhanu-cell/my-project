@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, lazy, Suspense } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   FiMapPin, FiNavigation, FiUsers, FiClock,
   FiShare2, FiSettings, FiEye, FiEyeOff, FiRefreshCw
@@ -143,9 +144,9 @@ const LocationPage = () => {
             <FiShare2 className="w-4 h-4" />
             {isSharing ? 'Sharing On' : 'Share Location'}
           </button>
-          <button className="btn-icon">
+          <Link to="/settings" className="btn-icon">
             <FiSettings className="w-5 h-5" />
-          </button>
+          </Link>
         </div>
       </div>
 

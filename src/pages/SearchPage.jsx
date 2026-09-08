@@ -12,6 +12,7 @@ const SearchPage = () => {
   const [searchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
   const [showFilters, setShowFilters] = useState(false);
+  const [applyTick, setApplyTick] = useState(0);
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -66,7 +67,7 @@ const SearchPage = () => {
     load();
     return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters.category]);
+  }, [filters.category, applyTick]);
 
   const categories = [
     { id: 'all', name: 'All Activities', emoji: '🎯' },
@@ -138,6 +139,7 @@ const SearchPage = () => {
         if (!haystack.includes(q)) return false;
       }
       if (filters.category !== 'all' && activity.category !== filters.category) return false;
+      if (filters.distance !== 10 && activity.distanceNum != null && activity.distanceNum > filters.distance) return false;
       if (filters.date !== 'any' && activity.dateRaw) {
         const bucket = dateBucket(activity.dateRaw);
         if (bucket !== filters.date) return false;
@@ -327,7 +329,8 @@ const SearchPage = () => {
           {/* Filter Actions */}
           <div className="flex items-center justify-between mt-6 pt-4 border-t border-dark-700/50">
             <button
-              onClick={() => setFilters({
+              onClick={() => {
+                setFilters({
                 category: 'all',
                 distance: 10,
                 date: 'any',
@@ -336,12 +339,18 @@ const SearchPage = () => {
                 maxParticipants: 100,
                 activityType: 'all',
                 sortBy: 'relevance',
-              })}
+                });
+                setApplyTick((t) => t + 1);
+              }}
               className="text-dark-400 hover:text-white text-sm"
             >
               Clear all filters
             </button>
-            <button className="btn-primary text-sm">
+            <button
+              type="button"
+              onClick={() => { setShowFilters(false); setApplyTick((t) => t + 1); }}
+              className="btn-primary text-sm"
+            >
               Apply Filters
             </button>
           </div>

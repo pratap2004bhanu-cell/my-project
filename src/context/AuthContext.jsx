@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import api from '../api';
+import api, { setToken, clearTokens, tokenStore } from '../api';
 import { getDeviceName } from '../utils/deviceInfo';
 
 const AuthContext = createContext(null);
@@ -10,14 +10,13 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const initAuth = async () => {
-      const token = localStorage.getItem('token');
+      const token = tokenStore();
       if (token) {
         try {
           const res = await api.get('/auth/me');
           setUser(res.data.user);
         } catch {
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
+          clearTokens();
         }
       }
       setLoading(false);
@@ -25,7 +24,7 @@ export const AuthProvider = ({ children }) => {
     initAuth();
   }, []);
 
-  const login = async (email, password) => {
+  const login = async (email, password, remember = true) => {
     try {
       const res = await api.post('/auth/login', { email, password, deviceName: getDeviceName() });
       if (res.data.twoFactorRequired) {
@@ -35,9 +34,10 @@ export const AuthProvider = ({ children }) => {
           challengeToken: res.data.challengeToken,
           emailConfigured: res.data.emailConfigured,
           devCode: res.data.devCode,
+          remember,
         };
       }
-      localStorage.setItem('token', res.data.token);
+      setToken(res.data.token, remember);
       setUser(res.data.user);
       return { success: true };
     } catch (error) {
@@ -45,14 +45,14 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const complete2FALogin = async (code, challengeToken) => {
+  const complete2FALogin = async (code, challengeToken, remember = true) => {
     try {
       const res = await api.post('/auth/login/2fa', {
         code,
         challengeToken,
         deviceName: getDeviceName(),
       });
-      localStorage.setItem('token', res.data.token);
+      setToken(res.data.token, remember);
       setUser(res.data.user);
       return { success: true };
     } catch (error) {
@@ -72,7 +72,7 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     try {
       const res = await api.post('/auth/register', { ...userData, deviceName: getDeviceName() });
-      localStorage.setItem('token', res.data.token);
+      setToken(res.data.token, true);
       setUser(res.data.user);
       return { success: true };
     } catch (error) {
@@ -148,19 +148,18 @@ export const AuthProvider = ({ children }) => {
 
   const completeOAuth = async (token) => {
     try {
-      localStorage.setItem('token', token);
+      setToken(token, true);
       const res = await api.get('/auth/me');
       setUser(res.data.user);
       return { success: true };
     } catch (error) {
-      localStorage.removeItem('token');
+      clearTokens();
       return { success: false, error: error.response?.data?.error || 'OAuth login failed' };
     }
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    clearTokens();
     setUser(null);
   };
 
@@ -177,8 +176,7 @@ export const AuthProvider = ({ children }) => {
   const deleteAccount = async () => {
     try {
       await api.delete('/api/users/me');
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      clearTokens();
       setUser(null);
       return { success: true };
     } catch (error) {
