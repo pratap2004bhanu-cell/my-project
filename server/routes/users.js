@@ -40,8 +40,17 @@ const router = Router();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const uploadDir = path.join(__dirname, '..', 'uploads');
 
+// Friend lists per user id (used to compute mutual connections cheaply)
+const buildMutualMap = async (ids, meFriends) => {
+  if (!ids.length) return {};
+  const users = await User.find({ _id: { $in: ids } }).select('_id friends');
+  const map = {};
+  users.forEach((u) => { map[String(u._id)] = (u.friends || []).map(String); });
+  return map;
+};
+
 // Annotate user documents with friendship/request state relative to `me`
-const annotateList = (me, users) => {
+const annotateList = (me, users, mutualMap = null) => {
   const friends = (me?.friends || []).map(String);
   const sent = (me?.requestsSent || []).map(String);
   const received = (me?.requestsReceived || []).map(String);
@@ -53,6 +62,7 @@ const annotateList = (me, users) => {
       isFriend: friends.includes(id),
       requestSent: sent.includes(id),
       requestReceived: received.includes(id),
+      ...(mutualMap ? { mutuals: (mutualMap[id] || []).filter((f) => friends.includes(f)).length } : {}),
     };
   });
 };
@@ -149,7 +159,8 @@ router.get('/nearby', protect, async (req, res) => {
     }).select('name avatar bio interests location status stats');
     const me = await User.findById(req.user._id).select('friends requestsSent requestsReceived');
 
-    res.json({ success: true, people: annotateList(me, people) });
+    const mutualMap = await buildMutualMap(people.map((p) => p._id), (me.friends || []).map(String));
+    res.json({ success: true, people: annotateList(me, people, mutualMap) });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
@@ -163,7 +174,8 @@ router.get('/leaderboard', protect, async (req, res) => {
       .sort({ 'stats.activitiesJoined': -1, 'stats.streak': -1 })
       .limit(20);
     const me = await User.findById(req.user._id).select('friends requestsSent requestsReceived');
-    res.json({ success: true, users: annotateList(me, users) });
+    const mutualMap = await buildMutualMap(users.map((u) => u._id), (me.friends || []).map(String));
+    res.json({ success: true, users: annotateList(me, users, mutualMap) });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
@@ -382,8 +394,9 @@ router.get('/match/:userId', protect, async (req, res) => {
       .select('name avatar bio interests location status stats')
       .limit(20);
     const me = await User.findById(req.user._id).select('friends requestsSent requestsReceived');
+    const mutualMap = await buildMutualMap(matches.map((m) => m._id), (me.friends || []).map(String));
 
-    res.json({ success: true, matches: annotateList(me, matches) });
+    res.json({ success: true, matches: annotateList(me, matches, mutualMap) });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }

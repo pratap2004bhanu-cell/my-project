@@ -54,7 +54,7 @@ const PeoplePage = () => {
             compatibility: Math.min(99, 55 + shared * 12),
             activities: n.activitiesCount,
             rating: n.rating ? n.rating.toFixed(1) : 'New',
-            mutualConnections: 0,
+            mutualConnections: n.mutuals ?? 0,
             isFriend: n.isFriend,
             requestSent: n.requestSent,
             requestReceived: n.requestReceived,

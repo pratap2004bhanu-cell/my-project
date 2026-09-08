@@ -19,6 +19,14 @@ const DashboardPage = () => {
   const [savingLocation, setSavingLocation] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const myInterests = (user?.interests || []).map((i) => i.toLowerCase());
+
+  const interestScore = (activity) => {
+    const cat = (activity.category || '').toLowerCase();
+    if (myInterests.includes(cat)) return 12;
+    return 0;
+  };
+
   const load = async () => {
     setLoading(true);
     try {
@@ -31,7 +39,14 @@ const DashboardPage = () => {
       const acts = ((actRes.data.activities || []).map(normalizeActivity))
         .filter((a) => a.status === 'upcoming' || a.status === 'ongoing');
       setHappeningNearYou(acts.slice(0, 3));
-      setRecommendedForYou(acts.slice(3, 6));
+      setRecommendedForYou(
+        acts.slice(3, 12)
+          .sort((a, b) =>
+            (interestScore(b) + Math.min(8, b.participants * 2)) -
+            (interestScore(a) + Math.min(8, a.participants * 2))
+          )
+          .slice(0, 3)
+      );
       setNeedsLocation(!pos);
 
       if (pos && !hasRealCoords(profileCoords)) {
@@ -51,8 +66,9 @@ const DashboardPage = () => {
           params: { lat: pos.lat, lng: pos.lng, radius: 25 },
         });
         setPeopleYouMayLike((pplRes.data.people || []).map((p) => {
-          const n = normalizeUser(p);
-          return { ...n, compatibility: 60 + (n.name.length % 35) };
+          const n = normalizeUser(p, { distance: p.distance });
+          const shared = (n.interests || []).filter((i) => myInterests.includes(i.toLowerCase())).length;
+          return { ...n, compatibility: Math.min(98, 45 + shared * 17 + (n.isFriend ? 10 : 0)) };
         }).slice(0, 3));
       }
     } catch (err) {
@@ -88,13 +104,20 @@ const DashboardPage = () => {
   };
 
   const quickActions = [
-    { emoji: '🏏', name: 'Cricket', color: 'from-green-500 to-emerald-600' },
-    { emoji: '☕', name: 'Coffee', color: 'from-amber-500 to-orange-600' },
-    { emoji: '🎮', name: 'Gaming', color: 'from-violet-500 to-purple-600' },
-    { emoji: '🏋️', name: 'Gym', color: 'from-red-500 to-pink-600' },
-    { emoji: '🎬', name: 'Movie', color: 'from-pink-500 to-rose-600' },
-    { emoji: '🚶', name: 'Walking', color: 'from-teal-500 to-cyan-600' },
+    { emoji: '🏏', name: 'Cricket', category: 'cricket', color: 'from-green-500 to-emerald-600' },
+    { emoji: '☕', name: 'Coffee', category: 'coffee', color: 'from-amber-500 to-orange-600' },
+    { emoji: '🎮', name: 'Gaming', category: 'gaming', color: 'from-violet-500 to-purple-600' },
+    { emoji: '🏋️', name: 'Gym', category: 'gym', color: 'from-red-500 to-pink-600' },
+    { emoji: '🎬', name: 'Movie', category: 'movies', color: 'from-pink-500 to-rose-600' },
+    { emoji: '🚶', name: 'Walking', category: 'walking', color: 'from-teal-500 to-cyan-600' },
   ];
+
+  const greeting = (() => {
+    const h = new Date().getHours();
+    if (h < 12) return 'Good morning';
+    if (h < 17) return 'Good afternoon';
+    return 'Good evening';
+  })();
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6 lg:py-8 max-w-6xl mx-auto">
@@ -111,7 +134,7 @@ const DashboardPage = () => {
             </span>
           </div>
           <h1 className="text-2xl lg:text-3xl font-display font-extrabold text-white leading-tight">
-            Good morning,{' '}
+            {greeting},{' '}
             <span className="gradient-text">{user?.name?.split(' ')[0]}</span>{' '}
             👋
           </h1>
@@ -173,12 +196,12 @@ const DashboardPage = () => {
         <h2 className="text-base font-semibold text-white mb-5">
           Quick Actions
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          {quickActions.slice(0, 4).map((action) => (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+          {quickActions.map((action) => (
             <Link
               key={action.name}
-              to={`/create-activity?category=${action.name.toLowerCase()}`}
-              className="flex items-center gap-4 p-5 rounded-2xl glass-strong hover-lift group"
+              to={`/create-activity?category=${action.category}`}
+              className="flex flex-col items-center gap-3 p-5 rounded-2xl glass-strong hover-lift group"
             >
               <span className="text-3xl group-hover:scale-125 transition-transform">{action.emoji}</span>
               <span className="text-sm text-white/85 font-medium">{action.name}</span>
@@ -206,7 +229,18 @@ const DashboardPage = () => {
                   Loading nearby activities...
                 </div>
               ) : happeningNearYou.length === 0 ? (
-                <p className="text-dark-400 text-sm p-2">No upcoming activities yet. Create one to get started!</p>
+                <div className="rounded-2xl glass-strong p-6 text-center">
+                  <span className="text-4xl inline-block mb-3">🗓️</span>
+                  <p className="text-dark-300 text-sm mb-4">No upcoming activities nearby yet.</p>
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                    <Link to="/explore" className="btn-outline text-sm px-4 py-2.5 flex items-center gap-2">
+                      <FiMapPin className="w-4 h-4" /> Explore Activities
+                    </Link>
+                    <Link to="/create-activity" className="btn-primary text-sm px-4 py-2.5 flex items-center gap-2">
+                      <FiPlus className="w-4 h-4" /> Create One
+                    </Link>
+                  </div>
+                </div>
               ) : happeningNearYou.map((activity) => (
                 <Link
                   key={activity.id}
@@ -258,7 +292,10 @@ const DashboardPage = () => {
                   Loading recommendations...
                 </p>
               ) : recommendedForYou.length === 0 ? (
-                <p className="text-dark-400 text-sm p-2 col-span-3">More suggestions will appear here.</p>
+                <div className="col-span-3 rounded-2xl glass-strong p-6 text-center">
+                  <span className="text-3xl inline-block mb-2">✨</span>
+                  <p className="text-dark-400 text-sm">More suggestions will appear here as activities are added.</p>
+                </div>
               ) : recommendedForYou.map((activity) => (
                 <Link
                   key={activity.id}
@@ -294,16 +331,27 @@ const DashboardPage = () => {
             
             <div className="space-y-5">
               {peopleYouMayLike.length === 0 ? (
-                <p className="text-dark-400 text-sm">
-                  {loading ? 'Finding people near you...' : 'No people nearby yet. Check back soon!'}
-                </p>
+                <div>
+                  <p className="text-dark-400 text-sm">
+                    {loading ? 'Finding people near you...' : 'No people nearby yet.'}
+                  </p>
+                  <Link to="/people" className="btn-outline text-xs px-4 py-2 mt-4 inline-flex items-center gap-2">
+                    <FiUsers className="w-4 h-4" /> Discover People
+                  </Link>
+                </div>
               ) : peopleYouMayLike.map((person) => (
                 <div key={person.id} className="flex items-center gap-4">
-                  <div className="w-11 h-11 rounded-full bg-gradient-to-br from-lime-500 to-electric-500 flex items-center justify-center text-white font-bold flex-shrink-0">
-                    {person.name[0]}
-                  </div>
+                  <Link to={`/users/${person.id}`} className="flex-shrink-0">
+                    <div className="w-11 h-11 rounded-full bg-gradient-to-br from-lime-500 to-electric-500 flex items-center justify-center text-white font-bold overflow-hidden">
+                      {person.avatar
+                        ? <img src={person.avatar} alt={person.name} className="w-full h-full object-cover" />
+                        : person.name[0]}
+                    </div>
+                  </Link>
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-white">{person.name}</p>
+                    <Link to={`/users/${person.id}`} className="font-semibold text-white hover:text-lime-400 transition-colors">
+                      {person.name}
+                    </Link>
                     <p className="text-xs text-dark-400 truncate mt-0.5">{(person.interests || []).join(' • ') || 'Exploring'}</p>
                     <div className="flex items-center gap-2 mt-1">
                       <span className="text-xs text-dark-400">{person.distance || person.location}</span>
@@ -311,13 +359,13 @@ const DashboardPage = () => {
                     </div>
                   </div>
                   <Link to={`/chat/${person.id}`} className="btn-icon w-10 h-10">
-                    <FiPlus className="w-4 h-4" />
+                    <FiUsers className="w-4 h-4" />
                   </Link>
                 </div>
               ))}
             </div>
             
-            <Link to="/explore" className="block text-center text-sm text-lime-400 hover:text-lime-300 font-medium mt-6">
+            <Link to="/people" className="block text-center text-sm text-lime-400 hover:text-lime-300 font-medium mt-6">
               Discover more people
             </Link>
           </div>

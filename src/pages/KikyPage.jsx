@@ -213,8 +213,22 @@ const KikyPage = () => {
           </div>
 
           {matches.length === 0 ? (
-            <div className="card text-center py-12 text-dark-400">
-              No activities nearby right now. Try a wider radius or check back soon.
+            <div className="card text-center py-12">
+              <span className="text-5xl inline-block mb-3">⚡</span>
+              <p className="text-dark-400 mb-5">No activities nearby right now. Try a wider radius, or just kick one off yourself.</p>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                <button onClick={loadMatches} className="btn-outline text-sm px-4 py-2.5 flex items-center gap-2">
+                  <FiRefreshCw className="w-4 h-4" />
+                  Retry Now
+                </button>
+                <button
+                  onClick={() => navigate(`/create-activity${selectedActivities[0] ? `?category=${selectedActivities[0]}` : ''}`)}
+                  className="btn-primary text-sm px-4 py-2.5 flex items-center gap-2"
+                >
+                  <FiZap className="w-4 h-4" />
+                  Start My Own
+                </button>
+              </div>
             </div>
           ) : (
             <div className="space-y-4">

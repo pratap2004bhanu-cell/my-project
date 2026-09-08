@@ -102,6 +102,24 @@ const CreateActivityPage = () => {
     { id: 'social', name: 'Social', emoji: '🤝' },
     { id: 'entertainment', name: 'Entertainment', emoji: '🎪' },
   ];
+  const categoryGradient = {
+    cricket: 'from-green-500 to-emerald-600',
+    coffee: 'from-amber-500 to-orange-600',
+    gaming: 'from-violet-500 to-purple-600',
+    gym: 'from-red-500 to-pink-600',
+    movies: 'from-pink-500 to-rose-600',
+    walking: 'from-teal-500 to-cyan-600',
+    running: 'from-blue-500 to-indigo-600',
+    food: 'from-orange-500 to-red-600',
+    coding: 'from-cyan-500 to-blue-600',
+    music: 'from-purple-500 to-violet-600',
+    travel: 'from-sky-500 to-blue-600',
+    art: 'from-rose-500 to-pink-600',
+    fitness: 'from-lime-500 to-emerald-600',
+    learning: 'from-indigo-500 to-purple-600',
+    social: 'from-lime-500 to-electric-500',
+    entertainment: 'from-fuchsia-500 to-purple-600',
+  };
 
   const activityTypes = [
     { id: 'public', name: 'Public', description: 'Anyone can join', icon: FiGlobe },
@@ -446,12 +464,7 @@ const CreateActivityPage = () => {
             <h2 className="text-lg font-bold text-white mb-4">Preview</h2>
             <div className="bg-dark-800/50 rounded-2xl p-4">
               <div className="flex items-center gap-4">
-                <div className={`w-16 h-16 bg-gradient-to-br ${
-                  categories.find(c => c.id === formData.category)?.id === 'cricket' ? 'from-green-500 to-emerald-600' :
-                  categories.find(c => c.id === formData.category)?.id === 'coffee' ? 'from-amber-500 to-orange-600' :
-                  categories.find(c => c.id === formData.category)?.id === 'gaming' ? 'from-violet-500 to-purple-600' :
-                  'from-lime-500 to-electric-500'
-                } rounded-2xl flex items-center justify-center text-2xl`}>
+                <div className={`w-16 h-16 bg-gradient-to-br ${categoryGradient[formData.category] || 'from-lime-500 to-electric-500'} rounded-2xl flex items-center justify-center text-2xl`}>
                   {selectedCategory?.emoji || '🎯'}
                 </div>
                 <div className="flex-1">
