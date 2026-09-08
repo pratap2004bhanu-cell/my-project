@@ -704,6 +704,13 @@ const ActivityDetailsPage = () => {
                 <p className="text-sm text-dark-400 mb-4">No pending join requests.</p>
               )}
               <button
+                onClick={() => navigate(`/create-activity?edit=${activity.id}`)}
+                className="w-full py-2.5 rounded-xl text-sm font-semibold bg-electric-500/10 text-electric-300 border border-electric-500/25 hover:bg-electric-500/20 flex items-center justify-center gap-2 transition-colors"
+              >
+                <FiEdit3 className="w-4 h-4" />
+                Edit Activity
+              </button>
+              <button
                 onClick={handleCancelActivity}
                 className="w-full py-2.5 rounded-xl text-sm font-semibold bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 flex items-center justify-center gap-2 transition-colors"
               >

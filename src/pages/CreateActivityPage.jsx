@@ -12,6 +12,7 @@ const CreateActivityPage = () => {
   const navigate = useNavigate();
   const [draftId, setDraftId] = useState(searchParams.get('draft'));
   const templateId = searchParams.get('template');
+  const editId = searchParams.get('edit');
   
   const [formData, setFormData] = useState({
     title: '',
@@ -35,6 +36,40 @@ const CreateActivityPage = () => {
     { id: 'weekly', name: 'Weekly', description: 'Repeats every week' },
     { id: 'monthly', name: 'Monthly', description: 'Repeats every month' },
   ];
+
+  // Load activity for editing (?edit=)
+  useEffect(() => {
+    if (!editId) return;
+    api.get(`/api/activities/${editId}`)
+      .then((res) => {
+        const a = res.data.activity;
+        if (a.isCreator !== true) {
+          alert('Only the host can edit this activity.');
+          navigate('/activities/' + editId);
+          return;
+        }
+        const d = new Date(a.date);
+        const localDate = isNaN(d.getTime())
+          ? ''
+          : `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        setFormData({
+          title: a.title || '',
+          category: a.category || '',
+          description: a.description || '',
+          date: localDate,
+          time: (a.time || '').slice(0, 5),
+          location: a.location?.address && a.location.address !== 'Location TBA' ? a.location.address : '',
+          maxParticipants: String(a.maxParticipants || ''),
+          activityType: a.activityType || 'public',
+          recurring: a.recurring || 'none',
+          approvalRequired: !!a.approvalRequired,
+          requirements: a.requirements || '',
+        });
+        if (a.location?.coordinates?.length === 2) setCoords(a.location.coordinates);
+      })
+      .catch(() => alert('Could not load activity for editing.'));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editId]);
 
   // Load draft (?draft=) or template (?template=) if provided
   useEffect(() => {
@@ -181,14 +216,16 @@ const CreateActivityPage = () => {
         requirements: formData.requirements.trim(),
       };
 
-      const res = await api.post('/api/activities', payload);
+      const res = editId
+        ? await api.put(`/api/activities/${editId}`, payload)
+        : await api.post('/api/activities', payload);
 
-      // Remove this draft once published
-      if (draftId) {
+      // Remove this draft once published (new activities only)
+      if (!editId && draftId) {
         api.delete(`/api/drafts/${draftId}`).catch(() => {});
       }
 
-      navigate(`/activities/${res.data.activity._id}`);
+      navigate(`/activities/${editId || res.data.activity._id}`);
     } catch (err) {
       alert(err?.response?.data?.error || 'Failed to create activity. Please try again.');
     } finally {
@@ -210,9 +247,11 @@ const CreateActivityPage = () => {
         </button>
         <div>
           <h1 className="text-2xl lg:text-3xl font-display font-bold text-white">
-            Create Activity
+            {editId ? 'Edit Activity' : 'Create Activity'}
           </h1>
-          <p className="text-dark-400">Plan something and invite others to join</p>
+          <p className="text-dark-400">
+            {editId ? 'Update the details — nobody will lose their spot' : 'Plan something and invite others to join'}
+          </p>
         </div>
       </div>
 
@@ -540,14 +579,16 @@ const CreateActivityPage = () => {
           >
             Cancel
           </button>
-          <button
-            type="button"
-            onClick={() => saveDraft()}
-            className="btn-outline flex-1 flex items-center justify-center gap-2"
-          >
-            <FiSave className="w-4 h-4" />
-            Save Draft
-          </button>
+          {!editId && (
+            <button
+              type="button"
+              onClick={() => saveDraft()}
+              className="btn-outline flex-1 flex items-center justify-center gap-2"
+            >
+              <FiSave className="w-4 h-4" />
+              Save Draft
+            </button>
+          )}
           <button
             type="submit"
             disabled={submitting}
@@ -556,12 +597,12 @@ const CreateActivityPage = () => {
             {submitting ? (
               <>
                 <span className="w-4 h-4 border-2 border-dark-900 border-t-transparent rounded-full animate-spin"></span>
-                Creating...
+                {editId ? 'Saving...' : 'Creating...'}
               </>
             ) : (
               <>
                 <span className="text-lg">🚀</span>
-                Create {formData.recurring !== 'none' ? 'Recurring ' : ''}Activity
+                {editId ? 'Save Changes' : `Create ${formData.recurring !== 'none' ? 'Recurring ' : ''}Activity`}
               </>
             )}
           </button>

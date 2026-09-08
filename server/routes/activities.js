@@ -282,6 +282,9 @@ router.put('/:id', protect, async (req, res) => {
     const updated = await Activity.findByIdAndUpdate(req.params.id, patch, { new: true, runValidators: true })
       .populate('creator', 'name avatar');
 
+    const io = req.app.get('io');
+    if (io) io.to('activity:' + req.params.id).emit('activity:updated', { id: req.params.id });
+
     res.json({ success: true, activity: updated });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
