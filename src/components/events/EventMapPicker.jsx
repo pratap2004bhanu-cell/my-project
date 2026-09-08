@@ -28,7 +28,8 @@ const CenterRef = ({ onCenter }) => {
 };
 
 const EventMapPicker = ({ initial = [28.6139, 77.2090], onSelect, radius = 1, onRadius }) => {
-  const [position, setPosition] = useState(initial);
+  const start = Array.isArray(initial) ? { lat: initial[0], lng: initial[1] } : initial;
+  const [position, setPosition] = useState(start);
   const [picking, setPicking] = useState(false);
   const mapRef = useRef(null);
 
