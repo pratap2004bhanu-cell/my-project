@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState, lazy, Suspense } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   FiArrowLeft, FiCalendar, FiClock, FiMapPin, FiUsers,
-  FiHeart, FiShare2, FiFlag, FiLink, FiEdit, FiX, FiStar,
+  FiHeart, FiShare2, FiFlag, FiLink, FiEdit, FiX, FiStar, FiTrash2,
 } from 'react-icons/fi';
 import api from '../api';
 import { normalizeEvent, normalizeMoment } from '../utils/normalize';
@@ -123,6 +123,17 @@ const EventDetailsPage = () => {
     const res = await act('post', `/api/events/${id}/squads`, body);
     if (res?.squad) return true;
     return false;
+  };
+
+  const removeEvent = async () => {
+    if (!window.confirm(`Delete "${event?.title}"? This permanently removes the event, squads, moments and messages. This cannot be undone.`)) return;
+    try {
+      await api.delete(`/api/events/${id}`);
+      showToast('Event deleted');
+      navigate('/my-events');
+    } catch (err) {
+      showToast(err?.response?.data?.error || 'Could not delete event');
+    }
   };
   const joinSquad = (squad) => act('post', `/api/events/${id}/squads/${squad._id}/join`).then((r) => r && loadDetail());
   const leaveSquad = (squad) => act('delete', `/api/events/${id}/squads/${squad._id}/leave`).then((r) => r && loadDetail());
@@ -262,6 +273,11 @@ const EventDetailsPage = () => {
                 <Link to={`/events/edit/${event.id}`} className="btn-outline px-4 py-2.5 text-sm flex items-center gap-1.5">
                   <FiEdit className="w-4 h-4" /> Edit
                 </Link>
+              )}
+              {event.isOrganizer && (
+                <button onClick={removeEvent} className="btn-outline px-4 py-2.5 text-sm flex items-center gap-1.5 text-hotpink-400 hover:bg-hotpink-500/10">
+                  <FiTrash2 className="w-4 h-4" /> Delete
+                </button>
               )}
               {!event.isOrganizer && (
                 <button onClick={() => setShowReport(true)} className="btn-outline px-4 py-2.5 text-sm flex items-center gap-1.5 text-hotpink-400">

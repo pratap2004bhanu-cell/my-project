@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   FiCalendar, FiPlus, FiUsers, FiEye, FiHeart,
-  FiTrash2, FiRepeat, FiEdit, FiShield, FiArrowRight,
+  FiTrash2, FiRepeat, FiEdit, FiShield, FiArrowRight, FiX,
 } from 'react-icons/fi';
 import api from '../api';
 import { normalizeEvent } from '../utils/normalize';
@@ -65,6 +65,16 @@ const MyEventsPage = () => {
       load();
     } catch (err) {
       setError(err?.response?.data?.error || 'Could not cancel event');
+    }
+  };
+
+  const remove = async (event) => {
+    if (!window.confirm(`Delete "${event.title}"? This permanently removes the event, squads, moments and messages. This cannot be undone.`)) return;
+    try {
+      await api.delete(`/api/events/${event.id}`);
+      load();
+    } catch (err) {
+      setError(err?.response?.data?.error || 'Could not delete event');
     }
   };
 
@@ -193,6 +203,9 @@ const MyEventsPage = () => {
                       <FiTrash2 className="w-4 h-4" />
                     </button>
                   )}
+                  <button onClick={() => remove(event)} className="w-8 h-8 rounded-lg bg-dark-800 flex items-center justify-center text-hotpink-300/80 hover:text-hotpink-400 hover:bg-hotpink-500/10 transition-colors" title="Delete event permanently">
+                    <FiX className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
               )}
