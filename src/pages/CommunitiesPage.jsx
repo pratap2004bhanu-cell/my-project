@@ -234,6 +234,10 @@ const CommunitiesPage = () => {
     }
   };
 
+  const displayCommunities = activeTab === 'discover'
+    ? communities.filter((c) => !c.joined)
+    : communities;
+
   return (
     <div className="p-4 lg:p-6 max-w-7xl mx-auto">
       {/* Header */}
@@ -298,7 +302,7 @@ const CommunitiesPage = () => {
         </div>
       ) : (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {communities.map((community) => (
+          {displayCommunities.map((community) => (
             <CommunityCard
               key={community.id}
               community={community}
@@ -310,7 +314,7 @@ const CommunitiesPage = () => {
       )}
 
       {/* Empty State */}
-      {!loading && communities.length === 0 && (
+      {!loading && displayCommunities.length === 0 && (
         <div className="text-center py-16">
           <span className="text-6xl mb-4 block">👥</span>
           <h3 className="text-xl font-bold text-white mb-2">

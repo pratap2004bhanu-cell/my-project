@@ -221,7 +221,7 @@ const TemplatesPage = () => {
                   </div>
 
                   <div className="flex items-center justify-between text-xs text-dark-400 mb-4">
-                    <span>Used {template.uses} times</span>
+                    <span>Used {template.uses ?? 0} times</span>
                     <span>Last used {formatLastUsed(template.lastUsedAt)}</span>
                   </div>
 
@@ -295,7 +295,7 @@ const TemplatesPage = () => {
                   </div>
 
                   <div className="flex items-center justify-between text-xs text-dark-400 mb-4">
-                    <span>{template.uses.toLocaleString()} uses</span>
+                    <span>{(template.uses ?? 0).toLocaleString()} uses</span>
                   </div>
 
                   <div className="flex gap-2">

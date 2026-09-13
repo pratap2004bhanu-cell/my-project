@@ -11,9 +11,13 @@ const CalendarPage = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let mounted = true;
+    setLoading(true);
+    setError(null);
     api.get('/api/activities?joined=1')
       .then((res) => {
         if (!mounted) return;
@@ -32,10 +36,12 @@ const CalendarPage = () => {
           }));
         setActivities(list);
       })
-      .catch(() => {})
+      .catch(() => {
+        if (mounted) setError('Could not load your calendar. Please try again.');
+      })
       .finally(() => mounted && setLoading(false));
     return () => { mounted = false; };
-  }, []);
+  }, [reloadKey]);
 
   const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -190,6 +196,14 @@ const CalendarPage = () => {
             </h3>
             {loading ? (
               <div className="card p-8 text-center text-dark-400">Loading your activities...</div>
+            ) : error ? (
+              <div className="card text-center py-10">
+                <span className="text-4xl mb-2 block">⚠️</span>
+                <p className="text-dark-300 mb-4">{error}</p>
+                <button onClick={() => setReloadKey((k) => k + 1)} className="btn-primary">
+                  Retry
+                </button>
+              </div>
             ) : getActivityForDate(selectedDate).length > 0 ? (
               <div className="space-y-3">
                 {getActivityForDate(selectedDate).map((activity) => (

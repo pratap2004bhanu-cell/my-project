@@ -122,12 +122,25 @@ const CreateEventPage = () => {
   };
 
   const submit = async (asDraft) => {
+    if (!form.date && !asDraft) {
+      setError('Please choose a date before publishing your event.');
+      return;
+    }
+    let dateIso = '';
+    if (form.date) {
+      const iso = new Date(`${form.date}T12:00:00`);
+      if (Number.isNaN(iso.getTime())) {
+        setError('That date is invalid. Please pick another one.');
+        return;
+      }
+      dateIso = iso.toISOString();
+    }
     const body = new FormData();
     body.append('title', form.title.trim());
     body.append('description', form.description);
     body.append('category', form.category);
     body.append('emoji', form.emoji);
-    body.append('date', new Date(`${form.date}T12:00:00`).toISOString());
+    if (dateIso) body.append('date', dateIso);
     body.append('startTime', form.startTime);
     body.append('endTime', form.endTime);
     body.append('venue', JSON.stringify({

@@ -63,7 +63,7 @@ const SafetyPage = () => {
       .catch(() => {});
   }, []);
 
-  // Safety score based on profile completion + verified email
+  // Safety score based on profile completion, verified email and emergency contacts
   const profileComplete = [
     user?.name,
     user?.email,
@@ -72,7 +72,11 @@ const SafetyPage = () => {
     user?.interests && user.interests.length > 0,
     user?.location && user.location.address,
   ].filter(Boolean).length;
-  const safetyScore = Math.min(100, Math.round((profileComplete / 6) * 100 + (myReports > 0 ? 5 : 0) + (blockedUsers.length > 0 ? 5 : 0)));
+  const safetyScore = Math.min(100, Math.round(
+    (profileComplete / 6) * 85 +
+    (emailConfigured || verifyStatus === 'verified' ? 10 : 0) +
+    (emergencyContacts.length > 0 ? 5 : 0)
+  ));
   const scoreLabel = safetyScore >= 90 ? 'Excellent' : safetyScore >= 70 ? 'Good' : safetyScore >= 50 ? 'Fair' : 'Needs work';
   const barColor = safetyScore >= 70 ? 'from-lime-500 to-emerald-500' : 'from-amber-500 to-orange-500';
 

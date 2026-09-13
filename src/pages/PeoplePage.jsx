@@ -13,6 +13,7 @@ const PeoplePage = () => {
   const { user } = useAuth();
   const [filter, setFilter] = useState('suggestions');
   const [people, setPeople] = useState([]);
+  const [connectedPeople, setConnectedPeople] = useState([]);
   const [connections, setConnections] = useState(() => (user?.friends || []).map(String));
   const [liked, setLiked] = useState({});
   const [busyTarget, setBusyTarget] = useState(null);
@@ -23,6 +24,21 @@ const PeoplePage = () => {
 
   useEffect(() => {
     let cancelled = false;
+    const decoratePerson = (p) => {
+      const n = normalizeUser(p, { distance: p.distance });
+      const shared = (user?.interests || []).filter((i) => (n.interests || []).includes(i)).length;
+      if (n.requestSent) setRequestedIds((prev) => (prev.includes(String(n.id)) ? prev : [...prev, String(n.id)]));
+      return {
+        ...n,
+        compatibility: Math.min(99, 55 + shared * 12),
+        activities: n.activitiesCount,
+        rating: n.rating ? n.rating.toFixed(1) : 'New',
+        mutualConnections: n.mutuals ?? 0,
+        isFriend: n.isFriend,
+        requestSent: n.requestSent,
+        requestReceived: n.requestReceived,
+      };
+    };
     const load = async () => {
       setLoading(true);
       setError(null);
@@ -44,22 +60,20 @@ const PeoplePage = () => {
           const res = await api.get(`/api/users/match/${user?.id}`);
           fetched = res.data.matches || [];
         }
+        const connRes = await api.get('/api/users/me/connections')
+          .then((res2) => res2.data.connections || [])
+          .catch(() => []);
         if (cancelled) return;
-        setPeople(fetched.map((p) => {
-          const n = normalizeUser(p, { distance: p.distance });
-          const shared = (user?.interests || []).filter((i) => (n.interests || []).includes(i)).length;
-          if (n.requestSent) setRequestedIds((prev) => (prev.includes(String(n.id)) ? prev : [...prev, String(n.id)]));
-          return {
-            ...n,
-            compatibility: Math.min(99, 55 + shared * 12),
-            activities: n.activitiesCount,
-            rating: n.rating ? n.rating.toFixed(1) : 'New',
-            mutualConnections: n.mutuals ?? 0,
-            isFriend: n.isFriend,
-            requestSent: n.requestSent,
-            requestReceived: n.requestReceived,
-          };
-        }));
+        setPeople(fetched.map(decoratePerson));
+        setConnectedPeople((connRes || []).map(decoratePerson));
+        setConnections((prev) => {
+          const merged = [...prev];
+          (connRes || []).forEach((c) => {
+            const id = String(c._id || c.id);
+            if (!merged.includes(id)) merged.push(id);
+          });
+          return merged;
+        });
       } catch (err) {
         if (!cancelled) setError(err?.response?.data?.error || 'Failed to load people');
       } finally {
@@ -79,11 +93,9 @@ const PeoplePage = () => {
 
   const friends = connections;
 
-  const filteredPeople = filter === 'suggestions'
-    ? people
-    : filter === 'connected'
-      ? people.filter((p) => friends.includes(String(p.id)))
-      : people.filter((p) => !friends.includes(String(p.id)));
+  const filteredPeople = filter === 'connected'
+    ? connectedPeople
+    : people;
 
   const handleConnect = async (personId) => {
     const pid = String(personId);
@@ -171,6 +183,7 @@ const PeoplePage = () => {
     if (!window.confirm(`Remove ${personName} from your connections?`)) return;
     setBusyTarget(personId);
     setConnections((prev) => prev.filter((id) => id !== pid));
+    setConnectedPeople((prev) => prev.filter((p) => String(p.id) !== pid));
     try {
       await api.delete(`/api/users/${personId}/friend`);
     } catch (err) {

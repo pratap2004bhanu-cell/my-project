@@ -52,7 +52,7 @@ const ActivityDetailsPage = () => {
         ...normalized,
         tags: [cap(normalized.category), cap(normalized.activityType), cap(normalized.recurring !== 'none' ? normalized.recurring : '')].filter(Boolean),
         longDescription: normalized.description || 'No description provided yet.',
-        date: normalized.time || normalized.dateRaw,
+        date: normalized.dateRaw,
         time: normalized.timeRaw || '',
         location: normalized.address,
         distance: normalized.distanceLabel,
@@ -553,7 +553,7 @@ const ActivityDetailsPage = () => {
                 <FiUsers className="w-5 h-5 text-lime-400" />
                 <div>
                   <p className="text-white font-medium">{activity.participants}/{activity.maxParticipants} joined</p>
-                  <p className="text-sm text-dark-400">{activity.maxParticipants - activity.participants} spots left</p>
+                  <p className="text-sm text-dark-400">{Math.max(0, activity.maxParticipants - activity.participants)} spots left</p>
                 </div>
               </div>
             </div>
@@ -563,7 +563,7 @@ const ActivityDetailsPage = () => {
               <div className="h-2 bg-dark-700 rounded-full overflow-hidden">
                 <div 
                   className="h-full bg-gradient-to-r from-lime-500 to-emerald-500 rounded-full"
-                  style={{ width: `${(activity.participants / activity.maxParticipants) * 100}%` }}
+                  style={{ width: `${activity.maxParticipants ? Math.min(100, (activity.participants / activity.maxParticipants) * 100) : 0}%` }}
                 />
               </div>
             </div>

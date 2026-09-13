@@ -6,11 +6,16 @@ import api from '../api';
 const DraftsPage = () => {
   const [drafts, setDrafts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const loadDrafts = () => {
+    setLoading(true);
+    setError(null);
     api.get('/api/drafts')
       .then((res) => setDrafts(res.data.drafts || []))
-      .catch(() => {})
+      .catch((e) => {
+        setError(e?.response?.data?.error || 'Failed to load your drafts');
+      })
       .finally(() => setLoading(false));
   };
 
@@ -46,6 +51,13 @@ const DraftsPage = () => {
 
       {loading ? (
         <div className="card p-8 text-center text-dark-400">Loading your drafts...</div>
+      ) : error ? (
+        <div className="card text-center py-16">
+          <div className="text-5xl mb-4">⚠️</div>
+          <h2 className="text-xl font-bold text-white mb-2">Couldn't load drafts</h2>
+          <p className="text-dark-400 mb-6">{error}</p>
+          <button onClick={loadDrafts} className="btn-primary">Retry</button>
+        </div>
       ) : drafts.length === 0 ? (
         <div className="card text-center py-16">
           <div className="text-5xl mb-4">📝</div>

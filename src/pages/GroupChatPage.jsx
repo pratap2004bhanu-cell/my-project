@@ -32,6 +32,7 @@ const GroupChatPage = () => {
   const typingTimer = useRef(null);
   const typingSent = useRef(false);
   const activeGroupRef = useRef(activeGroup);
+  const prevGroupRef = useRef(activeGroup);
   useEffect(() => { activeGroupRef.current = activeGroup; }, [activeGroup]);
 
   // Load my activities as group chats
@@ -91,9 +92,10 @@ const GroupChatPage = () => {
   // Leave previous room + socket listener for activity messages
   useEffect(() => {
     if (!socket) return;
-    if (socket?.connected && activityId && activeGroup && activeGroup !== activityId) {
-      socket.emit('activity:leave', activityId);
+    if (socket?.connected && prevGroupRef.current && activeGroup && activeGroup !== prevGroupRef.current) {
+      socket.emit('activity:leave', prevGroupRef.current);
     }
+    prevGroupRef.current = activeGroup;
     const onActivityMessage = (m) => {
       if (m.activity && m.activity !== activeGroup) return;
       const msg = mappedMessage(m);
@@ -282,7 +284,7 @@ const GroupChatPage = () => {
                   ) : (
                     <>
                       <FiUsers className="w-3 h-3" />
-                      {activeGroupData?.members} members • {activeGroupData?.activity}
+                      {Array.isArray(activeGroupData?.members) ? activeGroupData.members.length : 0} members • {activeGroupData?.activity}
                     </>
                   )}
                 </p>
@@ -403,7 +405,7 @@ const GroupChatPage = () => {
 
                     <div className="space-y-4">
                       <div>
-                        <h4 className="text-sm font-medium text-dark-300 mb-2">Members ({activeGroupData?.members})</h4>
+                        <h4 className="text-sm font-medium text-dark-300 mb-2">Members ({Array.isArray(activeGroupData?.members) ? activeGroupData.members.length : 0})</h4>
                         <div className="space-y-2">
                           {(activeActivity?.attendees || []).map((member, idx) => (
                             <div key={member.id} className="flex items-center gap-2 p-2 bg-dark-800/50 rounded-lg">

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
-  FiHeart, FiMessageCircle, FiShare2, FiBookmark,
+  FiMessageCircle, FiShare2, FiBookmark,
   FiMapPin, FiCalendar, FiUsers, FiTarget, FiMoreHorizontal,
   FiImage, FiSmile, FiSend, FiPlus
 } from 'react-icons/fi';
@@ -14,8 +14,11 @@ const FeedPage = () => {
   const { user } = useAuth();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const loadFeed = () => {
+    setLoading(true);
+    setError(null);
     api.get('/api/activities')
       .then((res) => {
         const list = (res.data.activities || []).map((raw) => {
@@ -36,11 +39,9 @@ const FeedPage = () => {
               date: a.time,
             },
             content: a.description,
-            likes: a.checkIns.length,
             comments: a.feedback.length,
             shares: 0,
             time: a.dateRaw ? new Date(a.dateRaw).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) + ', ' + (a.timeRaw || '') : a.time,
-            liked: false,
             participants: a.participants,
             joined: a.joined,
             match: a.match,
@@ -50,21 +51,13 @@ const FeedPage = () => {
         });
         setPosts(list);
       })
-      .catch(() => {})
+      .catch(() => setError('Could not load your feed. Please try again.'))
       .finally(() => setLoading(false));
   };
 
   useEffect(() => {
     loadFeed();
   }, []);
-
-  const toggleLike = (postId) => {
-    setPosts(posts.map(post => 
-      post.id === postId 
-        ? { ...post, liked: !post.liked, likes: post.liked ? post.likes - 1 : post.likes + 1 }
-        : post
-    ));
-  };
 
   const toggleSave = async (postId) => {
     const target = posts.find(p => p.id === postId);
@@ -99,7 +92,9 @@ const FeedPage = () => {
     try {
       await api.post(`/api/activities/${postId}/join`);
       loadFeed();
-    } catch (e) {}
+    } catch (e) {
+      alert(e?.response?.data?.error || 'Could not join this activity');
+    }
   };
 
   const me = user?.name?.[0] || 'Y';
@@ -151,6 +146,13 @@ const FeedPage = () => {
       {/* Feed Posts */}
       {loading ? (
         <div className="card p-8 text-center text-dark-400">Loading your feed...</div>
+      ) : error ? (
+        <div className="card p-10 text-center">
+          <span className="text-6xl mb-4 block">⚠️</span>
+          <h3 className="text-xl font-bold text-white mb-2">Couldn't load your feed</h3>
+          <p className="text-dark-400 mb-6">{error}</p>
+          <button onClick={loadFeed} className="btn-primary">Try again</button>
+        </div>
       ) : posts.length === 0 ? (
         <div className="card p-10 text-center">
           <span className="text-6xl mb-4 block">🌱</span>
@@ -219,15 +221,13 @@ const FeedPage = () => {
               {/* Post Actions */}
               <div className="flex items-center justify-between px-4 py-3 border-t border-dark-800">
                 <div className="flex items-center gap-4">
-                  <button
-                    onClick={() => toggleLike(post.id)}
-                    className={`flex items-center gap-1.5 text-sm transition-colors ${
-                      post.liked ? 'text-pink-500' : 'text-dark-400 hover:text-pink-500'
-                    }`}
+                  <span
+                    className="flex items-center gap-1.5 text-sm text-dark-400"
+                    title={`${post.participants} going`}
                   >
-                    <FiHeart className={`w-5 h-5 ${post.liked ? 'fill-current' : ''}`} />
-                    <span>{post.likes}</span>
-                  </button>
+                    <FiUsers className="w-5 h-5 text-lime-400" />
+                    <span>{post.participants}</span>
+                  </span>
                   <Link
                     to={`/activities/${post.id}`}
                     className="flex items-center gap-1.5 text-sm text-dark-400 hover:text-electric-400 transition-colors"

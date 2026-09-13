@@ -72,7 +72,15 @@ const EventsPage = () => {
     Object.keys(params).forEach((k) => params[k] === undefined && delete params[k]);
     try {
       const res = await api.get('/api/events', { params });
-      setEvents((res.data.events || []).map(normalizeEvent));
+      const incoming = (res.data.events || []).map(normalizeEvent);
+      const targetPage = opts.page ?? page;
+      setEvents((prev) => {
+        if (targetPage > 1) {
+          const seen = new Set(prev.map((e) => e.id));
+          return [...prev, ...incoming.filter((e) => !seen.has(e.id))];
+        }
+        return incoming;
+      });
       setTotal(res.data.pagination?.total || 0);
     } catch (err) {
       setError(err?.response?.data?.error || 'Failed to load events');

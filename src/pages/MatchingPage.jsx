@@ -123,7 +123,9 @@ const MatchingPage = () => {
     try {
       await api.post(`/api/users/${id}/friend`);
       setConnected((c) => ({ ...c, [id]: true }));
-    } catch (e) {}
+    } catch (e) {
+      alert(e?.response?.data?.error || 'Could not send connection request');
+    }
   };
 
   const likeUser = async (id) => {
@@ -134,7 +136,9 @@ const MatchingPage = () => {
         setConnected((c) => ({ ...c, [id]: true }));
         alert('It is a match! Go say hi in chat.');
       }
-    } catch (e) {}
+    } catch (e) {
+      alert(e?.response?.data?.error || 'Could not like this person');
+    }
   };
 
   return (
@@ -351,7 +355,7 @@ const MatchingPage = () => {
             <span className="text-6xl mb-4 block">🎯</span>
             <h3 className="text-xl font-bold text-white mb-2">No matches found</h3>
             <p className="text-dark-400 mb-6">Add interests to your profile to find like-minded people</p>
-            <button className="btn-primary">Update Preferences</button>
+            <Link to="/profile" className="btn-primary">Update Preferences</Link>
           </div>
         )
       )}

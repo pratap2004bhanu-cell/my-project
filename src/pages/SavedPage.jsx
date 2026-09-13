@@ -46,7 +46,7 @@ const SavedPage = () => {
             participants: `${n.participants}/${n.maxParticipants}`,
             match: getMatchScore(n),
             host: n.host,
-            savedDate: savedDateLabel(raw.savedAt),
+            savedDate: savedDateLabel(a.savedAt),
           };
         });
         setSavedActivities(list);

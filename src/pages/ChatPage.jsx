@@ -28,6 +28,7 @@ const ChatPage = () => {
   const { refresh: refreshUnread } = useMessageUnread();
   const [message, setMessage] = useState('');
   const [activeChat, setActiveChat] = useState(userId || null);
+  const [conversationSearch, setConversationSearch] = useState('');
   const [conversations, setConversations] = useState([]);
   const [messagesByChat, setMessagesByChat] = useState({});
   const [loading, setLoading] = useState(true);
@@ -40,6 +41,11 @@ const ChatPage = () => {
   const typingSent = useRef(false);
   const activeChatRef = useRef(activeChat);
   useEffect(() => { activeChatRef.current = activeChat; }, [activeChat]);
+
+  // Sync active chat when the URL /chat/:userId param changes
+  useEffect(() => {
+    setActiveChat(userId || null);
+  }, [userId]);
 
   // Load conversations
   useEffect(() => {
@@ -108,7 +114,7 @@ const ChatPage = () => {
   // Fetch profile for a brand-new conversation (no messages yet)
   useEffect(() => {
     if (!activeChat) return;
-    if (conversations.some((c) => c.id === activeChat)) return;
+    if (conversations.some((c) => c.id === activeChat && c.name !== 'New chat')) return;
     if (overrides[activeChat]) return;
     api.get(`/api/users/${activeChat}`)
       .then((res) => {
@@ -260,6 +266,10 @@ const ChatPage = () => {
 
   const activeConversation = conversations.find((c) => c.id === activeChat) || (activeChat ? overrides[activeChat] : null);
 
+  const filteredConversations = conversationSearch
+    ? conversations.filter((c) => (c.name || '').toLowerCase().includes(conversationSearch.toLowerCase()))
+    : conversations;
+
   return (
     <div className="flex chat-viewport lg:h-[calc(100vh-5rem)]">
       {/* Conversations List */}
@@ -270,6 +280,8 @@ const ChatPage = () => {
           <div className="relative">
             <input
               type="text"
+              value={conversationSearch}
+              onChange={(e) => setConversationSearch(e.target.value)}
               placeholder="Search conversations..."
               className="w-full pl-10 pr-4 py-2.5 bg-dark-800/50 border border-dark-700/50 rounded-xl text-white placeholder-dark-400 focus:outline-none focus:border-lime-500/50"
             />
@@ -292,7 +304,13 @@ const ChatPage = () => {
                 Find people
               </button>
             </div>
-          ) : conversations.map((conv) => (
+          ) : filteredConversations.length === 0 ? (
+            <div className="text-center py-14 px-6">
+              <span className="text-5xl block mb-3">🔍</span>
+              <h3 className="text-white font-semibold mb-1">No matches</h3>
+              <p className="text-dark-400 text-sm">No conversations match "{conversationSearch}"</p>
+            </div>
+          ) : filteredConversations.map((conv) => (
             <button
               key={conv.id}
               onClick={() => setActiveChat(conv.id)}

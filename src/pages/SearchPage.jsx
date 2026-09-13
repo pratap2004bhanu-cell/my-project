@@ -437,7 +437,7 @@ const SearchPage = () => {
       )}
 
       {/* Empty State */}
-      {filteredActivities.length === 0 && (
+      {!loading && !error && filteredActivities.length === 0 && (
         <div className="text-center py-16">
           <span className="text-6xl mb-4 block">🔍</span>
           <h3 className="text-xl font-bold text-white mb-2">No activities found</h3>

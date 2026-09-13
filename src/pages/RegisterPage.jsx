@@ -46,6 +46,11 @@ const RegisterPage = () => {
       return;
     }
 
+    if (!/\d/.test(formData.password)) {
+      setError('Password must contain at least one number');
+      return;
+    }
+
     if (!termsAccepted) {
       setError('You must accept the Terms of Service and Privacy Policy');
       return;
