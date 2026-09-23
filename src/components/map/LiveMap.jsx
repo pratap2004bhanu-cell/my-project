@@ -14,7 +14,7 @@ L.Icon.Default.mergeOptions({
 const DEFAULT_CENTER = [28.6139, 77.2090];
 const PALETTE = ['#22c55e', '#ec4899', '#3b82f6', '#f59e0b', '#8b5cf6', '#06b6d4'];
 
-const LiveMap = forwardRef(({ center = DEFAULT_CENTER, friends = [] }, ref) => {
+const LiveMap = forwardRef(({ center = DEFAULT_CENTER, friends = [], activities = [], onSelectActivity = () => {} }, ref) => {
   const mapRef = useRef(null);
   useImperativeHandle(ref, () => ({
     flyTo: (coords, zoom) => {
@@ -84,6 +84,41 @@ const LiveMap = forwardRef(({ center = DEFAULT_CENTER, friends = [] }, ref) => {
           </Marker>
         </div>
       ))}
+
+      {/* Live activities — real nearby, avatar-style markers (Party Map) */}
+      {activities.map((activity) => {
+        const color = activity.color || '#84cc16';
+        const pulse = activity.isActive !== false;
+        return (
+          <div key={activity.id}>
+            {pulse && (
+              <Circle
+                center={activity.position}
+                radius={60}
+                pathOptions={{ color, fillColor: color, fillOpacity: 0.18 }}
+              />
+            )}
+            <Marker position={activity.position}>
+              <Popup>
+                <div className="text-center min-w-[140px]">
+                  <div className="text-2xl mb-1">{activity.emoji}</div>
+                  <strong>{activity.title}</strong>
+                  <p className="text-xs text-dark-400 mt-0.5">{activity.category}</p>
+                  <p className="text-xs text-dark-400">
+                    {activity.distance} • {activity.participants}/{activity.maxParticipants} joined
+                  </p>
+                  <button
+                    onClick={() => onSelectActivity(activity)}
+                    className="btn-primary w-full mt-2 text-xs py-1.5"
+                  >
+                    View & Join
+                  </button>
+                </div>
+              </Popup>
+            </Marker>
+          </div>
+        );
+      })}
     </MapContainer>
   );
 });

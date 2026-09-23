@@ -38,6 +38,12 @@ const LocationPage = () => {
   const [showOthers, setShowOthers] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(new Date());
   const [nearbyFriends, setNearbyFriends] = useState([]);
+  const [nearbyActivities, setNearbyActivities] = useState([]);
+  const [filterCat, setFilterCat] = useState('all');
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [selected, setSelected] = useState(null);
+  const [joiningId, setJoiningId] = useState(null);
+  const [joinedIds, setJoinedIds] = useState(new Set());
   const [updating, setUpdating] = useState(false);
   const [center, setCenter] = useState(() =>
     user?.location?.coordinates && user.location.coordinates[0] !== 0
@@ -90,10 +96,70 @@ const LocationPage = () => {
       .catch(() => setNearbyFriends([]));
   };
 
-  useEffect(() => {
-    loadFriends();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // Real nearby activities for the Party Map overlay + "Happening near you"
+  const loadActivities = () => {
+    if (!center) { setNearbyActivities([]); return; }
+    api.get('/api/activities', {
+      params: { nearby: 1, lat: center[0], lng: center[1], radius: 50 },
+    })
+      .then((res) => {
+        const list = (res.data.activities || []);
+        setNearbyActivities(
+          list
+            .map((a) => normalizeActivity(a))
+            .filter((a) => {
+              if (!a.coordinates || a.coordinates.length < 2) return false;
+              // Spec #22: only mark real locations — skip placeholder/zero coords
+              const [lat, lng] = a.coordinates;
+              if (lat === 0 && lng === 0) return false;
+              const name = a.category || '';
+              const exists = nearbyActivities.some((x) => x.id === a.id);
+              return !exists;
+            })
+        );
+      })
+      .catch(() => setNearbyActivities([]));
+  };
+
+  useEffect(() => { loadActivities(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [centerKey]);
+
+  const PARTY_CATEGORIES = [
+    { id: 'all', label: 'All', emoji: '🔥' },
+    { id: 'sports', label: 'Sports', emoji: '🏏' },
+    { id: 'fitness', label: 'Gym', emoji: '🏋️' },
+    { id: 'gaming', label: 'Gaming', emoji: '🎮' },
+    { id: 'movies', label: 'Movies', emoji: '🎬' },
+    { id: 'food', label: 'Food', emoji: '🍕' },
+    { id: 'music', label: 'Music', emoji: '🎵' },
+    { id: 'coffee', label: 'Coffee', emoji: '☕' },
+  ];
+
+  const filteredNearbyActivities = useMemo(
+    () => (filterCat === 'all' ? nearbyActivities : nearbyActivities.filter((a) => a.category?.toLowerCase() === filterCat)),
+    [filterCat, nearbyActivities]
+  );
+
+  const openSheet = (activity) => {
+    setSelected(activity);
+    setSheetOpen(true);
+  };
+
+  const joinActivity = async (id) => {
+    if (joiningId) return;
+    setJoiningId(id);
+    try {
+      await api.post(`/api/activities/${id}/join`);
+      setJoinedIds((prev) => new Set(prev).add(id));
+      setNearbyActivities((prev) =>
+        prev.map((a) => (a.id === id ? { ...a, participants: a.participants + 1 } : a))
+      );
+      loadActivities();
+    } catch (e) {
+      alert(e?.response?.data?.error || 'Could not join activity');
+    } finally {
+      setJoiningId(null);
+    }
+  };
 
   useEffect(() => {
     const interval = setInterval(() => setLastUpdated(new Date()), 30000);
@@ -155,7 +221,10 @@ const LocationPage = () => {
         <div className="lg:col-span-2">
           <div className="h-[300px] sm:h-[400px] lg:h-[500px] rounded-2xl overflow-hidden border border-dark-700/50">
             <Suspense fallback={<MapLoading />}>
-              <LiveMap ref={mapRef} center={center} friends={showOthers ? nearbyFriends : []} />
+              <LiveMap ref={mapRef} center={center} friends={showOthers ? nearbyFriends : []}
+                activities={nearbyActivities}
+                onSelectActivity={(a) => { setSelectedActivity(a); setSheetOpen(true); }}
+              />
             </Suspense>
           </div>
 
@@ -260,6 +329,79 @@ const LocationPage = () => {
             )}
           </div>
 
+          {/* 🔥 Happening near you — real nearby activities, Party Map cards */}
+          <div className="card p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+                🔥 Happening near you
+              </h2>
+              <span className="text-xs font-medium px-2 py-1 rounded-full bg-lime-500/15 text-lime-400">
+                {nearbyActivities.length} live
+              </span>
+            </div>
+
+            {/* Category filter chips */}
+            {PARTY_CATEGORIES.length > 0 && (
+              <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 mb-3 no-scrollbar">
+                {PARTY_CATEGORIES.map((cat) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => setFilterCat(cat.id)}
+                    className={`shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                      filterCat === cat.id
+                        ? 'bg-lime-500 text-dark-900'
+                        : 'bg-dark-800/60 text-dark-400 hover:text-white hover:bg-dark-700/50'
+                    }`}
+                  >
+                    <span>{cat.emoji}</span>
+                    {cat.label}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {filteredNearbyActivities.length === 0 ? (
+              <p className="text-dark-400 text-center py-6 text-sm">
+                No {filterCat === 'all' ? 'activities' : `${filterCat} activities`} near you right
+                now.{'\n'}
+                Invite friends and create one — it'll appear here when they're in range.
+              </p>
+            ) : (
+              <div className="space-y-3">
+                {filteredNearbyActivities.map((a) => {
+                  const joined = joinedIds.has(a.id);
+                  return (
+                    <div
+                      key={a.id}
+                      className="p-3 rounded-xl bg-dark-800/50 border border-dark-700/40"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div
+                          className="w-11 h-11 rounded-full flex items-center justify-center text-xl shrink-0"
+                          style={{ background: `${a.color}22`, boxShadow: joined ? `0 0 0 2px ${a.color}` : `0 0 12px ${a.color}44` }}
+                        >
+                          {a.emoji}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-medium text-white truncate">{a.title}</h4>
+                          <p className="text-xs text-dark-400 truncate">
+                            {a.distanceLabel} • {a.participantsCount}/{a.maxParticipants} joined
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => openSheet(a)}
+                          className="btn-primary text-xs py-2 px-3 shrink-0"
+                        >
+                          {joined ? 'Joined ✓' : 'Join'}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
           {/* Quick Share */}
           <div className="card p-6">
             <h2 className="text-lg font-semibold text-white mb-4">Quick Share</h2>
@@ -274,6 +416,58 @@ const LocationPage = () => {
             </button>
           </div>
         </div>
+
+        {/* Join bottom-sheet */}
+        {sheetOpen && selected && (
+          <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:px-4">
+            <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setSheetOpen(false)} />
+            <div className="relative w-full max-w-md bg-dark-800 rounded-t-2xl sm:rounded-2xl border border-dark-700/50 p-6 shadow-2xl animate-sheet-up">
+              <button onClick={() => setSheetOpen(false)} className="absolute top-4 right-4 text-dark-400 hover:text-white">
+                <FiX className="w-5 h-5" />
+              </button>
+              <div className="flex items-center gap-4 mb-4">
+                <div
+                  className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl shrink-0"
+                  style={{ background: `${selected.color}22`, boxShadow: `0 0 24px ${selected.color}55` }}
+                >
+                  {selected.emoji}
+                </div>
+                <div className="min-w-0">
+                  <h3 className="text-lg font-semibold text-white truncate">{selected.title}</h3>
+                  <p className="text-sm text-dark-400">{selected.category} • {selected.distanceLabel}</p>
+                </div>
+              </div>
+              <p className="text-sm text-dark-300 mb-4">{selected.description || 'No description'}</p>
+              <div className="flex items-center gap-2 text-sm text-dark-400 mb-1">
+                <FiUsers className="w-4 h-4" />
+                <span>{selected.creatorName || 'Someone'} is hosting</span>
+              </div>
+              <div className="flex justify-between items-center text-sm mb-5">
+                <span className="text-dark-400">{selected.address}</span>
+                <span className={`font-semibold ${selected.participants >= selected.maxParticipants ? 'text-lime-400' : 'text-white'}`}>
+                  {selected.participants}/{selected.maxParticipants}
+                </span>
+              </div>
+              {joinedIds.has(selected.id) ? (
+                <div className="flex items-center justify-center gap-2 py-3 rounded-xl bg-lime-500/15 border border-lime-500/30 text-lime-400 font-medium">
+                  <FiCheck className="w-4 h-4" /> You're in — see you there!
+                </div>
+              ) : (
+                <button
+                  onClick={() => joinActivity(selected.id)}
+                  disabled={joiningId === selected.id || selected.participants >= selected.maxParticipants}
+                  className={`w-full btn-primary disabled:opacity-60 ${selected.participants >= selected.maxParticipants ? 'disabled:bg-dark-700 disabled:text-dark-400' : ''}`}
+                >
+                  {joiningId === selected.id
+                    ? 'Joining…'
+                    : selected.participants >= selected.maxParticipants
+                      ? 'Full — Join waitlist'
+                      : 'Join activity'}
+                </button>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
