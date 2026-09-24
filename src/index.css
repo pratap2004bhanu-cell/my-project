@@ -7,8 +7,9 @@
 
 @layer base {
   body {
-    @apply bg-dark-950 text-white antialiased;
+    @apply text-white antialiased;
     font-family: 'Inter', system-ui, sans-serif;
+    background-color: #05050C;
   }
   
   ::selection {
@@ -951,6 +952,129 @@ html.doodle .btn-ghost {
 html.doodle .btn-ghost:hover {
   background: var(--doodle-highlight);
   color: var(--doodle-ink);
+}
+
+/* ============================================================
+   KIKY PREMIUM DARK — design tokens (default theme)
+   Deep-navy canvas, warm mono surfaces, neon signature accent.
+   Scoped so html.light and html.doodle themes stay untouched.
+   ============================================================ */
+:root {
+  /* Canvas + surfaces — near-black navy, not gray */
+  --kiky-canvas: #05050C;
+  --kiky-canvas-soft: #0A0A14;
+  --kiky-surface: #101020;
+  --kiky-surface-2: #17172A;
+  --kiky-surface-3: #1E1E35;
+
+  /* Ink ramps — monochrome with a cool cast */
+  --kiky-ink: #FFFFFF;
+  --kiky-ink-soft: #B8B8CB;
+  --kiky-ink-faint: #71718C;
+  --kiky-ink-mute: #4A4A63;
+
+  /* Neon signature (the single brand accent) */
+  --kiky-neon: #7CFF6B;
+  --kiky-neon-soft: rgba(124, 255, 107, 0.14);
+  --kiky-cyan: #00E5FF;
+  --kiky-violet: #9D8CFF;
+  --kiky-line: rgba(255, 255, 255, 0.07);
+}
+
+html:not(.light):not(.doodle) body {
+  background: var(--kiky-canvas);
+  color: var(--kiky-ink);
+}
+
+/* Premium flat nav base (replaces heavy aurora by default) */
+html:not(.light):not(.doodle) .page-container,
+html:not(.light):not(.doodle) .auth-container,
+html:not(.light):not(.doodle) .main-content {
+  background: var(--kiky-canvas);
+}
+
+html:not(.light):not(.doodle) .aurora::before {
+  background:
+    radial-gradient(ellipse at 18% 12%, rgba(124, 255, 107, 0.10), transparent 50%),
+    radial-gradient(ellipse at 84% 14%, rgba(0, 229, 255, 0.08), transparent 46%),
+    radial-gradient(ellipse at 62% 88%, rgba(157, 140, 255, 0.08), transparent 48%);
+}
+
+/* Surfaces: remap dark tiles to warm premium navy */
+html:not(.light):not(.doodle) .card,
+html:not(.light):not(.doodle) .card-glow,
+html:not(.light):not(.doodle) .activity-card,
+html:not(.light):not(.doodle) .glass,
+html:not(.light):not(.doodle) .glass-strong,
+html:not(.light):not(.doodle) .auth-card,
+html:not(.light):not(.doodle) .bg-dark-800,
+html:not(.light):not(.doodle) .bg-dark-800\/50,
+html:not(.light):not(.doodle) .bg-dark-800\/80,
+html:not(.light):not(.doodle) .bg-dark-900,
+html:not(.light):not(.doodle) .bg-dark-900\/70,
+html:not(.light):not(.doodle) .bg-dark-900\/80,
+html:not(.light):not(.doodle) .bg-dark-900\/90 {
+  background-color: var(--kiky-surface) !important;
+}
+html:not(.light):not(.doodle) .bg-dark-800\/30,
+html:not(.light):not(.doodle) .bg-dark-900\/50 { background-color: var(--kiky-surface-2) !important; }
+html:not(.light):not(.doodle) .bg-dark-700\/50 { background-color: var(--kiky-surface-3) !important; }
+
+/* Neon replaces lime as the default brand everywhere */
+html:not(.light):not(.doodle) .text-lime-400,
+html:not(.light):not(.doodle) .text-lime-300,
+html:not(.light):not(.doodle) .text-lime-500 { color: var(--kiky-neon) !important; }
+html:not(.light):not(.doodle) .text-electric-400 { color: var(--kiky-violet) !important; }
+html:not(.light):not(.doodle) .text-hotpink-400 { color: var(--kiky-cyan) !important; }
+
+/* Brand gradient wordmark: neon → cyan → violet */
+.kiky-wordmark {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  background: linear-gradient(100deg, var(--kiky-neon), var(--kiky-cyan) 55%, var(--kiky-violet));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Signature: the tiny handwritten-ish KIKY flourish under the wordmark */
+.kiky-signature {
+  font-family: 'Caveat', 'Patrick Hand', cursive;
+  letter-spacing: 0.02em;
+  color: var(--kiky-ink-faint);
+}
+
+/* Footer lockup: KIKY  ·  partypalace.com */
+.kiky-footer {
+  font-size: 0.8rem;
+  color: var(--kiky-ink-mute);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.kiky-footer b {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  color: var(--kiky-ink-soft);
+}
+
+/* Neon button glow (default dark) */
+html:not(.light):not(.doodle) .btn-primary {
+  background: linear-gradient(135deg, var(--kiky-neon), #4AE83A);
+  color: #06080F;
+  box-shadow: 0 14px 34px -14px rgba(124, 255, 107, 0.55);
+}
+html:not(.light):not(.doodle) .btn-secondary {
+  background: linear-gradient(135deg, var(--kiky-cyan), #00B8E6);
+  color: #06080F;
+  box-shadow: 0 14px 34px -14px rgba(0, 229, 255, 0.5);
+}
+html:not(.light):not(.doodle) .btn-accent {
+  background: linear-gradient(135deg, var(--kiky-violet), #7B6CFF);
+  color: #FFFFFF;
+  box-shadow: 0 14px 34px -14px rgba(157, 140, 255, 0.5);
 }
 
 html.doodle .btn-icon {
