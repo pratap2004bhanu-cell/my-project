@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   FiSearch, FiFilter, FiMapPin, FiCalendar, 
@@ -12,12 +12,26 @@ import { useAuth } from '../context/AuthContext';
 
 const ExplorePage = () => {
   const { user } = useAuth();
+  const firstName = (user?.name || '').split(' ')[0] || 'there';
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [viewMode, setViewMode] = useState('grid');
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const hosts = useMemo(() => {
+    const seen = new Set();
+    const list = [];
+    for (const a of activities || []) {
+      const h = a.host || a.hostName;
+      if (h && !seen.has(h)) {
+        seen.add(h);
+        list.push({ name: h, avatar: a.hostAvatar || '', activity: a.title || '', category: a.category || 'social' });
+      }
+    }
+    return list.slice(0, 12);
+  }, [activities]);
+
   const [nearFirst, setNearFirst] = useState(false);
 
   useEffect(() => {
@@ -76,6 +90,64 @@ const ExplorePage = () => {
         </h1>
         <p className="text-dark-400">Discover what's happening around you</p>
       </div>
+
+      {/* Greeting */}
+      <div className="mb-8">
+        <h2 className="text-2xl lg:text-3xl font-display font-bold text-white mb-2">
+          Hey {firstName} 👋
+        </h2>
+        <p className="text-dark-400">What are we getting into today?</p>
+      </div>
+
+      {/* VIBES cards (real category legs, clickable) */}
+      <div className="mb-8">
+        <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-3">Vibes</h3>
+        <div className="flex gap-3 overflow-x-auto pb-2">
+          {categories.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setSelectedCategory(cat.id)}
+              className={`flex flex-col items-center gap-2 px-4 py-3 rounded-2xl whitespace-nowrap transition-all duration-200 bg-dark-800/60 hover:bg-dark-700/60 border border-dark-700/40 min-w-[96px] ${
+                selectedCategory === cat.id ? 'border-lime-500/60' : ''
+              }`}
+            >
+              <span className="text-2xl">{cat.emoji}</span>
+              <span className="text-xs font-semibold text-white">{cat.name}</span>
+              <span className="text-[11px] text-dark-400">
+                {activities.filter((a) => a.category === cat.id).length} near
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* People are active near you — real hosts, no fake data */}
+      {hosts.length > 0 && (
+        <div className="mb-8">
+          <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-3">
+            🔥 People are active near you
+          </h3>
+          <div className="flex gap-4 overflow-x-auto pb-2">
+            {hosts.map((host, i) => (
+              <Link
+                key={host.name + i}
+                to={host.activity ? `/activities/${host.activity.toLowerCase().replace(/\s+/g, '-')}` : '/explore'}
+                className="flex flex-col items-center gap-2 px-3 py-4 rounded-2xl bg-dark-800/60 hover:bg-dark-700/60 border border-dark-700/40 min-w-[88px] transition-all duration-200"
+              >
+                <div className="w-14 h-14 rounded-full bg-gradient-to-br from-lime-500 to-electric-500 flex items-center justify-center text-white text-xl font-bold overflow-hidden">
+                  {host.avatar ? (
+                    <img src={host.avatar} alt={host.name} className="w-full h-full object-cover" />
+                  ) : (
+                    (host.name || '?')[0]
+                  )}
+                </div>
+                <span className="text-xs font-bold text-white truncate w-full text-center">{host.name}</span>
+                <span className="text-[11px] text-dark-400 truncate w-full text-center">{host.activity || 'Host'}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Search and Filters */}
       <div className="flex flex-col sm:flex-row gap-4 mb-6">
