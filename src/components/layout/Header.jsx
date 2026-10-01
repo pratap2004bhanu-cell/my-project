@@ -28,7 +28,7 @@ const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-dark-950/80 backdrop-blur-xl border-b border-dark-800/50">
+    <header className="sticky top-0 z-40 bg-dark-950/90 border-b border-dark-800/50">
       <div className="flex items-center justify-between px-4 lg:px-6 h-16 lg:h-20">
         {/* Logo */}
         <Link to="/dashboard" className="flex items-center gap-2 flex-shrink-0">
@@ -38,13 +38,12 @@ const Header = () => {
         {/* Search - Desktop */}
         <div className="hidden lg:flex items-center flex-1 max-w-md mx-8">
           <form onSubmit={submitSearch} className="relative w-full group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-lime-500/50 via-electric-500/50 to-hotpink-500/50 rounded-xl opacity-0 group-focus-within:opacity-100 blur-sm transition-opacity"></div>
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search activities, people..."
-              className="relative w-full pl-10 pr-4 py-2.5 bg-dark-800/50 border border-dark-700/50 rounded-xl text-white placeholder-dark-400 focus:outline-none focus:border-transparent transition-colors"
+              className="relative w-full pl-10 pr-4 py-2.5 bg-dark-800/50 border border-dark-700/50 rounded-xl text-white placeholder-dark-400 focus:outline-none focus:border-lime-500/50 transition-colors"
             />
             <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-dark-400 group-focus-within:text-lime-400 transition-colors" />
           </form>
@@ -55,7 +54,7 @@ const Header = () => {
           {/* Mobile menu */}
           <button
             onClick={openMenu}
-            className="lg:hidden btn-icon"
+            className="lg:hidden btn-icon -ml-1"
             aria-label="Open menu"
           >
             <FiMenu className="w-5 h-5" />
@@ -87,26 +86,23 @@ const Header = () => {
           </button>
           
           {/* Notifications */}
-          <Link to="/notifications" className="relative btn-icon">
+          <Link to="/notifications" className="relative btn-icon" aria-label="Notifications">
             <FiBell className="w-5 h-5" />
             {unread > 0 && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-hotpink-500 rounded-full text-[10px] font-bold text-white flex items-center justify-center">
+              <span className="absolute -top-0.5 -right-0.5 min-w-4 h-4 px-1 bg-lime-500 text-[10px] font-bold text-dark-950 rounded-full flex items-center justify-center">
                 {unread > 9 ? '9+' : unread}
               </span>
             )}
           </Link>
 
           {/* Profile */}
-          <Link to="/profile" className="flex items-center gap-3">
-            <div className="relative">
-              <RoundAvatar
-                name={user?.name}
-                src={user?.avatar}
-                gradient="from-lime-500 to-electric-500"
-                className="w-10 h-10"
-              />
-              <span className="absolute bottom-0 right-0 w-3 h-3 bg-lime-400 rounded-full border-2 border-dark-950"></span>
-            </div>
+          <Link to="/profile" aria-label="Your profile" className="flex items-center">
+            <RoundAvatar
+              name={user?.name}
+              src={user?.avatar}
+              gradient="from-lime-500 to-electric-500"
+              className="w-9 h-9"
+            />
           </Link>
         </div>
       </div>
