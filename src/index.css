@@ -1378,3 +1378,10 @@ html:not(.light):not(.doodle) .kiky-avatar-pulse {
     transform: translateY(-3px) scale(1.06);
   }
 }
+
+/* Place glyph (parties): the category emoji reads larger than initials */
+html:not(.light):not(.doodle) .kiky-avatar-glyph {
+  font-size: 18px;
+  line-height: 1;
+  background: var(--kiky-surface-2);
+}
