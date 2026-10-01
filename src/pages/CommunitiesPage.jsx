@@ -17,14 +17,14 @@ const CommunityCard = ({ community, onToggleJoin, onOpen }) => {
         <span className="text-5xl drop-shadow-lg group-hover:scale-110 transition-transform">{community.emoji}</span>
         {!community.isPublic && (
           <div className="absolute top-3 right-3 p-1.5 bg-dark-900/50 rounded-lg">
-            <FiLock className="w-4 h-4 text-white" />
+            <FiLock className="w-4 h-4 text-ink" />
           </div>
         )}
       </div>
 
       {/* Content */}
       <div className="p-4" onClick={() => onOpen(community)}>
-        <h3 className="font-bold text-white text-lg mb-1 flex items-center justify-between">
+        <h3 className="font-bold text-ink text-lg mb-1 flex items-center justify-between">
           {community.name}
           <span className="text-dark-400 group-hover:text-lime-400 transition-colors flex items-center gap-1 text-sm">
             Open <FiArrowRight className="w-4 h-4" />
@@ -111,7 +111,7 @@ const CreateCommunityModal = ({ onClose, onCreate }) => {
     <div className="fixed inset-0 bg-dark-900/80 flex items-center justify-center z-50 p-4">
       <div className="card max-w-lg w-full p-6">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-bold text-white">Create Community</h3>
+          <h3 className="text-xl font-bold text-ink">Create Community</h3>
           <button onClick={onClose} className="btn-icon">
             <FiX className="w-5 h-5" />
           </button>
@@ -243,7 +243,7 @@ const CommunitiesPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-display font-bold text-white">
+          <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink">
             Communities
           </h1>
           <p className="text-dark-400">Join groups with shared interests</p>
@@ -317,7 +317,7 @@ const CommunitiesPage = () => {
       {!loading && displayCommunities.length === 0 && (
         <div className="text-center py-16">
           <span className="text-6xl mb-4 block">👥</span>
-          <h3 className="text-xl font-bold text-white mb-2">
+          <h3 className="text-xl font-bold text-ink mb-2">
             {activeTab === 'joined' ? "You haven't joined any communities" : "No communities found"}
           </h3>
           <p className="text-dark-400 mb-6">

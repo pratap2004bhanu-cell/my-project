@@ -252,7 +252,7 @@ const ActivityDetailsPage = () => {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
         <span className="text-6xl mb-4">❌</span>
-        <h1 className="text-xl font-bold text-white mb-2">Activity not found</h1>
+        <h1 className="text-xl font-bold text-ink mb-2">Activity not found</h1>
         <p className="text-dark-400 mb-6">{error}</p>
         <button onClick={() => navigate('/explore')} className="btn-primary">Back to Explore</button>
       </div>
@@ -267,7 +267,7 @@ const ActivityDetailsPage = () => {
   return (
     <div className="p-4 lg:p-6 max-w-4xl mx-auto">
       {/* Back Button */}
-      <Link to="/nearby" className="inline-flex items-center gap-2 text-dark-400 hover:text-white mb-6 transition-colors">
+      <Link to="/nearby" className="inline-flex items-center gap-2 text-dark-400 hover:text-ink mb-6 transition-colors">
         <FiArrowLeft className="w-4 h-4" />
         Back to Nearby
       </Link>
@@ -282,7 +282,7 @@ const ActivityDetailsPage = () => {
             <div className="flex-1">
               <div className="flex items-start justify-between gap-4 mb-2">
                 <div>
-                  <h1 className="text-2xl lg:text-3xl font-display font-bold text-white mb-2">
+                  <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink mb-2">
                     {activity.title}
                   </h1>
                   <div className="flex items-center gap-2">
@@ -364,13 +364,13 @@ const ActivityDetailsPage = () => {
           {/* Tab Content */}
           {activeTab === 'details' && (
             <div className="card p-6">
-              <h2 className="text-lg font-semibold text-white mb-4">About this activity</h2>
+              <h2 className="text-lg font-semibold text-ink mb-4">About this activity</h2>
               <div className="text-dark-300 whitespace-pre-wrap leading-relaxed">
                 {activity.longDescription}
               </div>
 
               <div className="mt-6 pt-6 border-t border-dark-700/50">
-                <h3 className="font-semibold text-white mb-3">Good to know</h3>
+                <h3 className="font-semibold text-ink mb-3">Good to know</h3>
                 {activity.requirements ? (
                   <p className="text-dark-300 whitespace-pre-wrap leading-relaxed">{activity.requirements}</p>
                 ) : (
@@ -392,7 +392,7 @@ const ActivityDetailsPage = () => {
           {activeTab === 'photos' && (
             <div className="card p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-white">
+                <h2 className="text-lg font-semibold text-ink">
                   Photos ({(activity.photos || []).length})
                 </h2>
                 {(activity.isJoined || activity.isCreator) && (
@@ -445,7 +445,7 @@ const ActivityDetailsPage = () => {
 
           {activeTab === 'attendees' && (
             <div className="card p-6">
-              <h2 className="text-lg font-semibold text-white mb-4">
+              <h2 className="text-lg font-semibold text-ink mb-4">
                 Attendees ({activity.participants}/{activity.maxParticipants})
                 {activity.pendingCount > 0 && (
                   <span className="ml-2 text-sm font-normal text-amber-400">+{activity.pendingCount} pending</span>
@@ -463,7 +463,7 @@ const ActivityDetailsPage = () => {
                       />
                     </Link>
                     <Link to={`/users/${attendee.id}`} className="flex-1 hover:text-lime-400 transition-colors">
-                      <h4 className="font-medium text-white">{attendee.name}</h4>
+                      <h4 className="font-medium text-ink">{attendee.name}</h4>
                       <p className="text-xs text-dark-400 capitalize">{attendee.status}</p>
                     </Link>
                     {attendee.status === 'pending' ? (
@@ -502,13 +502,13 @@ const ActivityDetailsPage = () => {
 
           {activeTab === 'reviews' && (
             <div className="card p-6">
-              <h2 className="text-lg font-semibold text-white mb-4">Reviews</h2>
+              <h2 className="text-lg font-semibold text-ink mb-4">Reviews</h2>
               {activity.reviews.length > 0 ? (
                 <div className="space-y-4">
                   {activity.reviews.map((review, idx) => (
                     <div key={idx} className="p-4 bg-dark-800/50 rounded-xl">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="font-medium text-white">{review.user}</span>
+                        <span className="font-medium text-ink">{review.user}</span>
                         <span className="text-sm text-dark-400">{review.date}</span>
                       </div>
                       <div className="flex items-center gap-1 mb-2">
@@ -538,21 +538,21 @@ const ActivityDetailsPage = () => {
               <div className="flex items-center gap-3">
                 <FiCalendar className="w-5 h-5 text-lime-400" />
                 <div>
-                  <p className="text-white font-medium">{activity.date}</p>
+                  <p className="text-ink font-medium">{activity.date}</p>
                   <p className="text-sm text-dark-400">{activity.time}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <FiMapPin className="w-5 h-5 text-lime-400" />
                 <div>
-                  <p className="text-white font-medium">{activity.location}</p>
+                  <p className="text-ink font-medium">{activity.location}</p>
                   <p className="text-sm text-dark-400">{activity.distance}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <FiUsers className="w-5 h-5 text-lime-400" />
                 <div>
-                  <p className="text-white font-medium">{activity.participants}/{activity.maxParticipants} joined</p>
+                  <p className="text-ink font-medium">{activity.participants}/{activity.maxParticipants} joined</p>
                   <p className="text-sm text-dark-400">{Math.max(0, activity.maxParticipants - activity.participants)} spots left</p>
                 </div>
               </div>
@@ -670,7 +670,7 @@ const ActivityDetailsPage = () => {
           {/* Host Manage Panel */}
           {activity.isCreator && activity.status !== 'cancelled' && activity.status !== 'completed' && (
             <div className="card p-6">
-              <h3 className="font-semibold text-white mb-2">Manage Activity</h3>
+              <h3 className="font-semibold text-ink mb-2">Manage Activity</h3>
               <p className="text-sm text-dark-400 mb-4">
                 {activity.approvalRequired
                   ? 'People tap "Request to Join" and their request appears here for you to approve or reject.'
@@ -682,7 +682,7 @@ const ActivityDetailsPage = () => {
                   {activity.attendees.filter((a) => a.status === 'pending').map((person) => (
                     <div key={person.id} className="flex items-center gap-3 p-2 bg-dark-800/50 rounded-xl">
                       <RoundAvatar src={person.avatar} name={person.name} className="w-9 h-9" />
-                      <span className="flex-1 text-sm font-medium text-white">{person.name}</span>
+                      <span className="flex-1 text-sm font-medium text-ink">{person.name}</span>
                       <button
                         onClick={() => handleApprove(person.id)}
                         className="w-9 h-9 rounded-lg bg-lime-500/15 text-lime-400 hover:bg-lime-500/25 flex items-center justify-center"
@@ -722,7 +722,7 @@ const ActivityDetailsPage = () => {
 
           {/* Host Card */}
           <div className="card p-6">
-            <h3 className="font-semibold text-white mb-4">Host</h3>
+            <h3 className="font-semibold text-ink mb-4">Host</h3>
             <Link to={`/users/${activity.host.id}`} className="flex items-center gap-3 mb-4">
               <RoundAvatar
                 src={activity.host.avatar}
@@ -731,7 +731,7 @@ const ActivityDetailsPage = () => {
                 className="w-12 h-12"
               />
               <div className="group">
-                <h4 className="font-medium text-white group-hover:text-lime-400 transition-colors">{activity.host.name}</h4>
+                <h4 className="font-medium text-ink group-hover:text-lime-400 transition-colors">{activity.host.name}</h4>
                 <div className="flex items-center gap-1 text-sm text-dark-400">
                   <FiStar className="w-3 h-3 text-amber-400 fill-current" />
                   {activity.host.rating > 0 ? (

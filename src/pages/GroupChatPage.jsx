@@ -197,7 +197,7 @@ const GroupChatPage = () => {
         {/* Header */}
         <div className="p-4 border-b border-dark-800">
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-xl font-display font-bold text-white">Group Chats</h1>
+            <h1 className="text-xl font-display font-bold text-ink">Group Chats</h1>
             <button className="btn-icon w-8 h-8">
               <FiInfo className="w-4 h-4" />
             </button>
@@ -223,7 +223,7 @@ const GroupChatPage = () => {
           ) : filteredGroups.length === 0 ? (
             <div className="text-center py-14 px-6">
               <span className="text-5xl block mb-3">👥</span>
-              <h3 className="text-white font-semibold mb-1">No activity groups yet</h3>
+              <h3 className="text-ink font-semibold mb-1">No activity groups yet</h3>
               <p className="text-dark-400 text-sm mb-5">Join or create an activity to start chatting.</p>
               <Link to="/create-activity" className="btn-primary text-sm px-4 py-2.5 inline-flex items-center gap-2">
                 <FiUsers className="w-4 h-4" /> Create an activity
@@ -242,7 +242,7 @@ const GroupChatPage = () => {
               </div>
               <div className="flex-1 min-w-0 text-left">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-semibold text-white truncate">{group.name}</h3>
+                  <h3 className="font-semibold text-ink truncate">{group.name}</h3>
                   <span className="text-xs text-dark-400">{group.time}</span>
                 </div>
                 <p className="text-xs text-dark-400 flex items-center gap-1">
@@ -277,7 +277,7 @@ const GroupChatPage = () => {
                 {activeGroupData?.emoji}
               </div>
               <div className="flex-1">
-                <h2 className="font-semibold text-white">{activeGroupData?.name}</h2>
+                <h2 className="font-semibold text-ink">{activeGroupData?.name}</h2>
                 <p className="text-xs text-dark-400 flex items-center gap-1">
                   {typingName ? (
                     <span className="text-lime-400">{typingName} is typing...</span>
@@ -351,7 +351,7 @@ const GroupChatPage = () => {
                         <button
                           type="button"
                           onClick={() => setPendingAttachment(null)}
-                          className="text-dark-400 hover:text-white flex-shrink-0"
+                          className="text-dark-400 hover:text-ink flex-shrink-0"
                           aria-label="Remove attachment"
                         >
                           <FiX className="w-4 h-4" />
@@ -399,7 +399,7 @@ const GroupChatPage = () => {
                       <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${activeGroupData?.gradient} flex items-center justify-center text-4xl mx-auto mb-3`}>
                         {activeGroupData?.emoji}
                       </div>
-                      <h3 className="font-bold text-white text-lg">{activeGroupData?.name}</h3>
+                      <h3 className="font-bold text-ink text-lg">{activeGroupData?.name}</h3>
                       <p className="text-sm text-dark-400">{activeGroupData?.activity}</p>
                     </div>
 
@@ -415,7 +415,7 @@ const GroupChatPage = () => {
                                 gradient="from-lime-500 to-electric-500"
                                 className="w-8 h-8 text-xs"
                               />
-                              <span className="text-sm text-white">{member.name}</span>
+                              <span className="text-sm text-ink">{member.name}</span>
                               {member.id === activeActivity?.creatorId && <span className="text-xs text-lime-400 ml-auto">Host</span>}
                             </div>
                           ))}
@@ -450,7 +450,7 @@ const GroupChatPage = () => {
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
               <span className="text-6xl mb-4 block">💬</span>
-              <h3 className="text-xl font-bold text-white mb-2">Select a group chat</h3>
+              <h3 className="text-xl font-bold text-ink mb-2">Select a group chat</h3>
               <p className="text-dark-400">Chat with activity participants</p>
             </div>
           </div>

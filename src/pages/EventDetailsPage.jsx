@@ -167,7 +167,7 @@ const EventDetailsPage = () => {
   if (error && !event) {
     return (
       <div className="p-6 max-w-3xl mx-auto">
-        <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-dark-400 hover:text-white mb-4"><FiArrowLeft /> Back</button>
+        <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-dark-400 hover:text-ink mb-4"><FiArrowLeft /> Back</button>
         <div className="card p-6 text-center">
           <span className="text-5xl block mb-3">🎪</span>
           <p className="text-red-400">{error}</p>
@@ -216,7 +216,7 @@ const EventDetailsPage = () => {
 
   return (
     <div className="max-w-6xl mx-auto p-4 lg:p-6">
-      <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-dark-400 hover:text-white mb-4 text-sm">
+      <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-dark-400 hover:text-ink mb-4 text-sm">
         <FiArrowLeft /> Back
       </button>
 
@@ -239,8 +239,8 @@ const EventDetailsPage = () => {
         </div>
         <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between gap-3">
           <div>
-            <h1 className="font-display font-bold text-white text-2xl sm:text-3xl lg:text-4xl leading-tight">{event.title}</h1>
-            <p className="text-white/80 text-sm mt-1">{meta.emoji} {meta.label} · {event.dateLabel}</p>
+            <h1 className="font-display font-bold text-ink text-2xl sm:text-3xl lg:text-4xl leading-tight">{event.title}</h1>
+            <p className="text-ink/80 text-sm mt-1">{meta.emoji} {meta.label} · {event.dateLabel}</p>
           </div>
           <label className="text-2xl font-extrabold bg-white/95 text-dark-900 px-3 py-1.5 rounded-2xl shrink-0">{event.priceLabel}</label>
         </div>
@@ -262,7 +262,7 @@ const EventDetailsPage = () => {
               </div>
               <div className="min-w-0">
                 <p className="text-sm text-dark-400">Hosted by</p>
-                <p className="font-semibold text-white truncate">{event.organizerName}</p>
+                <p className="font-semibold text-ink truncate">{event.organizerName}</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -299,7 +299,7 @@ const EventDetailsPage = () => {
             )}
             <div className="flex items-center justify-around mt-5 pt-4 border-t border-dark-800 text-center">
               <div>
-                <p className="text-2xl font-bold text-white">{event.goingCount}</p>
+                <p className="text-2xl font-bold text-ink">{event.goingCount}</p>
                 <p className="text-xs text-dark-400">going</p>
               </div>
               <div>
@@ -315,7 +315,7 @@ const EventDetailsPage = () => {
 
           {/* Details */}
           <div className="card p-5">
-            <h2 className="font-semibold text-white mb-4 text-lg">Event details</h2>
+            <h2 className="font-semibold text-ink mb-4 text-lg">Event details</h2>
             {event.description ? (
               <p className="text-dark-200 whitespace-pre-line leading-relaxed">{event.description}</p>
             ) : (
@@ -324,7 +324,7 @@ const EventDetailsPage = () => {
 
             {event.schedule?.length > 0 && (
               <div className="mt-5">
-                <h3 className="text-sm font-semibold text-white flex items-center gap-2 mb-3"><FiClock className="text-lime-400" /> Schedule</h3>
+                <h3 className="text-sm font-semibold text-ink flex items-center gap-2 mb-3"><FiClock className="text-lime-400" /> Schedule</h3>
                 <div className="space-y-2">
                   {event.schedule.map((item, i) => (
                     <div key={i} className="flex items-center gap-3 text-sm bg-dark-800/40 rounded-xl px-4 py-2.5">
@@ -338,7 +338,7 @@ const EventDetailsPage = () => {
 
             {event.rules?.length > 0 && (
               <div className="mt-5">
-                <h3 className="text-sm font-semibold text-white mb-3">Rules</h3>
+                <h3 className="text-sm font-semibold text-ink mb-3">Rules</h3>
                 <ul className="space-y-1.5 text-sm text-dark-300 list-disc list-inside">
                   {event.rules.map((rule, i) => <li key={i}>{rule}</li>)}
                 </ul>
@@ -347,7 +347,7 @@ const EventDetailsPage = () => {
 
             {event.organizerContact && (
               <div className="mt-5">
-                <h3 className="text-sm font-semibold text-white mb-2">Contact host</h3>
+                <h3 className="text-sm font-semibold text-ink mb-2">Contact host</h3>
                 <p className="text-sm text-dark-300 flex items-center gap-2">
                   <FiLink className="w-4 h-4 text-lime-400" /> {event.organizerContact}
                 </p>
@@ -377,7 +377,7 @@ const EventDetailsPage = () => {
 
           {/* Map */}
           <div className="card p-5">
-            <h2 className="font-semibold text-white mb-3">Where it's happening</h2>
+            <h2 className="font-semibold text-ink mb-3">Where it's happening</h2>
             <Suspense fallback={<MapLoading />}>
               <div className="h-52 lg:h-64 relative">
                 <EventMap
@@ -391,7 +391,7 @@ const EventDetailsPage = () => {
             <div className="flex items-start gap-2 mt-3 text-sm text-dark-300">
               <FiMapPin className="w-4 h-4 text-lime-400 shrink-0 mt-0.5" />
               <span className="break-words text-xs">
-                <span className="font-semibold text-white">{event.venueName}</span> — {event.address}
+                <span className="font-semibold text-ink">{event.venueName}</span> — {event.address}
               </span>
             </div>
             {event.price?.ticketUrl && (
@@ -409,7 +409,7 @@ const EventDetailsPage = () => {
           {/* Enjoyed? / moments */}
           <div className="card p-5">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="font-semibold text-white flex items-center gap-2">
+              <h2 className="font-semibold text-ink flex items-center gap-2">
                 <FiStar className="text-sunset-400" /> Moments
               </h2>
               {isGoing && (

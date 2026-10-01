@@ -103,26 +103,26 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-20">
             <div className="flex items-center gap-2 group">
-              <Logo size={104} className="group-hover:rotate-6 transition-transform text-white" />
+              <Logo size={104} className="group-hover:rotate-6 transition-transform text-ink" />
             </div>
             
             <div className="hidden md:flex items-center gap-8">
-              <a href="#features" className="relative text-dark-300 hover:text-white transition-colors group">
+              <a href="#features" className="relative text-dark-300 hover:text-ink transition-colors group">
                 Features
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-lime-400 to-electric-400 group-hover:w-full transition-all duration-300"></span>
               </a>
-              <a href="#activities" className="relative text-dark-300 hover:text-white transition-colors group">
+              <a href="#activities" className="relative text-dark-300 hover:text-ink transition-colors group">
                 Activities
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-lime-400 to-electric-400 group-hover:w-full transition-all duration-300"></span>
               </a>
-              <a href="#testimonials" className="relative text-dark-300 hover:text-white transition-colors group">
+              <a href="#testimonials" className="relative text-dark-300 hover:text-ink transition-colors group">
                 Reviews
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-lime-400 to-electric-400 group-hover:w-full transition-all duration-300"></span>
               </a>
             </div>
             
             <div className="flex items-center gap-4">
-              <Link to="/login" className="text-dark-300 hover:text-white transition-colors font-medium">
+              <Link to="/login" className="text-dark-300 hover:text-ink transition-colors font-medium">
                 Sign In
               </Link>
               <Link to="/register" className="btn-primary text-sm">
@@ -146,11 +146,11 @@ const LandingPage = () => {
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-strong mb-8 animate-slide-down border border-white/10">
               <span className="w-2 h-2 bg-lime-500 rounded-full animate-pulse"></span>
-              <span className="text-sm text-white/80">✨ New: Smart Matching is live!</span>
+              <span className="text-sm text-ink/80">✨ New: Smart Matching is live!</span>
             </div>
             
             {/* Heading */}
-            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-display font-bold text-white mb-6 leading-tight animate-slide-up">
+            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-display font-bold text-ink mb-6 leading-tight animate-slide-up">
               Don't just chat.
               <br />
               <span className="gradient-text-flow">Let's KIKY.</span>
@@ -208,7 +208,7 @@ const LandingPage = () => {
                       <div className="flex items-center justify-between mb-6">
                         <div>
                           <p className="text-dark-400 text-sm">Good morning!</p>
-                          <h3 className="text-white font-bold text-lg">Bhanu 👋</h3>
+                          <h3 className="text-ink font-bold text-lg">Bhanu 👋</h3>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-lime-500 to-electric-500 flex items-center justify-center text-white font-bold ring-2 ring-lime-500/40">
                           B
@@ -222,7 +222,7 @@ const LandingPage = () => {
                           {activities.slice(0, 6).map((activity) => (
                             <div key={activity.name} className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-3 text-center hover:border-lime-500/50 transition-colors">
                               <span className="text-xl">{activity.emoji}</span>
-                              <p className="text-xs text-white/80 mt-1">{activity.name}</p>
+                              <p className="text-xs text-ink/80 mt-1">{activity.name}</p>
                             </div>
                           ))}
                         </div>
@@ -235,7 +235,7 @@ const LandingPage = () => {
                           <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-3 flex items-center gap-3 hover:border-lime-500/50 transition-colors">
                             <span className="text-xl">🏏</span>
                             <div className="flex-1">
-                              <p className="text-white text-sm font-medium">Evening Cricket</p>
+                              <p className="text-ink text-sm font-medium">Evening Cricket</p>
                               <p className="text-dark-400 text-xs">1.2 km • 6 PM</p>
                             </div>
                             <span className="bg-lime-500 text-dark-900 text-[10px] font-bold px-2 py-1 rounded-lg">JOIN</span>
@@ -243,7 +243,7 @@ const LandingPage = () => {
                           <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-3 flex items-center gap-3 hover:border-lime-500/50 transition-colors">
                             <span className="text-xl">☕</span>
                             <div className="flex-1">
-                              <p className="text-white text-sm font-medium">Coffee Meetup</p>
+                              <p className="text-ink text-sm font-medium">Coffee Meetup</p>
                               <p className="text-dark-400 text-xs">800m • 5 PM</p>
                             </div>
                             <span className="bg-lime-500 text-dark-900 text-[10px] font-bold px-2 py-1 rounded-lg">JOIN</span>
@@ -259,11 +259,11 @@ const LandingPage = () => {
               <div className="absolute left-0 sm:-left-16 lg:-left-20 top-1/4 glass-strong rounded-2xl p-4 animate-float shadow-float z-10">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-lime-500 to-emerald-500 flex items-center justify-center shadow-glow-lime">
-                    <FiTarget className="w-5 h-5 text-white" />
+                    <FiTarget className="w-5 h-5 text-ink" />
                   </div>
                   <div>
-                    <p className="text-white font-semibold text-sm">94% Match!</p>
-                    <p className="text-white/60 text-xs">Cricket nearby</p>
+                    <p className="text-ink font-semibold text-sm">94% Match!</p>
+                    <p className="text-ink/60 text-xs">Cricket nearby</p>
                   </div>
                 </div>
               </div>
@@ -271,18 +271,18 @@ const LandingPage = () => {
               <div className="absolute right-0 sm:-right-12 lg:-right-16 bottom-1/4 glass-strong rounded-2xl p-4 animate-float shadow-float z-10" style={{ animationDelay: '2s' }}>
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-hotpink-500 to-rose-500 flex items-center justify-center shadow-glow-pink">
-                    <FiHeart className="w-5 h-5 text-white" />
+                    <FiHeart className="w-5 h-5 text-ink" />
                   </div>
                   <div>
-                    <p className="text-white font-semibold text-sm">New Match!</p>
-                    <p className="text-white/60 text-xs">5 people interested</p>
+                    <p className="text-ink font-semibold text-sm">New Match!</p>
+                    <p className="text-ink/60 text-xs">5 people interested</p>
                   </div>
                 </div>
               </div>
 
               {/* Third floating badge */}
               <div className="absolute -bottom-4 left-6 glass-strong rounded-xl px-3 py-2 animate-float shadow-float z-10" style={{ animationDelay: '1s' }}>
-                <span className="text-white text-xs font-medium">🔥 7-day streak</span>
+                <span className="text-ink text-xs font-medium">🔥 7-day streak</span>
               </div>
             </div>
           </div>
@@ -293,7 +293,7 @@ const LandingPage = () => {
       <section id="activities" className="py-20 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-display font-bold text-white mb-4">
+            <h2 className="text-3xl lg:text-4xl font-display font-bold text-ink mb-4">
               Explore Popular Activities
             </h2>
             <p className="text-dark-300 max-w-2xl mx-auto">
@@ -311,7 +311,7 @@ const LandingPage = () => {
                 <div className={`absolute inset-0 bg-gradient-to-br ${activity.color} opacity-0 group-hover:opacity-20 transition-opacity duration-300`}></div>
                 <div className="relative">
                   <span className="text-3xl mb-2 block group-hover:scale-125 transition-transform duration-300">{activity.emoji}</span>
-                  <p className="text-white font-medium text-sm">{activity.name}</p>
+                  <p className="text-ink font-medium text-sm">{activity.name}</p>
                   <p className="text-dark-400 text-xs mt-1">{activity.users} users</p>
                 </div>
               </div>
@@ -325,7 +325,7 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <span className="badge-lime mb-4 inline-block">Why KIKY?</span>
-            <h2 className="text-3xl lg:text-4xl font-display font-bold text-white mb-4">
+            <h2 className="text-3xl lg:text-4xl font-display font-bold text-ink mb-4">
               Not just another social app
             </h2>
             <p className="text-dark-300 max-w-2xl mx-auto">
@@ -342,9 +342,9 @@ const LandingPage = () => {
               >
                 <div className="absolute -top-10 -right-10 w-40 h-40 blurred-orb opacity-30"></div>
                 <div className={`w-16 h-16 bg-gradient-to-br ${feature.gradient} rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all`}>
-                  <feature.icon className="w-8 h-8 text-white" />
+                  <feature.icon className="w-8 h-8 text-ink" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3">{feature.title}</h3>
+                <h3 className="text-xl font-bold text-ink mb-3">{feature.title}</h3>
                 <p className="text-dark-300 leading-relaxed">{feature.description}</p>
               </div>
             ))}
@@ -357,7 +357,7 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <span className="badge-electric mb-4 inline-block">How It Works</span>
-            <h2 className="text-3xl lg:text-4xl font-display font-bold text-white mb-4">
+            <h2 className="text-3xl lg:text-4xl font-display font-bold text-ink mb-4">
               Three simple steps
             </h2>
           </div>
@@ -372,10 +372,10 @@ const LandingPage = () => {
                 <div className="text-6xl font-display font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-b from-white/20 to-white/5">{item.step}</div>
                 <div className="relative w-20 h-20 bg-gradient-to-br from-lime-500 to-electric-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-glow-lime">
                   <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-lime-500 to-electric-500 opacity-50 blur-lg"></div>
-                  <item.icon className="relative w-8 h-8 text-white" />
+                  <item.icon className="relative w-8 h-8 text-ink" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
-                <p className="text-white/70">{item.desc}</p>
+                <h3 className="text-xl font-bold text-ink mb-3">{item.title}</h3>
+                <p className="text-ink/70">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -387,7 +387,7 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <span className="badge-pink mb-4 inline-block">What Users Say</span>
-            <h2 className="text-3xl lg:text-4xl font-display font-bold text-white mb-4">
+            <h2 className="text-3xl lg:text-4xl font-display font-bold text-ink mb-4">
               Loved by thousands
             </h2>
           </div>
@@ -400,14 +400,14 @@ const LandingPage = () => {
                     <FiStar key={i} className="w-5 h-5 text-yellow-400 fill-yellow-400 drop-shadow-[0_0_4px_rgba(250,204,21,0.6)]" />
                   ))}
                 </div>
-                <p className="text-white/90 mb-6">"{testimonial.text}"</p>
+                <p className="text-ink/90 mb-6">"{testimonial.text}"</p>
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-lime-500 to-electric-500 flex items-center justify-center text-white font-bold ring-2 ring-lime-400/40">
                     {testimonial.name[0]}
                   </div>
                   <div>
-                    <p className="text-white font-medium">{testimonial.name}</p>
-                    <p className="text-white/60 text-sm">{testimonial.activity} Enthusiast</p>
+                    <p className="text-ink font-medium">{testimonial.name}</p>
+                    <p className="text-ink/60 text-sm">{testimonial.activity} Enthusiast</p>
                   </div>
                 </div>
               </div>
@@ -425,7 +425,7 @@ const LandingPage = () => {
               <div className="absolute top-0 left-1/4 w-64 h-64 bg-lime-500/20 rounded-full blur-[100px] animate-float"></div>
               <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-hotpink-500/20 rounded-full blur-[100px] animate-float-delayed"></div>
               <div className="relative">
-                <h2 className="text-3xl lg:text-4xl font-display font-bold text-white mb-6">
+                <h2 className="text-3xl lg:text-4xl font-display font-bold text-ink mb-6">
                   Ready to <span className="gradient-text-flow">KIKY?</span>
                 </h2>
                 <p className="text-dark-300 max-w-xl mx-auto mb-8 text-lg">
@@ -446,7 +446,7 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-2">
-              <Logo size={150} tagline className="text-white" />
+              <Logo size={150} tagline className="text-ink" />
             </div>
             
             <div className="flex items-center gap-6">

@@ -114,7 +114,7 @@ const OnboardingPage = () => {
             {step === 1 && (
               <div className="animate-slide-up">
                 <div className="text-center mb-8">
-                  <h1 className="text-2xl lg:text-3xl font-display font-bold text-white mb-2">
+                  <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink mb-2">
                     What are you into?
                   </h1>
                   <p className="text-dark-400">Select at least 3 activities you enjoy</p>
@@ -163,7 +163,7 @@ const OnboardingPage = () => {
             {step === 2 && (
               <div className="animate-slide-up">
                 <div className="text-center mb-8">
-                  <h1 className="text-2xl lg:text-3xl font-display font-bold text-white mb-2">
+                  <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink mb-2">
                     Where are you based?
                   </h1>
                   <p className="text-dark-400">This helps us find activities near you</p>
@@ -225,7 +225,7 @@ const OnboardingPage = () => {
             {step === 3 && (
               <div className="animate-slide-up">
                 <div className="text-center mb-8">
-                  <h1 className="text-2xl lg:text-3xl font-display font-bold text-white mb-2">
+                  <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink mb-2">
                     Tell us about yourself
                   </h1>
                   <p className="text-dark-400">Add a bio so others can know you better</p>
@@ -251,7 +251,7 @@ const OnboardingPage = () => {
                     <div className="flex items-start gap-3">
                       <FiStar className="w-5 h-5 text-lime-400 mt-0.5 flex-shrink-0" />
                       <div>
-                        <p className="font-semibold text-white mb-2">Tips for a great bio:</p>
+                        <p className="font-semibold text-ink mb-2">Tips for a great bio:</p>
                         <ul className="text-sm text-dark-300 space-y-1">
                           <li>• Mention your favorite activities</li>
                           <li>• Share what you're looking for in a buddy</li>
@@ -286,7 +286,7 @@ const OnboardingPage = () => {
           <div className="text-center mt-6">
             <button
               onClick={() => navigate('/dashboard')}
-              className="text-dark-400 hover:text-white transition-colors text-sm"
+              className="text-dark-400 hover:text-ink transition-colors text-sm"
             >
               Skip for now
             </button>

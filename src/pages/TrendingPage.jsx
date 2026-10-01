@@ -119,7 +119,7 @@ const TrendingPage = () => {
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-2">
           <FiTrendingUp className="w-6 h-6 text-lime-400" />
-          <h1 className="text-2xl lg:text-3xl font-display font-bold text-white">
+          <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink">
             Trending Now
           </h1>
         </div>
@@ -151,7 +151,7 @@ const TrendingPage = () => {
           <div className="lg:col-span-2 space-y-6">
             {/* Trending Activities */}
             <div>
-              <h2 className="text-lg font-semibold text-white mb-4">Trending Activities</h2>
+              <h2 className="text-lg font-semibold text-ink mb-4">Trending Activities</h2>
               {trending.length > 0 ? (
                 <div className="space-y-4">
                   {trending.map((item, idx) => (
@@ -166,7 +166,7 @@ const TrendingPage = () => {
                         <div className="flex-1">
                           <div className="flex items-start justify-between gap-2 mb-1">
                             <div>
-                              <h3 className="font-bold text-white capitalize">{item.title}</h3>
+                              <h3 className="font-bold text-ink capitalize">{item.title}</h3>
                               <span className="badge-lime text-xs">{item.category}</span>
                             </div>
                             <span className="flex items-center gap-1 text-lime-400 font-semibold">
@@ -209,7 +209,7 @@ const TrendingPage = () => {
             <div className="card p-6">
               <div className="flex items-center gap-2 mb-4">
                 <FiZap className="w-5 h-5 text-amber-400" />
-                <h2 className="text-lg font-semibold text-white">Hot Right Now</h2>
+                <h2 className="text-lg font-semibold text-ink">Hot Right Now</h2>
               </div>
               {hotActivities.length > 0 ? (
                 <div className="space-y-3">
@@ -221,7 +221,7 @@ const TrendingPage = () => {
                     >
                       <span className="text-2xl">{activity.emoji}</span>
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-white text-sm truncate">{activity.title}</h4>
+                        <h4 className="font-medium text-ink text-sm truncate">{activity.title}</h4>
                         <p className="text-xs text-dark-400 flex items-center gap-1">
                           <FiClock className="w-3 h-3" />
                           {activity.time} • {activity.spots} spots left
@@ -238,7 +238,7 @@ const TrendingPage = () => {
 
             {/* Popular Times */}
             <div className="card p-6">
-              <h2 className="text-lg font-semibold text-white mb-4">Popular Times</h2>
+              <h2 className="text-lg font-semibold text-ink mb-4">Popular Times</h2>
               {allActivities.length > 0 ? (
                 <>
                   <div className="flex items-end justify-between gap-2 h-32">
@@ -264,15 +264,15 @@ const TrendingPage = () => {
 
             {/* Quick Stats */}
             <div className="card p-6">
-              <h2 className="text-lg font-semibold text-white mb-4">Area Stats</h2>
+              <h2 className="text-lg font-semibold text-ink mb-4">Area Stats</h2>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-dark-400">Active Participants</span>
-                  <span className="text-white font-bold">{uniquePeople}</span>
+                  <span className="text-ink font-bold">{uniquePeople}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-dark-400">Activities Today</span>
-                  <span className="text-white font-bold">{todayCount}</span>
+                  <span className="text-ink font-bold">{todayCount}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-dark-400">New This Week</span>

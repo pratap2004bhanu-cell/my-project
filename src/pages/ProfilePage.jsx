@@ -127,13 +127,13 @@ const ProfilePage = () => {
               to="/profile/edit"
               className="absolute bottom-0 right-0 w-8 h-8 bg-dark-800 border-2 border-dark-700 rounded-full flex items-center justify-center hover:bg-dark-700 transition-colors"
             >
-              <FiEdit2 className="w-4 h-4 text-white" />
+              <FiEdit2 className="w-4 h-4 text-ink" />
             </Link>
           </div>
           
           {/* Info */}
           <div className="flex-1 text-center sm:text-left">
-            <h1 className="text-2xl font-display font-bold text-white mb-1">
+            <h1 className="text-2xl font-display font-bold text-ink mb-1">
               {user?.name || 'User'}
             </h1>
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 text-sm text-dark-400 mb-3">
@@ -175,7 +175,7 @@ const ProfilePage = () => {
         {stats.map((stat) => (
           <div key={stat.label} className="card text-center px-2 py-4 sm:px-4">
             <stat.icon className="w-5 h-5 sm:w-6 sm:h-6 text-lime-400 mx-auto mb-2" />
-            <p className="text-xl sm:text-2xl font-bold text-white truncate">{stat.value}</p>
+            <p className="text-xl sm:text-2xl font-bold text-ink truncate">{stat.value}</p>
             <p className="text-xs sm:text-sm text-dark-400 whitespace-nowrap overflow-hidden overflow-ellipsis">{stat.label}</p>
           </div>
         ))}
@@ -201,7 +201,7 @@ const ProfilePage = () => {
       {/* Tab Content */}
       {activeTab === 'activities' && (
         <div className="space-y-4">
-          <h2 className="text-lg font-bold text-white flex items-center gap-2">
+          <h2 className="text-lg font-bold text-ink flex items-center gap-2">
             <FiActivity className="w-5 h-5 text-lime-400" />
             Your Activities
           </h2>
@@ -225,7 +225,7 @@ const ProfilePage = () => {
                 {activity.emoji}
               </div>
               <div className="flex-1">
-                <h3 className="font-bold text-white">{activity.title}</h3>
+                <h3 className="font-bold text-ink">{activity.title}</h3>
                 <p className="text-sm text-dark-400">{activity.date}</p>
               </div>
               <div className="text-right">
@@ -252,7 +252,7 @@ const ProfilePage = () => {
       {activeTab === 'gallery' && (
         <div className="space-y-4">
           <div className="flex items-center justify-between gap-3 flex-wrap">
-            <h2 className="text-lg font-bold text-white flex items-center gap-2">
+            <h2 className="text-lg font-bold text-ink flex items-center gap-2">
               <FiImage className="w-5 h-5 text-lime-400" />
               Your Gallery
             </h2>
@@ -327,7 +327,7 @@ const ProfilePage = () => {
 
       {activeTab === 'badges' && (
         <div className="space-y-4">
-          <h2 className="text-lg font-bold text-white flex items-center gap-2">
+          <h2 className="text-lg font-bold text-ink flex items-center gap-2">
             <FiTarget className="w-5 h-5 text-hotpink-400" />
             Your Badges
           </h2>
@@ -341,7 +341,7 @@ const ProfilePage = () => {
                 <div className={`w-14 h-14 rounded-2xl mx-auto mb-3 flex items-center justify-center text-3xl ${badge.earned ? 'bg-gradient-to-br from-lime-500/25 to-emerald-500/25' : 'bg-dark-800/50 grayscale'}`}>
                   {badge.emoji}
                 </div>
-                <p className="font-bold text-white">{badge.name}</p>
+                <p className="font-bold text-ink">{badge.name}</p>
                 <p className="text-xs text-dark-400 mt-1 mb-2">{badge.desc}</p>
                 <div className="h-1.5 bg-dark-700 rounded-full overflow-hidden mb-1">
                   <div
@@ -365,7 +365,7 @@ const ProfilePage = () => {
 
       {activeTab === 'connections' && (
         <div className="space-y-4">
-          <h2 className="text-lg font-bold text-white flex items-center gap-2">
+          <h2 className="text-lg font-bold text-ink flex items-center gap-2">
             <FiUsers className="w-5 h-5 text-electric-400" />
             Your Connections
           </h2>
@@ -386,7 +386,7 @@ const ProfilePage = () => {
           <div className="w-10 h-10 bg-dark-800 rounded-xl flex items-center justify-center">
             <FiSettings className="w-5 h-5 text-dark-400" />
           </div>
-          <span className="font-medium text-white">Settings</span>
+          <span className="font-medium text-ink">Settings</span>
         </Link>
         
         <button 

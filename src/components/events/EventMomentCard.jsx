@@ -14,7 +14,7 @@ const EventMomentCard = ({ moment, onLike, onOpenComments }) => {
             <RoundAvatar src={moment.avatar} name={moment.author} className="w-9 h-9 text-sm" />
           </Link>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-white truncate">{moment.author}</p>
+            <p className="text-sm font-medium text-ink truncate">{moment.author}</p>
             <p className="text-[10px] text-dark-400">{moment.time}</p>
           </div>
           {moment.rating > 0 && (

@@ -74,7 +74,7 @@ const GalleryPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-display font-bold text-white">
+          <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink">
             Photo Gallery
           </h1>
           <p className="text-dark-400">Memories from your activities</p>
@@ -111,7 +111,7 @@ const GalleryPage = () => {
       ) : displayPhotos.length === 0 ? (
         <div className="card text-center py-16">
           <div className="text-5xl mb-4">📷</div>
-          <h2 className="text-xl font-bold text-white mb-2">No photos yet</h2>
+          <h2 className="text-xl font-bold text-ink mb-2">No photos yet</h2>
           <p className="text-dark-400 mb-6">
             Photos you and others share on your activities appear here.
           </p>
@@ -134,7 +134,7 @@ const GalleryPage = () => {
                 photo.emoji
               )}
               <div className="absolute inset-0 bg-dark-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3">
-                <div className="flex items-center gap-3 text-white text-sm">
+                <div className="flex items-center gap-3 text-ink text-sm">
                   <span className="flex items-center gap-1">
                     <FiHeart className={`w-3 h-3 ${liked[photo.id] ? 'fill-current text-pink-500' : ''}`} />
                     {liked[photo.id] ? 1 : 0}
@@ -175,7 +175,7 @@ const GalleryPage = () => {
               <div className="card p-6">
                 <Link
                   to={`/activities/${selectedPhoto.activityId}`}
-                  className="font-bold text-white text-lg hover:text-lime-400 transition-colors"
+                  className="font-bold text-ink text-lg hover:text-lime-400 transition-colors"
                 >
                   {selectedPhoto.activity}
                 </Link>

@@ -84,7 +84,7 @@ const MyEventsPage = () => {
     <div className="p-4 lg:p-6 max-w-7xl mx-auto">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-5">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-display font-bold text-white flex items-center gap-2">
+          <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink flex items-center gap-2">
             <FiCalendar className="text-lime-400" />
             My events
           </h1>
@@ -141,7 +141,7 @@ const MyEventsPage = () => {
             <div key={s.label} className="card p-4 flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl bg-dark-800 flex items-center justify-center">{s.icon}</div>
               <div>
-                <p className="text-xl font-bold text-white leading-none">{s.value}</p>
+                <p className="text-xl font-bold text-ink leading-none">{s.value}</p>
                 <p className="text-[10px] text-dark-400 mt-1">{s.label}</p>
               </div>
             </div>
@@ -149,7 +149,7 @@ const MyEventsPage = () => {
           {stats.views > 0 && (
             <div className="card p-4 flex items-center gap-3 col-span-2 sm:col-span-4">
               <div className="w-9 h-9 rounded-xl bg-dark-800 flex items-center justify-center"><FiEye className="w-4 h-4 text-electric-300" /></div>
-              <p className="text-sm text-dark-300"><span className="text-xl font-bold text-white">{stats.views}</span> total views across your events</p>
+              <p className="text-sm text-dark-300"><span className="text-xl font-bold text-ink">{stats.views}</span> total views across your events</p>
             </div>
           )}
         </div>
@@ -160,7 +160,7 @@ const MyEventsPage = () => {
       {events.length === 0 ? (
         <div className="text-center py-16">
           <span className="text-6xl mb-4 block">🎪</span>
-          <h3 className="text-xl font-bold text-white mb-2">
+          <h3 className="text-xl font-bold text-ink mb-2">
             {tab === 'attending' ? "You haven't RSVP'd to any events yet" : "You haven't hosted anything yet"}
           </h3>
           <p className="text-dark-400 mb-6">

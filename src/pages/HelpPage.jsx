@@ -14,7 +14,7 @@ const faqs = [
 const HelpPage = () => {
   return (
     <div className="p-4 lg:p-6 max-w-3xl mx-auto">
-      <Link to="/settings" className="inline-flex items-center gap-1 text-sm text-dark-400 hover:text-white transition-colors mb-4">
+      <Link to="/settings" className="inline-flex items-center gap-1 text-sm text-dark-400 hover:text-ink transition-colors mb-4">
         <FiChevronLeft className="w-4 h-4" /> Back to Settings
       </Link>
 
@@ -23,7 +23,7 @@ const HelpPage = () => {
           <FiHelpCircle className="w-6 h-6 text-lime-400" />
         </div>
         <div>
-          <h1 className="text-2xl lg:text-3xl font-display font-bold text-white">Help Center</h1>
+          <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink">Help Center</h1>
           <p className="text-dark-400">Answers to common questions about KIKY</p>
         </div>
       </div>
@@ -31,7 +31,7 @@ const HelpPage = () => {
       <div className="space-y-3 mb-8">
         {faqs.map((f) => (
           <details key={f.q} className="card p-5 group">
-            <summary className="cursor-pointer font-medium text-white flex items-center justify-between gap-3 list-none">
+            <summary className="cursor-pointer font-medium text-ink flex items-center justify-between gap-3 list-none">
               {f.q}
               <span className="text-dark-400 group-open:rotate-45 transition-transform text-lg shrink-0">+</span>
             </summary>
@@ -42,7 +42,7 @@ const HelpPage = () => {
 
       <div className="card p-6">
         <div className="flex justify-between flex-wrap gap-3">
-          <h2 className="text-lg font-semibold text-white mb-1">Still need help?</h2>
+          <h2 className="text-lg font-semibold text-ink mb-1">Still need help?</h2>
           <Link to="/feedback" className="inline-flex items-center gap-2 text-sm font-medium text-lime-400 hover:text-lime-300 transition-colors">
             <FiMessageSquare className="w-4 h-4" /> Send Feedback
           </Link>

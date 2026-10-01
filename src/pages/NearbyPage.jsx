@@ -137,7 +137,7 @@ const NearbyPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-5">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-display font-bold text-white flex items-center gap-2">
+          <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink flex items-center gap-2">
             <FiMapPin className="text-lime-400" />
             Nearby
           </h1>
@@ -174,15 +174,15 @@ const NearbyPage = () => {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-lime-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full w-2 h-2 bg-lime-500"></span>
             </span>
-            <span className="text-xs font-medium text-white">You are here</span>
+            <span className="text-xs font-medium text-ink">You are here</span>
           </div>
         </div>
 
         {/* Current location info */}
         <div className="card p-5 lg:p-6 flex flex-col">
-          <h2 className="text-lg font-semibold text-white">Your Location</h2>
+          <h2 className="text-lg font-semibold text-ink">Your Location</h2>
           {address ? (
-            <p className="text-xl lg:text-2xl font-bold text-white mt-2 leading-snug">{address}</p>
+            <p className="text-xl lg:text-2xl font-bold text-ink mt-2 leading-snug">{address}</p>
           ) : (
             <p className="text-dark-400 mt-2 leading-snug">
               {geocodeDone
@@ -264,7 +264,7 @@ const NearbyPage = () => {
 
       {/* Activity list */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-white">
+        <h2 className="text-lg font-semibold text-ink">
           Nearby Activities
           <span className="ml-2 text-sm font-medium text-dark-400">({filteredActivities.length})</span>
         </h2>
@@ -283,7 +283,7 @@ const NearbyPage = () => {
       ) : filteredActivities.length === 0 ? (
         <div className="text-center py-16">
           <span className="text-6xl mb-4 block">📍</span>
-          <h3 className="text-xl font-bold text-white mb-2">No activities nearby</h3>
+          <h3 className="text-xl font-bold text-ink mb-2">No activities nearby</h3>
           <p className="text-dark-400 mb-6">Try increasing the radius or check back later</p>
           <button onClick={() => setRadius(25)} className="btn-primary">Expand Search Area</button>
         </div>
@@ -301,7 +301,7 @@ const NearbyPage = () => {
                     {activity.emoji}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-white group-hover:text-lime-400 transition-colors truncate">
+                    <h3 className="font-bold text-ink group-hover:text-lime-400 transition-colors truncate">
                       {activity.title}
                     </h3>
                     <p className="text-sm text-dark-400 truncate">{activity.host}</p>

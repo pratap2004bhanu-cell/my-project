@@ -154,7 +154,7 @@ const DashboardPage = () => {
               Nearby
             </span>
           </div>
-          <h1 className="text-2xl lg:text-3xl font-display font-extrabold text-white leading-tight">
+          <h1 className="text-2xl lg:text-3xl font-display font-extrabold text-ink leading-tight">
             {greeting},{' '}
             <span className="gradient-text">{user?.name?.split(' ')[0]}</span>{' '}
             👋
@@ -177,7 +177,7 @@ const DashboardPage = () => {
             <FiMapPin className="w-6 h-6 text-lime-400" />
           </div>
           <div className="flex-1">
-            <h2 className="font-semibold text-white">See what's happening near you</h2>
+            <h2 className="font-semibold text-ink">See what's happening near you</h2>
             <p className="text-sm text-dark-400 mt-0.5">
               Share your location to find activities and people in your area.
             </p>
@@ -198,7 +198,7 @@ const DashboardPage = () => {
         <div className="card p-5 mb-8 flex flex-col sm:flex-row sm:items-center gap-4 border border-electric-500/25">
           <div className="w-12 h-12 rounded-2xl bg-electric-500/15 flex items-center justify-center flex-shrink-0 text-2xl">✨</div>
           <div className="flex-1 min-w-0">
-            <h2 className="font-semibold text-white">Make your profile shine</h2>
+            <h2 className="font-semibold text-ink">Make your profile shine</h2>
             <div className="flex flex-wrap items-center gap-2 mt-2">
               {profileMissing.map((m) => (
                 <span key={m.key} className="text-xs px-2.5 py-1 rounded-full bg-dark-800 text-dark-300">
@@ -227,7 +227,7 @@ const DashboardPage = () => {
           <div className="absolute top-0 right-0 w-40 h-40 bg-lime-500/15 rounded-full blur-[80px]"></div>
           <div className="relative flex flex-col lg:flex-row items-center gap-6">
             <div className="flex-1">
-              <h2 className="text-2xl lg:text-3xl font-display font-bold text-white mb-2">
+              <h2 className="text-2xl lg:text-3xl font-display font-bold text-ink mb-2">
                 KIKY Now! 🚀
               </h2>
               <p className="text-dark-300">Find people for activities happening right now</p>
@@ -243,7 +243,7 @@ const DashboardPage = () => {
       {/* Events coming up */}
       <div className="mb-12">
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-base font-semibold text-white">
+          <h2 className="text-base font-semibold text-ink">
             Events coming up
           </h2>
           <Link to="/events" className="text-sm text-lime-400 hover:text-lime-300 font-medium flex items-center gap-1">
@@ -274,7 +274,7 @@ const DashboardPage = () => {
 
       {/* Quick Actions */}
       <div className="mb-12">
-        <h2 className="text-base font-semibold text-white mb-5">
+        <h2 className="text-base font-semibold text-ink mb-5">
           Quick Actions
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -285,7 +285,7 @@ const DashboardPage = () => {
               className="flex flex-col items-center gap-3 p-5 rounded-2xl glass-strong hover-lift group"
             >
               <span className="text-3xl group-hover:scale-125 transition-transform">{action.emoji}</span>
-              <span className="text-sm text-white/85 font-medium">{action.name}</span>
+              <span className="text-sm text-ink/85 font-medium">{action.name}</span>
             </Link>
           ))}
         </div>
@@ -297,7 +297,7 @@ const DashboardPage = () => {
           {/* Happening Near You */}
           <div>
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-base font-semibold text-white">Happening near you</h2>
+              <h2 className="text-base font-semibold text-ink">Happening near you</h2>
               <Link to="/explore" className="text-sm text-lime-400 hover:text-lime-300 font-medium flex items-center gap-1">
                 See all <FiArrowRight className="w-4 h-4" />
               </Link>
@@ -333,7 +333,7 @@ const DashboardPage = () => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1.5">
-                      <h3 className="font-semibold text-white truncate min-w-0">{activity.title}</h3>
+                      <h3 className="font-semibold text-ink truncate min-w-0">{activity.title}</h3>
                       <span className="text-lime-400 text-xs font-medium flex-shrink-0">{activity.match}% match</span>
                     </div>
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-dark-400">
@@ -360,7 +360,7 @@ const DashboardPage = () => {
           {/* Recommended For You */}
           <div>
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-base font-semibold text-white">Recommended for you</h2>
+              <h2 className="text-base font-semibold text-ink">Recommended for you</h2>
               <Link to="/explore" className="text-sm text-lime-400 hover:text-lime-300 font-medium flex items-center gap-1">
                 See all <FiArrowRight className="w-4 h-4" />
               </Link>
@@ -386,7 +386,7 @@ const DashboardPage = () => {
                   <div className={`w-full h-20 bg-gradient-to-br ${activity.color} rounded-xl flex items-center justify-center text-3xl mb-4`}>
                     {activity.emoji}
                   </div>
-                  <h3 className="font-semibold text-white mb-1.5 truncate">{activity.title}</h3>
+                  <h3 className="font-semibold text-ink mb-1.5 truncate">{activity.title}</h3>
                   <div className="flex items-center gap-2 text-sm text-dark-400 min-w-0">
                     <FiMapPin className="w-3.5 h-3.5 flex-shrink-0" />
                     <span className="truncate">{activity.distanceLabel}</span>
@@ -408,7 +408,7 @@ const DashboardPage = () => {
         <div className="space-y-8">
           {/* People You May Like */}
           <div className="card">
-            <h2 className="text-base font-semibold text-white mb-5">People you may like</h2>
+            <h2 className="text-base font-semibold text-ink mb-5">People you may like</h2>
             
             <div className="space-y-5">
               {peopleYouMayLike.length === 0 ? (
@@ -430,7 +430,7 @@ const DashboardPage = () => {
                     </div>
                   </Link>
                   <div className="flex-1 min-w-0">
-                    <Link to={`/users/${person.id}`} className="font-semibold text-white hover:text-lime-400 transition-colors">
+                    <Link to={`/users/${person.id}`} className="font-semibold text-ink hover:text-lime-400 transition-colors">
                       {person.name}
                     </Link>
                     <p className="text-xs text-dark-400 truncate mt-0.5">{(person.interests || []).join(' • ') || 'Exploring'}</p>
@@ -453,7 +453,7 @@ const DashboardPage = () => {
 
           {/* Your Stats */}
           <div className="card">
-            <h2 className="text-base font-semibold text-white mb-5">Your journey</h2>
+            <h2 className="text-base font-semibold text-ink mb-5">Your journey</h2>
             
             <div className="grid grid-cols-2 gap-x-4 gap-y-6">
               {[
@@ -464,7 +464,7 @@ const DashboardPage = () => {
               ].map((stat) => (
                 <div key={stat.label} className="text-center">
                   <span className="text-2xl">{stat.icon}</span>
-                  <p className="text-xl font-bold text-white mt-2">{stat.value}</p>
+                  <p className="text-xl font-bold text-ink mt-2">{stat.value}</p>
                   <p className="text-xs text-dark-400 mt-1">{stat.label}</p>
                 </div>
               ))}

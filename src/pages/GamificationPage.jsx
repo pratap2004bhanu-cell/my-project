@@ -104,7 +104,7 @@ const GamificationPage = () => {
     <div className="p-4 lg:p-6 max-w-4xl mx-auto">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl lg:text-3xl font-display font-bold text-white">
+        <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink">
           Achievements
         </h1>
         <p className="text-dark-400">Track your progress and earn rewards</p>
@@ -118,22 +118,22 @@ const GamificationPage = () => {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <div className="card p-4 text-center">
               <FiZap className="w-6 h-6 text-amber-400 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-white">{points.toLocaleString()}</div>
+              <div className="text-2xl font-bold text-ink">{points.toLocaleString()}</div>
               <div className="text-sm text-dark-400">Points</div>
             </div>
             <div className="card p-4 text-center">
               <FiAward className="w-6 h-6 text-lime-400 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-white">{earnedCount}</div>
+              <div className="text-2xl font-bold text-ink">{earnedCount}</div>
               <div className="text-sm text-dark-400">Badges</div>
             </div>
             <div className="card p-4 text-center">
               <FiTrendingUp className="w-6 h-6 text-electric-400 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-white">{stats.streak || 0}</div>
+              <div className="text-2xl font-bold text-ink">{stats.streak || 0}</div>
               <div className="text-sm text-dark-400">Day Streak</div>
             </div>
             <div className="card p-4 text-center">
               <FiTarget className="w-6 h-6 text-pink-400 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-white">{myRank ? `#${myRank}` : '—'}</div>
+              <div className="text-2xl font-bold text-ink">{myRank ? `#${myRank}` : '—'}</div>
               <div className="text-sm text-dark-400">Rank</div>
             </div>
           </div>
@@ -213,16 +213,16 @@ const GamificationPage = () => {
             <div className="space-y-6">
               <div className="card p-6 text-center">
                 <div className="text-6xl mb-2">🔥</div>
-                <div className="text-5xl font-bold text-white mb-2">{stats.streak || 0}</div>
+                <div className="text-5xl font-bold text-ink mb-2">{stats.streak || 0}</div>
                 <div className="text-xl text-dark-400">Day Streak</div>
                 <p className="text-dark-400 mt-2">You've joined {stats.activitiesJoined || 0} activities so far. Keep it going!</p>
               </div>
 
               <div className="card p-6">
-                <h3 className="font-semibold text-white mb-4">This Week</h3>
+                <h3 className="font-semibold text-ink mb-4">This Week</h3>
                 <div className="flex justify-between mb-4">
                   <span className="text-dark-400">Activities</span>
-                  <span className="text-white font-semibold">
+                  <span className="text-ink font-semibold">
                     {activitiesThisWeek}/{weeklyGoal}
                   </span>
                 </div>
@@ -249,7 +249,7 @@ const GamificationPage = () => {
               </div>
 
               <div className="card p-6">
-                <h3 className="font-semibold text-white mb-4">How Streaks Work</h3>
+                <h3 className="font-semibold text-ink mb-4">How Streaks Work</h3>
                 <ul className="space-y-3 text-dark-300">
                   <li className="flex items-start gap-2">
                     <span className="text-lime-400">•</span>
@@ -277,7 +277,7 @@ const GamificationPage = () => {
             rankedBoard.length === 0 ? (
               <div className="card p-10 text-center">
                 <span className="text-5xl mb-4 block">🏆</span>
-                <h3 className="text-xl font-bold text-white mb-2">No leaderboard yet</h3>
+                <h3 className="text-xl font-bold text-ink mb-2">No leaderboard yet</h3>
                 <p className="text-dark-400">Join activities to climb the ranks</p>
               </div>
             ) : (
@@ -329,7 +329,7 @@ const GamificationPage = () => {
                         </h4>
                         <p className="text-xs text-dark-400">{person.activities} activities</p>
                       </div>
-                      <span className="font-bold text-white">{person.points.toLocaleString()}</span>
+                      <span className="font-bold text-ink">{person.points.toLocaleString()}</span>
                     </div>
                   ))}
                 </div>

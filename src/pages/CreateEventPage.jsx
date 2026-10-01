@@ -177,7 +177,7 @@ const CreateEventPage = () => {
   if (loadError) {
     return (
       <div className="p-6 max-w-2xl mx-auto">
-        <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-dark-400 hover:text-white mb-4"><FiArrowLeft /> Back</button>
+        <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-dark-400 hover:text-ink mb-4"><FiArrowLeft /> Back</button>
         <div className="card p-6 text-center">
           <p className="text-red-400">{loadError}</p>
         </div>
@@ -189,10 +189,10 @@ const CreateEventPage = () => {
 
   return (
     <div className="max-w-3xl mx-auto p-4 lg:p-6">
-      <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-dark-400 hover:text-white mb-4 text-sm">
+      <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-dark-400 hover:text-ink mb-4 text-sm">
         <FiArrowLeft /> Back
       </button>
-      <h1 className="text-2xl lg:text-3xl font-display font-bold text-white mb-1">
+      <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink mb-1">
         {isEdit ? 'Edit event' : 'Create an event'}
       </h1>
       <p className="text-dark-400 text-sm mb-6">
@@ -217,8 +217,8 @@ const CreateEventPage = () => {
           />
         </label>
         <div className="absolute bottom-3 left-4">
-          <p className="text-white font-display font-bold text-lg">{form.title || (isEdit ? 'Event name' : 'Your event name')}</p>
-          <p className="text-white/80 text-xs">{form.startTime} · {form.venueName || 'Venue'}</p>
+          <p className="text-ink font-display font-bold text-lg">{form.title || (isEdit ? 'Event name' : 'Your event name')}</p>
+          <p className="text-ink/80 text-xs">{form.startTime} · {form.venueName || 'Venue'}</p>
         </div>
       </div>
 

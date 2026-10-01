@@ -157,7 +157,7 @@ const CheckInPage = () => {
     <div className="p-4 lg:p-6 max-w-4xl mx-auto">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl lg:text-3xl font-display font-bold text-white">
+        <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink">
           Check In
         </h1>
         <p className="text-dark-400">Mark your arrival at activities</p>
@@ -165,7 +165,7 @@ const CheckInPage = () => {
 
       {/* Today's Activities */}
       <div className="mb-8">
-        <h2 className="text-lg font-semibold text-white mb-4">Today's Activities</h2>
+        <h2 className="text-lg font-semibold text-ink mb-4">Today's Activities</h2>
         {loading ? (
           <div className="flex items-center justify-center py-12">
             <div className="w-8 h-8 border-2 border-lime-500 border-t-transparent rounded-full animate-spin"></div>
@@ -178,7 +178,7 @@ const CheckInPage = () => {
         ) : todayActivities.length === 0 ? (
           <div className="card text-center py-12">
             <span className="text-5xl mb-3 block">📅</span>
-            <h3 className="text-lg font-bold text-white mb-2">No activities today</h3>
+            <h3 className="text-lg font-bold text-ink mb-2">No activities today</h3>
             <p className="text-dark-400 mb-5">Join or create an activity for today to check in.</p>
             <Link to="/explore" className="btn-primary inline-flex items-center gap-2">
               Find Activities <FiArrowRight className="w-4 h-4" />
@@ -195,7 +195,7 @@ const CheckInPage = () => {
                 <div className="flex-1">
                   <div className="flex items-start justify-between gap-2 mb-2">
                     <div>
-                      <h3 className="font-bold text-white text-lg">{activity.title}</h3>
+                      <h3 className="font-bold text-ink text-lg">{activity.title}</h3>
                       <p className="text-sm text-dark-400 flex items-center gap-1">
                         <FiClock className="w-3 h-3" />
                         {activity.time}
@@ -270,7 +270,7 @@ const CheckInPage = () => {
               <div className="w-20 h-20 bg-lime-500 rounded-full flex items-center justify-center mx-auto mb-4">
                 <FiCheckCircle className="w-10 h-10 text-dark-900" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-2">Checked In!</h3>
+              <h3 className="text-xl font-bold text-ink mb-2">Checked In!</h3>
               <p className="text-dark-400">You've arrived — let everyone know</p>
             </div>
 
@@ -304,7 +304,7 @@ const CheckInPage = () => {
 
       {/* Recent Check-ins */}
       <div>
-        <h2 className="text-lg font-semibold text-white mb-4">Recent Check-ins</h2>
+        <h2 className="text-lg font-semibold text-ink mb-4">Recent Check-ins</h2>
         <div className="space-y-3">
           {recentCheckIns.length === 0 ? (
             <div className="card text-center py-8">
@@ -316,7 +316,7 @@ const CheckInPage = () => {
                 {item.emoji}
               </div>
               <div className="flex-1">
-                <h3 className="font-bold text-white group-hover:text-lime-400 transition-colors">{item.title}</h3>
+                <h3 className="font-bold text-ink group-hover:text-lime-400 transition-colors">{item.title}</h3>
                 <p className="text-sm text-dark-400 flex items-center gap-1">
                   <FiMapPin className="w-3 h-3" />
                   {item.location}

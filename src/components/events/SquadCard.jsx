@@ -12,7 +12,7 @@ const SquadCard = ({ squad, meId, onJoin, onLeave, onDelete, onMemberClick, onCh
     <div className="rounded-2xl border border-dark-700/50 bg-dark-800/40 p-4">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h4 className="font-semibold text-white flex items-center gap-2">
+          <h4 className="font-semibold text-ink flex items-center gap-2">
             {squad.name}
             {isCreator && <FiShield className="w-3.5 h-3.5 text-lime-400" />}
           </h4>
@@ -98,7 +98,7 @@ const SquadCard = ({ squad, meId, onJoin, onLeave, onDelete, onMemberClick, onCh
 const SquadList = ({ squads, meId, onJoin, onLeave, onDelete, onChat, onCreate, onMemberClick }) => (
   <div className="space-y-3">
     <div className="flex items-center justify-between">
-      <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+      <h3 className="text-sm font-semibold text-ink flex items-center gap-2">
         <FiUsers className="text-electric-400" />
         Event squads
       </h3>

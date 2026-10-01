@@ -31,17 +31,17 @@ const sections = [
 const PrivacyPage = () => {
   return (
     <div className="p-4 lg:p-6 max-w-3xl mx-auto">
-      <Link to="/settings" className="inline-flex items-center gap-1 text-sm text-dark-400 hover:text-white transition-colors mb-4">
+      <Link to="/settings" className="inline-flex items-center gap-1 text-sm text-dark-400 hover:text-ink transition-colors mb-4">
         <FiChevronLeft className="w-4 h-4" /> Back to Settings
       </Link>
 
-      <h1 className="text-2xl lg:text-3xl font-display font-bold text-white mb-2">Privacy Policy</h1>
+      <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink mb-2">Privacy Policy</h1>
       <p className="text-dark-400 mb-8">Last updated: September 2026</p>
 
       <div className="space-y-6">
         {sections.map((s) => (
           <div key={s.h}>
-            <h2 className="text-lg font-semibold text-white mb-2">{s.h}</h2>
+            <h2 className="text-lg font-semibold text-ink mb-2">{s.h}</h2>
             <p className="text-sm text-dark-300 leading-relaxed">{s.p}</p>
           </div>
         ))}

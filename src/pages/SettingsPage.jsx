@@ -263,7 +263,7 @@ const SettingsPage = () => {
         <item.icon className="w-5 h-5 text-dark-400" />
       </div>
       <div className="flex-1">
-        <h3 className="font-medium text-white">{item.label}</h3>
+        <h3 className="font-medium text-ink">{item.label}</h3>
         {item.description && <p className="text-sm text-dark-400">{item.description}</p>}
       </div>
       {item.status && (
@@ -279,7 +279,7 @@ const SettingsPage = () => {
     <div className="p-4 lg:p-6 max-w-4xl mx-auto">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl lg:text-3xl font-display font-bold text-white">
+        <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink">
           Settings
         </h1>
         <p className="text-dark-400">Manage your account and preferences</p>
@@ -318,7 +318,7 @@ const SettingsPage = () => {
           {activeSection === 'account' && (
             <div className="space-y-6">
               <div className="card p-6">
-                <h2 className="text-lg font-semibold text-white mb-4">Account Settings</h2>
+                <h2 className="text-lg font-semibold text-ink mb-4">Account Settings</h2>
                 <div className="space-y-2">
                   {accountSettings.map((item) => (
                     <ListWrapper key={item.id} item={item}>
@@ -329,7 +329,7 @@ const SettingsPage = () => {
               </div>
 
               <div className="card p-6">
-                <h2 className="text-lg font-semibold text-white mb-4">Security</h2>
+                <h2 className="text-lg font-semibold text-ink mb-4">Security</h2>
                 <div className="space-y-2">
                   {securitySettings.map((item) => (
                     <ListWrapper key={item.id} item={item}>
@@ -350,7 +350,7 @@ const SettingsPage = () => {
                       <FiLogOut className="w-5 h-5 text-dark-400" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-medium text-white">Log Out</h3>
+                      <h3 className="font-medium text-ink">Log Out</h3>
                       <p className="text-sm text-dark-400">Sign out of your account</p>
                     </div>
                   </button>
@@ -374,11 +374,11 @@ const SettingsPage = () => {
           {/* Notifications Section */}
           {activeSection === 'notifications' && (
             <div className="card p-6">
-              <h2 className="text-lg font-semibold text-white mb-6">Notification Preferences</h2>
+              <h2 className="text-lg font-semibold text-ink mb-6">Notification Preferences</h2>
 
               <div className="space-y-6">
                 <div>
-                  <h3 className="font-medium text-white mb-4">Channels</h3>
+                  <h3 className="font-medium text-ink mb-4">Channels</h3>
                   <div className="space-y-3">
                     {[
                       { key: 'email', label: 'Email Notifications', icon: FiMail },
@@ -388,7 +388,7 @@ const SettingsPage = () => {
                       <div key={item.key} className="flex items-center justify-between p-4 bg-dark-800/50 rounded-xl">
                         <div className="flex items-center gap-3">
                           <item.icon className="w-5 h-5 text-dark-400" />
-                          <span className="text-white">{item.label}</span>
+                          <span className="text-ink">{item.label}</span>
                         </div>
                         <Toggle checked={settings.notifications[item.key]} onChange={() => toggleSetting('notifications', item.key)} />
                       </div>
@@ -397,7 +397,7 @@ const SettingsPage = () => {
                 </div>
 
                 <div>
-                  <h3 className="font-medium text-white mb-4">Types</h3>
+                  <h3 className="font-medium text-ink mb-4">Types</h3>
                   <div className="space-y-3">
                     {[
                       { key: 'activityUpdates', label: 'Activity Updates' },
@@ -406,7 +406,7 @@ const SettingsPage = () => {
                       { key: 'reminders', label: 'Activity Reminders' },
                     ].map((item) => (
                       <div key={item.key} className="flex items-center justify-between p-4 bg-dark-800/50 rounded-xl">
-                        <span className="text-white">{item.label}</span>
+                        <span className="text-ink">{item.label}</span>
                         <Toggle checked={settings.notifications[item.key]} onChange={() => toggleSetting('notifications', item.key)} />
                       </div>
                     ))}
@@ -420,10 +420,10 @@ const SettingsPage = () => {
           {activeSection === 'privacy' && (
             <div className="space-y-6">
               <div className="card p-6">
-                <h2 className="text-lg font-semibold text-white mb-4">Privacy Settings</h2>
+                <h2 className="text-lg font-semibold text-ink mb-4">Privacy Settings</h2>
                 <div className="space-y-4">
                   <div className="p-4 bg-dark-800/50 rounded-xl">
-                    <label className="block text-white mb-2">Profile Visibility</label>
+                    <label className="block text-ink mb-2">Profile Visibility</label>
                     <select
                       value={settings.privacy.profileVisibility}
                       onChange={(e) => setSectionValue('privacy', 'profileVisibility', e.target.value)}
@@ -437,7 +437,7 @@ const SettingsPage = () => {
 
                   <div className="flex items-center justify-between p-4 bg-dark-800/50 rounded-xl">
                     <div>
-                      <span className="text-white">Show Location</span>
+                      <span className="text-ink">Show Location</span>
                       <p className="text-sm text-dark-400">Display your approximate location</p>
                     </div>
                     <Toggle checked={settings.privacy.showLocation} onChange={() => toggleSetting('privacy', 'showLocation')} />
@@ -445,14 +445,14 @@ const SettingsPage = () => {
 
                   <div className="flex items-center justify-between p-4 bg-dark-800/50 rounded-xl">
                     <div>
-                      <span className="text-white">Show Online Status</span>
+                      <span className="text-ink">Show Online Status</span>
                       <p className="text-sm text-dark-400">Let others see when you're online</p>
                     </div>
                     <Toggle checked={settings.privacy.showOnlineStatus} onChange={() => toggleSetting('privacy', 'showOnlineStatus')} />
                   </div>
 
                   <div className="p-4 bg-dark-800/50 rounded-xl">
-                    <label className="block text-white mb-2">Who can message you?</label>
+                    <label className="block text-ink mb-2">Who can message you?</label>
                     <select
                       value={settings.privacy.allowMessages}
                       onChange={(e) => setSectionValue('privacy', 'allowMessages', e.target.value)}
@@ -467,12 +467,12 @@ const SettingsPage = () => {
               </div>
 
               <div className="card p-6">
-                <h2 className="text-lg font-semibold text-white mb-4">
+                <h2 className="text-lg font-semibold text-ink mb-4">
                   <FiShield className="w-5 h-5 inline mr-2 text-lime-400" />
                   Safety Features
                 </h2>
                 <Link to="/safety" className="flex items-center justify-between p-4 bg-dark-800/50 rounded-xl hover:bg-dark-700/50 transition-colors">
-                  <span className="text-white">Trust & Safety Center</span>
+                  <span className="text-ink">Trust & Safety Center</span>
                   <FiChevronRight className="w-5 h-5 text-dark-400" />
                 </Link>
               </div>
@@ -482,10 +482,10 @@ const SettingsPage = () => {
           {/* Preferences Section */}
           {activeSection === 'preferences' && (
             <div className="card p-6">
-              <h2 className="text-lg font-semibold text-white mb-6">App Preferences</h2>
+              <h2 className="text-lg font-semibold text-ink mb-6">App Preferences</h2>
               <div className="space-y-4">
                 <div className="p-4 bg-dark-800/50 rounded-xl">
-                  <label className="block text-white mb-2">Language</label>
+                  <label className="block text-ink mb-2">Language</label>
                   <select
                     value={settings.preferences.language}
                     onChange={(e) => setSectionValue('preferences', 'language', e.target.value)}
@@ -500,7 +500,7 @@ const SettingsPage = () => {
                 </div>
 
                 <div className="p-4 bg-dark-800/50 rounded-xl">
-                  <label className="block text-white mb-2">Theme</label>
+                  <label className="block text-ink mb-2">Theme</label>
                   <div className="flex gap-3">
                     <button
                       onClick={() => pickTheme('dark')}
@@ -524,7 +524,7 @@ const SettingsPage = () => {
                 </div>
 
                 <div className="p-4 bg-dark-800/50 rounded-xl">
-                  <label className="block text-white mb-2">Distance Unit</label>
+                  <label className="block text-ink mb-2">Distance Unit</label>
                   <div className="flex gap-3">
                     <button
                       onClick={() => setSectionValue('preferences', 'distanceUnit', 'km')}
@@ -547,7 +547,7 @@ const SettingsPage = () => {
 
                 <div className="flex items-center justify-between p-4 bg-dark-800/50 rounded-xl">
                   <div>
-                    <span className="text-white">Auto-join Nearby Activities</span>
+                    <span className="text-ink">Auto-join Nearby Activities</span>
                     <p className="text-sm text-dark-400">Automatically join activities near you</p>
                   </div>
                   <Toggle checked={settings.preferences.autoJoin} onChange={() => toggleSetting('preferences', 'autoJoin')} />
@@ -559,7 +559,7 @@ const SettingsPage = () => {
           {/* Help Section */}
           {activeSection === 'help' && (
             <div className="card p-6">
-              <h2 className="text-lg font-semibold text-white mb-4">Help & Support</h2>
+              <h2 className="text-lg font-semibold text-ink mb-4">Help & Support</h2>
               <div className="space-y-2">
                 {helpSettings.map((item) => (
                   <ListWrapper key={item.id} item={item}>
@@ -580,7 +580,7 @@ const SettingsPage = () => {
               <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <FiTrash2 className="w-8 h-8 text-red-400" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-2">Delete Account?</h3>
+              <h3 className="text-xl font-bold text-ink mb-2">Delete Account?</h3>
               <p className="text-dark-400">
                 This action cannot be undone. All your data will be permanently deleted.
               </p>
@@ -689,7 +689,7 @@ const SettingsPage = () => {
             {!!twoFA.devCode && (
               <div className="bg-lime-500/10 border border-lime-500/30 text-lime-300 px-4 py-3 rounded-xl text-sm">
                 Code sent{twoFA.devCode && (
-                  <span className="block mt-2 font-mono text-lg tracking-widest text-white">{twoFA.devCode}</span>
+                  <span className="block mt-2 font-mono text-lg tracking-widest text-ink">{twoFA.devCode}</span>
                 )}
               </div>
             )}
@@ -749,7 +749,7 @@ const SettingsPage = () => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <h4 className="font-medium text-white text-sm truncate">{d.name}</h4>
+                      <h4 className="font-medium text-ink text-sm truncate">{d.name}</h4>
                       {d.current && <span className="px-1.5 py-0.5 bg-lime-500/20 text-lime-400 rounded text-xs font-medium">This device</span>}
                     </div>
                     <p className="text-xs text-dark-400">
@@ -791,7 +791,7 @@ const Modal = ({ onClose, children, title, icon: Icon }) => (
       <div className="flex items-start justify-between mb-5">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-dark-700/50 rounded-lg"><Icon className="w-5 h-5 text-lime-400" /></div>
-          <h3 className="text-lg font-bold text-white">{title}</h3>
+          <h3 className="text-lg font-bold text-ink">{title}</h3>
         </div>
         <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-dark-700/50 text-dark-400 hover:text-white transition-colors">
           <FiX className="w-5 h-5" />
@@ -804,7 +804,7 @@ const Modal = ({ onClose, children, title, icon: Icon }) => (
 
 const PasswordField = ({ label, value, onChange, show, toggleShow }) => (
   <div>
-    <label className="block text-white mb-2">{label}</label>
+    <label className="block text-ink mb-2">{label}</label>
     <div className="relative">
       <input
         type={show ? 'text' : 'password'}
@@ -816,7 +816,7 @@ const PasswordField = ({ label, value, onChange, show, toggleShow }) => (
       <button
         type="button"
         onClick={toggleShow}
-        className="absolute right-4 top-1/2 -translate-y-1/2 text-dark-400 hover:text-white transition-colors"
+        className="absolute right-4 top-1/2 -translate-y-1/2 text-dark-400 hover:text-ink transition-colors"
       >
         {show ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
       </button>

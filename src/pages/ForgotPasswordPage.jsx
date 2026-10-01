@@ -44,9 +44,9 @@ const ForgotPasswordPage = () => {
       <div className="auth-card animate-scale-in">
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center mb-6">
-            <Logo size={120} className="text-white" />
+            <Logo size={120} className="text-ink" />
           </div>
-          <h1 className="text-2xl font-bold text-white">Reset your password</h1>
+          <h1 className="text-2xl font-bold text-ink">Reset your password</h1>
           <p className="text-dark-400 mt-2">Enter your email and we'll send you a reset link</p>
         </div>
 
@@ -88,7 +88,7 @@ const ForgotPasswordPage = () => {
               )}
             </button>
 
-            <Link to="/login" className="flex items-center justify-center gap-2 text-sm text-dark-300 hover:text-white transition-colors">
+            <Link to="/login" className="flex items-center justify-center gap-2 text-sm text-dark-300 hover:text-ink transition-colors">
               <FiChevronLeft className="w-4 h-4" /> Back to Login
             </Link>
           </form>
@@ -100,7 +100,7 @@ const ForgotPasswordPage = () => {
             {devCode && (
               <div className="bg-lime-500/10 border border-lime-500/30 rounded-xl p-4">
                 <p className="text-sm text-lime-300 mb-2">Dev code (enter on the next page):</p>
-                <span className="font-mono text-2xl tracking-widest text-white">{devCode}</span>
+                <span className="font-mono text-2xl tracking-widest text-ink">{devCode}</span>
               </div>
             )}
             <Link to="/reset-password" className="w-full btn-primary flex items-center justify-center gap-2">

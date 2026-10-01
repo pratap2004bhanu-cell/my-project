@@ -123,7 +123,7 @@ const KikyPage = () => {
           <FiZap className="w-5 h-5 text-lime-400" />
           <span className="text-lime-400 font-semibold">Instant Mode</span>
         </div>
-        <h1 className="text-3xl lg:text-4xl font-display font-bold text-white mb-2">
+        <h1 className="text-3xl lg:text-4xl font-display font-bold text-ink mb-2">
           KIKY Now
         </h1>
         <p className="text-dark-400 max-w-md mx-auto">
@@ -158,7 +158,7 @@ const KikyPage = () => {
 
       {/* Activity Selection */}
       <div className="card p-6 mb-6">
-        <h2 className="text-lg font-semibold text-white mb-4">What do you want to do?</h2>
+        <h2 className="text-lg font-semibold text-ink mb-4">What do you want to do?</h2>
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
           {ACTIVITY_OPTIONS.map((activity) => (
             <button
@@ -180,7 +180,7 @@ const KikyPage = () => {
       {/* Search Radius */}
       <div className="card p-6 mb-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-white">Search Radius</h2>
+          <h2 className="text-lg font-semibold text-ink">Search Radius</h2>
           <span className="text-lime-400 font-bold">{searchRadius} km</span>
         </div>
         <input
@@ -203,7 +203,7 @@ const KikyPage = () => {
       {isActive && (
         <div className="animate-slide-up">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-white">
+            <h2 className="text-lg font-semibold text-ink">
               Available Now ({matches.length})
             </h2>
             <button onClick={loadMatches} className="btn-outline text-sm flex items-center gap-2">
@@ -241,7 +241,7 @@ const KikyPage = () => {
                     <div className="flex-1">
                       <div className="flex items-start justify-between gap-2 mb-2">
                         <div>
-                          <h3 className="font-bold text-white text-lg">{match.title}</h3>
+                          <h3 className="font-bold text-ink text-lg">{match.title}</h3>
                           <p className="text-sm text-dark-400 flex items-center gap-1">
                             <FiMapPin className="w-3 h-3" />
                             {match.location?.address || 'Location TBA'} • {fmtDistance(match.distance)}
@@ -311,7 +311,7 @@ const KikyPage = () => {
       {!isActive && (
         <div className="text-center py-8">
           <span className="text-6xl mb-4 block">⚡</span>
-          <h3 className="text-xl font-bold text-white mb-2">Ready when you are</h3>
+          <h3 className="text-xl font-bold text-ink mb-2">Ready when you are</h3>
           <p className="text-dark-400">
             {hasLocation ? 'Tap the button above to find people nearby' : 'Add your location in Settings to search nearby'}
           </p>

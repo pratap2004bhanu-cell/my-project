@@ -56,7 +56,7 @@ const AdminEventsPage = () => {
     return (
       <div className="p-8 max-w-xl mx-auto text-center">
         <span className="text-6xl block mb-4">🛡️</span>
-        <h1 className="text-2xl font-bold text-white mb-2">Admins only</h1>
+        <h1 className="text-2xl font-bold text-ink mb-2">Admins only</h1>
         <p className="text-dark-400 mb-6">This area is for KIKY event moderators.</p>
         <button onClick={() => navigate('/my-events')} className="btn-outline px-4 py-2.5 text-sm">Back to my events</button>
       </div>
@@ -70,13 +70,13 @@ const AdminEventsPage = () => {
 
   return (
     <div className="p-4 lg:p-6 max-w-4xl mx-auto">
-      <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-dark-400 hover:text-white mb-4 text-sm">
+      <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-dark-400 hover:text-ink mb-4 text-sm">
         <FiArrowLeft /> Back
       </button>
 
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-display font-bold text-white flex items-center gap-2">
+          <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink flex items-center gap-2">
             <FiShield className="text-lime-400" /> Event moderation
           </h1>
           <p className="text-dark-400 mt-1">Approve, reject and triage event reports.</p>
@@ -90,7 +90,7 @@ const AdminEventsPage = () => {
 
       {pending.length > 0 && (
         <div className="mb-8">
-          <h2 className="text-base font-semibold text-white mb-4">Pending review ({pending.length})</h2>
+          <h2 className="text-base font-semibold text-ink mb-4">Pending review ({pending.length})</h2>
           <div className="space-y-3">
             {pending.map((e) => (
               <div key={e._id} className="card p-4 flex flex-col sm:flex-row sm:items-center gap-3">
@@ -99,7 +99,7 @@ const AdminEventsPage = () => {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="font-semibold text-white truncate">{e.title}</h3>
+                    <h3 className="font-semibold text-ink truncate">{e.title}</h3>
                     <StatusPill moderationStatus={e.moderationStatus} status={e.status} />
                   </div>
                   <p className="text-xs text-dark-400 mt-0.5 truncate">
@@ -122,7 +122,7 @@ const AdminEventsPage = () => {
 
       {reports.length > 0 && (
         <div className="mb-8">
-          <h2 className="text-base font-semibold text-white mb-4 flex items-center gap-2">
+          <h2 className="text-base font-semibold text-ink mb-4 flex items-center gap-2">
             <FiFlag className="text-hotpink-400" /> Open reports ({reports.length})
           </h2>
           <div className="space-y-3">
@@ -131,9 +131,9 @@ const AdminEventsPage = () => {
                 <div className="flex items-center gap-3 mb-2">
                   <RoundAvatar name={r.reporter?.name || '?'} src={r.reporter?.avatar} className="w-8 h-8 text-xs" />
                   <div className="flex-1 min-w-0 text-sm">
-                    <span className="text-white font-medium">{r.reporter?.name}</span>{' '}
+                    <span className="text-ink font-medium">{r.reporter?.name}</span>{' '}
                     <span className="text-dark-400">reported</span>{' '}
-                    <span className="text-white font-medium">
+                    <span className="text-ink font-medium">
                       {r.reported?.name ? <Link to={`/users/${r.reported._id}`} className="hover:text-lime-400">{r.reported.name}</Link> : 'someone'}
                     </span>
                     <span className="text-dark-400"> on an event</span>
@@ -148,13 +148,13 @@ const AdminEventsPage = () => {
 
       {rest.length > 0 && (
         <div>
-          <h2 className="text-base font-semibold text-white mb-4">Recent events</h2>
+          <h2 className="text-base font-semibold text-ink mb-4">Recent events</h2>
           <div className="space-y-2">
             {rest.map((e) => (
               <div key={e._id} className="card p-3 flex items-center gap-3">
                 <div className="w-9 h-9 rounded-lg bg-dark-800 flex items-center justify-center shrink-0">{e.emoji || '🎟️'}</div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-white truncate">{e.title}</p>
+                  <p className="text-sm font-medium text-ink truncate">{e.title}</p>
                   <p className="text-xs text-dark-400">{new Date(e.date).toDateString()} · {e.counts?.going || 0} going · {e.counts?.interested || 0} interested</p>
                 </div>
                 <StatusPill moderationStatus={e.moderationStatus} status={e.status} />
@@ -167,7 +167,7 @@ const AdminEventsPage = () => {
       {events.length === 0 && reports.length === 0 && (
         <div className="text-center py-16">
           <span className="text-6xl block mb-4">🛡️</span>
-          <h3 className="text-xl font-bold text-white mb-2">All clear</h3>
+          <h3 className="text-xl font-bold text-ink mb-2">All clear</h3>
           <p className="text-dark-400">No events or reports waiting on you.</p>
         </div>
       )}

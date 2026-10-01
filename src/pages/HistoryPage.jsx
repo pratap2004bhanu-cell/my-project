@@ -105,7 +105,7 @@ const HistoryPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-display font-bold text-white">
+          <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink">
             Activity History
           </h1>
           <p className="text-dark-400">Your past activities and stats</p>
@@ -131,7 +131,7 @@ const HistoryPage = () => {
       {/* Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <div className="card p-4 text-center">
-          <div className="text-3xl font-bold text-white mb-1">{stats.totalActivities}</div>
+          <div className="text-3xl font-bold text-ink mb-1">{stats.totalActivities}</div>
           <div className="text-sm text-dark-400">Total Activities</div>
         </div>
         <div className="card p-4 text-center">
@@ -156,7 +156,7 @@ const HistoryPage = () => {
               <FiTarget className="w-6 h-6 text-lime-400" />
             </div>
             <div>
-              <div className="text-xl font-bold text-white">{stats.favoriteCategory}</div>
+              <div className="text-xl font-bold text-ink">{stats.favoriteCategory}</div>
               <div className="text-sm text-dark-400">Favorite Category</div>
             </div>
           </div>
@@ -167,7 +167,7 @@ const HistoryPage = () => {
               <FiCheckCircle className="w-6 h-6 text-amber-400" />
             </div>
             <div>
-              <div className="text-xl font-bold text-white">{stats.avgRating}</div>
+              <div className="text-xl font-bold text-ink">{stats.avgRating}</div>
               <div className="text-sm text-dark-400">Avg Rating</div>
             </div>
           </div>
@@ -178,7 +178,7 @@ const HistoryPage = () => {
               <FiUsers className="w-6 h-6 text-electric-400" />
             </div>
             <div>
-              <div className="text-xl font-bold text-white">{stats.participantCount}</div>
+              <div className="text-xl font-bold text-ink">{stats.participantCount}</div>
               <div className="text-sm text-dark-400">People Met</div>
             </div>
           </div>
@@ -217,7 +217,7 @@ const HistoryPage = () => {
             <div className="flex-1">
               <div className="flex items-start justify-between gap-2 mb-2">
                 <div>
-                  <h3 className="font-bold text-white group-hover:text-lime-400 transition-colors">{item.title}</h3>
+                  <h3 className="font-bold text-ink group-hover:text-lime-400 transition-colors">{item.title}</h3>
                   <p className="text-sm text-dark-400 flex items-center gap-1">
                     <FiMapPin className="w-3 h-3" />
                     {item.location}
@@ -267,7 +267,7 @@ const HistoryPage = () => {
       {filteredHistory.length === 0 && (
         <div className="text-center py-16">
           <span className="text-6xl mb-4 block">📋</span>
-          <h3 className="text-xl font-bold text-white mb-2">No activities found</h3>
+          <h3 className="text-xl font-bold text-ink mb-2">No activities found</h3>
           <p className="text-dark-400 mb-6">Try a different filter</p>
           <button onClick={() => setFilter('all')} className="btn-primary">
             Show All

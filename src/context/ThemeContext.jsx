@@ -12,12 +12,14 @@ export const useTheme = () => {
   return context;
 };
 
-export const THEMES = ['dark', 'light', 'doodle'];
+/* Light is the default canvas. `doodle` stays last so the toggle
+   cycles light → doodle → dark → light. */
+export const THEMES = ['light', 'doodle', 'dark'];
 
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(() => {
     const saved = localStorage.getItem('theme');
-    return THEMES.includes(saved) ? saved : 'dark';
+    return THEMES.includes(saved) ? saved : 'light';
   });
 
   useEffect(() => {

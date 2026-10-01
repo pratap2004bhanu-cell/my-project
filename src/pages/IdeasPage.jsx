@@ -87,7 +87,7 @@ const IdeasPage = () => {
     <div className="p-4 lg:p-6 max-w-3xl mx-auto">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl lg:text-3xl font-display font-bold text-white flex items-center gap-2">
+        <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink flex items-center gap-2">
           <FiPenTool className="w-7 h-7 text-amber-400" />
           Share an Idea
         </h1>
@@ -102,7 +102,7 @@ const IdeasPage = () => {
           <div className="w-20 h-20 bg-lime-500 rounded-full flex items-center justify-center mx-auto mb-4">
             <FiCheck className="w-10 h-10 text-dark-900" />
           </div>
-          <h2 className="text-2xl font-bold text-white mb-2">Idea sent!</h2>
+          <h2 className="text-2xl font-bold text-ink mb-2">Idea sent!</h2>
           <p className="text-dark-400">Thanks for helping make KIKY better 🤝</p>
         </div>
       ) : (
@@ -152,7 +152,7 @@ const IdeasPage = () => {
 
       {/* Ideas list */}
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-lg font-bold text-white">
+        <h2 className="text-lg font-bold text-ink">
           {isAdmin ? 'All ideas' : 'Your ideas'}
         </h2>
         {isAdmin && (
@@ -169,7 +169,7 @@ const IdeasPage = () => {
       ) : items.length === 0 ? (
         <div className="text-center py-16 card">
           <span className="text-6xl mb-4 block">💡</span>
-          <h3 className="text-xl font-bold text-white mb-2">No ideas yet</h3>
+          <h3 className="text-xl font-bold text-ink mb-2">No ideas yet</h3>
           <p className="text-dark-400">Be the first to share what you'd love to see</p>
         </div>
       ) : (
@@ -204,7 +204,7 @@ const IdeasPage = () => {
                       </select>
                     )}
                   </div>
-                  <p className="text-white text-sm break-words">{item.idea}</p>
+                  <p className="text-ink text-sm break-words">{item.idea}</p>
                 </div>
               </div>
             );

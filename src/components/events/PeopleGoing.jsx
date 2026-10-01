@@ -7,7 +7,7 @@ const PeopleGoing = ({ people = [], meInterests = [] }) => {
   return (
     <div>
       <div className="flex items-center justify-between mb-2">
-        <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+        <h3 className="text-sm font-semibold text-ink flex items-center gap-2">
           <FiUsers className="text-lime-400" />
           People going/Interested
         </h3>
@@ -31,7 +31,7 @@ const PeopleGoing = ({ people = [], meInterests = [] }) => {
               <div className="min-w-0 flex-1">
                 <Link
                   to={`/users/${p.id}`}
-                  className="block text-sm font-medium text-white hover:text-lime-300 transition-colors truncate"
+                  className="block text-sm font-medium text-ink hover:text-lime-300 transition-colors truncate"
                 >
                   {p.name}
                 </Link>

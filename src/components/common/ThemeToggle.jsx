@@ -7,9 +7,9 @@ const ThemeToggle = ({ className = '' }) => {
   const { user, updateUser } = useAuth();
 
   const themeMeta = {
-    dark: { icon: FiSun, active: 'bg-dark-800 text-amber-400 hover:bg-dark-700', label: 'light mode' },
     light: { icon: FiMoon, active: 'bg-gray-100 text-blue-600 hover:bg-gray-200', label: 'doodle mode' },
     doodle: { icon: FiEdit2, active: 'doodle-theme-btn bg-lime-100 text-pink-600 hover:bg-lime-200', label: 'dark mode' },
+    dark: { icon: FiSun, active: 'bg-dark-800 text-amber-400 hover:bg-dark-700', label: 'light mode' },
   };
 
   const meta = themeMeta[theme];

@@ -67,7 +67,7 @@ const CommunityPage = () => {
     return (
       <div className="p-4 lg:p-6 max-w-3xl mx-auto text-center py-16">
         <span className="text-6xl mb-4 block">👥</span>
-        <h3 className="text-xl font-bold text-white mb-2">Community not found</h3>
+        <h3 className="text-xl font-bold text-ink mb-2">Community not found</h3>
         <p className="text-dark-400 mb-6">{error}</p>
         <button onClick={() => navigate('/communities')} className="btn-primary">Back to Communities</button>
       </div>
@@ -76,7 +76,7 @@ const CommunityPage = () => {
 
   return (
     <div className="p-4 lg:p-6 max-w-3xl mx-auto">
-      <button onClick={() => navigate('/communities')} className="flex items-center gap-2 text-dark-300 hover:text-white mb-4 transition-colors">
+      <button onClick={() => navigate('/communities')} className="flex items-center gap-2 text-dark-300 hover:text-ink mb-4 transition-colors">
         <FiArrowLeft className="w-4 h-4" />
         All Communities
       </button>
@@ -86,7 +86,7 @@ const CommunityPage = () => {
         <span className="absolute inset-0 flex items-center justify-center text-7xl drop-shadow-lg">{community.emoji}</span>
         {!community.isPublic && (
           <span className="absolute top-4 right-4 p-2 bg-dark-900/50 rounded-xl">
-            <FiLock className="w-4 h-4 text-white" />
+            <FiLock className="w-4 h-4 text-ink" />
           </span>
         )}
       </div>
@@ -94,7 +94,7 @@ const CommunityPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-display font-bold text-white">{community.name}</h1>
+          <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink">{community.name}</h1>
           <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-dark-400">
             <span className="flex items-center gap-1">
               <FiUsers className="w-4 h-4" />
@@ -107,7 +107,7 @@ const CommunityPage = () => {
             )}
             {community.creator && (
               <span className="text-xs text-dark-400">
-                Created by <span className="text-white">{community.creator.name}</span>
+                Created by <span className="text-ink">{community.creator.name}</span>
               </span>
             )}
           </div>
@@ -136,7 +136,7 @@ const CommunityPage = () => {
 
       {/* About */}
       <div className="card p-6 mb-6">
-        <h3 className="text-lg font-bold text-white mb-3">About</h3>
+        <h3 className="text-lg font-bold text-ink mb-3">About</h3>
         <p className="text-dark-300">{community.description || 'No description yet.'}</p>
         {community.tags?.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mt-4">
@@ -151,14 +151,14 @@ const CommunityPage = () => {
 
       {/* Members */}
       <div className="card p-6 mb-6">
-        <h3 className="text-lg font-bold text-white mb-4">Members ({community.memberCount})</h3>
+        <h3 className="text-lg font-bold text-ink mb-4">Members ({community.memberCount})</h3>
         <div className="flex flex-wrap gap-3">
           {community.members?.map((m) => {
             const mem = m.user || m;
             return (
               <div key={String(mem._id || mem.id || mem)} className="flex items-center gap-2 p-2 pr-4 bg-dark-800/50 rounded-xl">
                 <RoundAvatar src={mem.avatar} name={mem.name} className="w-8 h-8 text-xs" />
-                <span className="text-sm text-white">{mem.name}</span>
+                <span className="text-sm text-ink">{mem.name}</span>
                 {m.role === 'admin' && <span className="text-xs text-lime-400">Admin</span>}
               </div>
             );
@@ -168,7 +168,7 @@ const CommunityPage = () => {
 
       {/* Activities */}
       <div className="card p-6">
-        <h3 className="text-lg font-bold text-white mb-4">Community Activities</h3>
+        <h3 className="text-lg font-bold text-ink mb-4">Community Activities</h3>
         {community.activities?.length > 0 ? (
           <div className="space-y-3">
             {community.activities.map((a) => (
@@ -179,7 +179,7 @@ const CommunityPage = () => {
               >
                 <span className="text-2xl">{a.emoji || '📅'}</span>
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-white truncate">{a.title}</p>
+                  <p className="font-medium text-ink truncate">{a.title}</p>
                   <p className="text-xs text-dark-400 flex items-center gap-3 mt-0.5">
                     <span className="flex items-center gap-1"><FiCalendar className="w-3 h-3" /> {a.date ? new Date(a.date).toLocaleDateString() : 'Anytime'}</span>
                     <span className="flex items-center gap-1"><FiMapPin className="w-3 h-3" /> {a.location || 'TBA'}</span>

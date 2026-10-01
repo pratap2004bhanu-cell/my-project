@@ -85,7 +85,7 @@ const ExplorePage = () => {
     <div className="p-4 lg:p-6 max-w-7xl mx-auto">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl lg:text-3xl font-display font-bold text-white mb-2">
+        <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink mb-2">
           Explore Activities
         </h1>
         <p className="text-dark-400">Discover what's happening around you</p>
@@ -93,7 +93,7 @@ const ExplorePage = () => {
 
       {/* Greeting */}
       <div className="mb-8">
-        <h2 className="text-2xl lg:text-3xl font-display font-bold text-white mb-2">
+        <h2 className="text-2xl lg:text-3xl font-display font-bold text-ink mb-2">
           Hey {firstName} 👋
         </h2>
         <p className="text-dark-400">What are we getting into today?</p>
@@ -101,7 +101,7 @@ const ExplorePage = () => {
 
       {/* VIBES cards (real category legs, clickable) */}
       <div className="mb-8">
-        <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-3">Vibes</h3>
+        <h3 className="text-sm font-bold text-ink uppercase tracking-wider mb-3">Vibes</h3>
         <div className="flex gap-3 overflow-x-auto pb-2">
           {categories.map((cat) => (
             <button
@@ -112,7 +112,7 @@ const ExplorePage = () => {
               }`}
             >
               <span className="text-2xl">{cat.emoji}</span>
-              <span className="text-xs font-semibold text-white">{cat.name}</span>
+              <span className="text-xs font-semibold text-ink">{cat.name}</span>
               <span className="text-[11px] text-dark-400">
                 {activities.filter((a) => a.category === cat.id).length} near
               </span>
@@ -124,7 +124,7 @@ const ExplorePage = () => {
       {/* People are active near you — real hosts, no fake data */}
       {hosts.length > 0 && (
         <div className="mb-8">
-          <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-3">
+          <h3 className="text-sm font-bold text-ink uppercase tracking-wider mb-3">
             🔥 People are active near you
           </h3>
           <div className="flex gap-4 overflow-x-auto pb-2">
@@ -141,7 +141,7 @@ const ExplorePage = () => {
                     (host.name || '?')[0]
                   )}
                 </div>
-                <span className="text-xs font-bold text-white truncate w-full text-center">{host.name}</span>
+                <span className="text-xs font-bold text-ink truncate w-full text-center">{host.name}</span>
                 <span className="text-[11px] text-dark-400 truncate w-full text-center">{host.activity || 'Host'}</span>
               </Link>
             ))}
@@ -191,7 +191,7 @@ const ExplorePage = () => {
       {/* Results Header */}
       <div className="flex items-center justify-between mb-4">
         <p className="text-dark-400">
-          <span className="font-semibold text-white">{filteredActivities.length}</span> activities found
+          <span className="font-semibold text-ink">{filteredActivities.length}</span> activities found
         </p>
         <div className="flex items-center gap-2">
           <button 
@@ -218,7 +218,7 @@ const ExplorePage = () => {
       ) : error ? (
         <div className="text-center py-16">
           <span className="text-6xl mb-4 block">⚠️</span>
-          <h3 className="text-xl font-bold text-white mb-2">Couldn't load activities</h3>
+          <h3 className="text-xl font-bold text-ink mb-2">Couldn't load activities</h3>
           <p className="text-dark-400 mb-6">{error}</p>
           <button onClick={() => window.location.reload()} className="btn-primary">Retry</button>
         </div>
@@ -244,7 +244,7 @@ const ExplorePage = () => {
             {/* Activity Info */}
             <div className="p-4">
               <div className="flex items-start justify-between gap-2 mb-2">
-                <h3 className="font-bold text-white group-hover:text-lime-400 transition-colors">{activity.title}</h3>
+                <h3 className="font-bold text-ink group-hover:text-lime-400 transition-colors">{activity.title}</h3>
               </div>
               
               <div className="flex items-center gap-4 text-sm text-dark-400 mb-3">
@@ -280,7 +280,7 @@ const ExplorePage = () => {
       {!loading && !error && filteredActivities.length === 0 && (
         <div className="text-center py-16">
           <span className="text-6xl mb-4 block">🔍</span>
-          <h3 className="text-xl font-bold text-white mb-2">No activities found</h3>
+          <h3 className="text-xl font-bold text-ink mb-2">No activities found</h3>
           <p className="text-dark-400 mb-6">Try adjusting your search or filters — or create the first one!</p>
           <button 
             onClick={() => { setSearchQuery(''); setSelectedCategory('all'); }}
@@ -294,7 +294,7 @@ const ExplorePage = () => {
       {/* Create Activity CTA */}
       <div className="mt-8 card-glow text-center p-8">
         <span className="text-4xl mb-4 block">🚀</span>
-        <h3 className="text-xl font-bold text-white mb-2">Don't see what you're looking for?</h3>
+        <h3 className="text-xl font-bold text-ink mb-2">Don't see what you're looking for?</h3>
         <p className="text-dark-400 mb-6">Create your own activity and invite others to join!</p>
         <Link to="/create-activity" className="btn-primary inline-flex items-center gap-2">
           Create Activity

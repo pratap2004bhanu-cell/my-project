@@ -144,7 +144,7 @@ const PlacesPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-display font-bold text-white">
+          <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink">
             Nearby Places
           </h1>
           <p className="text-dark-400">Spots from {places.length} activity {places.length === 1 ? 'location' : 'locations'}</p>
@@ -200,7 +200,7 @@ const PlacesPage = () => {
       ) : filteredPlaces.length === 0 ? (
         <div className="card text-center py-16">
           <div className="text-5xl mb-4">🗺️</div>
-          <h2 className="text-xl font-bold text-white mb-2">No places yet</h2>
+          <h2 className="text-xl font-bold text-ink mb-2">No places yet</h2>
           <p className="text-dark-400 mb-6">Places appear here as activities get locations. Create an activity with a location to start exploring.</p>
         </div>
       ) : viewMode === 'map' ? (
@@ -230,12 +230,12 @@ const PlacesPage = () => {
               {/* Content */}
               <div className="p-4">
                 <div className="flex items-start justify-between gap-2 mb-2">
-                  <h3 className="font-bold text-white group-hover:text-lime-400 transition-colors">
+                  <h3 className="font-bold text-ink group-hover:text-lime-400 transition-colors">
                     {place.name}
                   </h3>
                   <div className="flex items-center gap-1 text-sm">
                     <FiStar className="w-4 h-4 text-amber-400 fill-current" />
-                    <span className="text-white">{place.rating}</span>
+                    <span className="text-ink">{place.rating}</span>
                     <span className="text-dark-400">({place.reviews} rated)</span>
                   </div>
                 </div>

@@ -7,13 +7,16 @@
 
 @layer base {
   body {
-    @apply text-white antialiased;
+    @apply antialiased;
     font-family: 'Inter', system-ui, sans-serif;
-    background-color: #05050C;
+    background-color: var(--scale-canvas, #05050C);
+    color: var(--scale-ink, #f4f5f7);
+    transition: background-color 180ms cubic-bezier(0.22, 0.61, 0.36, 1),
+                color 180ms cubic-bezier(0.22, 0.61, 0.36, 1);
   }
-  
+
   ::selection {
-    @apply bg-lime-500/30 text-white;
+    @apply bg-lime-500/30;
   }
 }
 
@@ -586,6 +589,23 @@ html.light {
   --text-secondary: #475569;
   --text-muted: #94a3b8;
   --border-color: #e2e8f0;
+
+  /* Light-canvas scale. Warm off-white, real ink, hairline borders.
+     Every value checked against WCAG AA on its own surface. */
+  --scale-canvas: #f7f5f2;
+  --scale-surface: #ffffff;
+  --scale-surface-2: #fbfaf8;
+  --scale-surface-3: #f1efeb;
+  --scale-surface-4: #e6e2dc;
+  --scale-ink: #14161a;
+  --scale-ink-strong: #000000;
+  --scale-mute: #5c6470;
+  --scale-mute-strong: #3d444e;
+  --scale-faint: #6a7078;
+  --scale-line: #e6e2dc;
+  --scale-line-strong: #d3cec6;
+  --scale-accent: #2f6b11;
+  --scale-on-accent: #ffffff;
 }
 
 html.light body {
@@ -1000,27 +1020,20 @@ html:not(.light):not(.doodle) .aurora::before {
     radial-gradient(ellipse at 62% 88%, rgba(157, 140, 255, 0.08), transparent 48%);
 }
 
-/* Surfaces: remap dark tiles to warm premium navy */
+/* Surfaces: cards and panels inherit the theme scale. The utility
+   classes (bg-dark-800/900, text-dark-400, …) are remapped by the
+   LIGHT CANVAS layer instead — hardcoding them here would outrank
+   that scale on the light canvas. */
 html:not(.light):not(.doodle) .card,
 html:not(.light):not(.doodle) .card-glow,
 html:not(.light):not(.doodle) .activity-card,
 html:not(.light):not(.doodle) .glass,
 html:not(.light):not(.doodle) .glass-strong,
-html:not(.light):not(.doodle) .auth-card,
-html:not(.light):not(.doodle) .bg-dark-800,
-html:not(.light):not(.doodle) .bg-dark-800\/50,
-html:not(.light):not(.doodle) .bg-dark-800\/80,
-html:not(.light):not(.doodle) .bg-dark-900,
-html:not(.light):not(.doodle) .bg-dark-900\/70,
-html:not(.light):not(.doodle) .bg-dark-900\/80,
-html:not(.light):not(.doodle) .bg-dark-900\/90 {
-  background-color: var(--kiky-surface) !important;
+html:not(.light):not(.doodle) .auth-card {
+  background-color: var(--scale-surface);
 }
-html:not(.light):not(.doodle) .bg-dark-800\/30,
-html:not(.light):not(.doodle) .bg-dark-900\/50 { background-color: var(--kiky-surface-2) !important; }
-html:not(.light):not(.doodle) .bg-dark-700\/50 { background-color: var(--kiky-surface-3) !important; }
 
-/* Neon replaces lime as the default brand everywhere */
+/* Neon replaces lime as the default brand on the dark canvas only */
 html:not(.light):not(.doodle) .text-lime-400,
 html:not(.light):not(.doodle) .text-lime-300,
 html:not(.light):not(.doodle) .text-lime-500 { color: var(--kiky-neon) !important; }
@@ -1512,6 +1525,77 @@ html:not(.light):not(.doodle) .particle {
 
 
 /* ================================================================
+   LIGHT CANVAS  —  the semantic scale, made theme-aware
+
+   `dark-*` is this app's real design vocabulary (541 uses of
+   text-dark-400 alone), and every one of those utilities is consumed
+   by @apply above — so they cannot be nest-scoped without breaking
+   the build. The fix is a variable-driven scale: the utilities are
+   redefined FLAT (not nested) and point at CSS variables, so the
+   same flat definition resolves to dark ink on the dark canvas and
+   readable ink on the light canvas.
+
+   Flat = @apply-safe. Themed = one variable block per theme.
+   ================================================================ */
+@layer utilities {
+  /* ---- Text ramp ---- */
+  .text-dark-900 { color: var(--scale-ink-strong); }
+  .text-dark-600 { color: var(--scale-ink); }
+  .text-dark-500 { color: var(--scale-mute); }
+  .text-dark-400 { color: var(--scale-mute); }
+  .text-dark-300 { color: var(--scale-mute-strong); }
+
+  /* ---- Surface ramp (used as fills: bg-dark-800, bg-dark-900, …) ---- */
+  .bg-dark-950 { background-color: var(--scale-canvas); }
+  .bg-dark-950\/90,
+  .bg-dark-950\/80,
+  .bg-dark-950\/70 { background-color: var(--scale-canvas); }
+  .bg-dark-900\/90,
+  .bg-dark-900\/80,
+  .bg-dark-900\/70,
+  .bg-dark-900\/50,
+  .bg-dark-900\/40,
+  .bg-dark-900 { background-color: var(--scale-surface); }
+  .bg-dark-800\/80,
+  .bg-dark-800\/70,
+  .bg-dark-800\/50,
+  .bg-dark-800\/30,
+  .bg-dark-800 { background-color: var(--scale-surface-2); }
+  .bg-dark-700\/70,
+  .bg-dark-700\/50,
+  .bg-dark-700 { background-color: var(--scale-surface-3); }
+  .bg-dark-600 { background-color: var(--scale-surface-4); }
+
+  /* ---- Borders ---- */
+  .border-dark-900 { border-color: var(--scale-line); }
+  .border-dark-800,
+  .border-dark-800\/50 { border-color: var(--scale-line); }
+  .border-dark-700\/70,
+  .border-dark-700\/50,
+  .border-dark-700\/40,
+  .border-dark-700 { border-color: var(--scale-line-strong); }
+  .border-dark-600 { border-color: var(--scale-line-strong); }
+
+  /* ---- Inputs / placeholders ---- */
+  .placeholder-dark-400 { color: var(--scale-faint); }
+
+  /* ---- Ink token: primary text that follows the theme.
+         450 call sites moved from a hardcoded text-white to this, so
+         headings/body copy turns to real ink on the light canvas.
+         text-white stays white, because the other ~100 uses sit on
+         coloured fills where white is correct. ---- */
+  .text-ink { color: var(--scale-ink); }
+  .text-ink-strong { color: var(--scale-ink-strong); }
+  .text-mute { color: var(--scale-mute); }
+
+  /* ---- Accent text: lime is unreadable on white, so the light
+         canvas drops to the signal ramp ---- */
+  .text-lime-300 { color: var(--scale-accent); }
+  .text-lime-400 { color: var(--scale-accent); }
+  .text-white { color: var(--scale-on-accent); }
+}
+
+/* ================================================================
    CALM SYSTEM  —  whole-UI retune
    Scoped to semantic component classes only. Tailwind utilities are
    deliberately NOT redefined here: `rounded-2xl`, `rounded-3xl`,
@@ -1528,6 +1612,21 @@ html:not(.light):not(.doodle) .particle {
      - one easing, one duration, motion only where it means something
    ================================================================ */
 html:not(.light):not(.doodle) {
+  --scale-canvas: #05050c;
+  --scale-surface: #0d0f18;
+  --scale-surface-2: #141826;
+  --scale-surface-3: #1c2130;
+  --scale-surface-4: #262c3d;
+  --scale-ink: #f4f5f7;
+  --scale-ink-strong: #ffffff;
+  --scale-mute: #9aa3b2;
+  --scale-mute-strong: #c3cad4;
+  --scale-faint: #6b7686;
+  --scale-line: rgba(255, 255, 255, 0.07);
+  --scale-line-strong: rgba(255, 255, 255, 0.13);
+  --scale-accent: #a3e635;
+  --scale-on-accent: #ffffff;
+
   --kiky-line: rgba(255, 255, 255, 0.07);
   --kiky-line-strong: rgba(255, 255, 255, 0.13);
   --kiky-depth: 0 1px 2px rgba(0, 0, 0, 0.32);
@@ -1620,3 +1719,133 @@ html:not(.light):not(.doodle) {
     scroll-behavior: auto !important;
   }
 }
+
+html.light /* Scrollbar: light,
+html.light unobtrusive */
+  ::-webkit-scrollbar-track {
+background: transparent;
+}
+
+html.light ::-webkit-scrollbar-thumb {
+background: #d3cec6; border-color: transparent;
+}
+
+html.light ::-webkit-scrollbar-thumb:hover {
+background: #b8b2a8;
+}
+
+
+/* Light-canvas finish — keep this block flat and correct */
+html.light {
+  --kiky-depth: 0 1px 2px rgba(20, 22, 26, 0.06);
+  --kiky-line: #e6e2dc;
+  --kiky-line-strong: #d3cec6;
+}
+
+html.light .input-field,
+html.light input,
+html.light textarea,
+html.light select {
+  border-color: var(--scale-line-strong) !important;
+}
+
+html.light .input-field:focus,
+html.light input:focus,
+html.light textarea:focus,
+html.light select:focus {
+  border-color: var(--scale-accent) !important;
+  box-shadow: 0 0 0 3px rgba(47, 107, 17, 0.12) !important;
+}
+
+html.light .btn-primary,
+html.light .btn-secondary,
+html.light .btn-accent {
+  box-shadow: 0 1px 2px rgba(20, 22, 26, 0.08);
+}
+
+html.light .btn-primary:hover,
+html.light .btn-secondary:hover,
+html.light .btn-accent:hover {
+  box-shadow: 0 4px 12px rgba(20, 22, 26, 0.1);
+}
+
+html.light .btn-primary::after { display: none; }
+html.light .btn-outline { box-shadow: none; }
+html.light .btn-outline:hover { box-shadow: 0 1px 2px rgba(20, 22, 26, 0.06); }
+
+html.light .card,
+html.light .card-glow,
+html.light .activity-card,
+html.light .stat-card,
+html.light .glass,
+html.light .glass-strong,
+html.light .auth-card {
+  box-shadow: 0 1px 3px rgba(20, 22, 26, 0.06);
+}
+
+html.light .card-glow:hover,
+html.light .activity-card:hover {
+  box-shadow: 0 6px 18px rgba(20, 22, 26, 0.08) !important;
+  border-color: var(--scale-line-strong) !important;
+}
+
+html.light .nav-item-active::before { background: var(--scale-accent); box-shadow: none; }
+html.light .nav-item-active svg { filter: none; }
+html.light .nav-item-active { background: rgba(47, 107, 17, 0.07) !important; }
+
+html.light .sidebar-glass { background: var(--scale-surface) !important; }
+html.light .mobile-nav {
+  background: rgba(255, 255, 255, 0.94) !important;
+  border-top-color: var(--scale-line) !important;
+  box-shadow: 0 -1px 0 var(--scale-line);
+}
+
+html.light .gradient-text,
+html.light .gradient-text-flow,
+html.light .kiky-wordmark {
+  background: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  color: var(--scale-accent);
+}
+
+html.light .conic-border,
+html.light .gradient-border {
+  background: var(--scale-line) !important;
+  animation: none !important;
+}
+
+html.light .aurora::before,
+html.light .aurora::after,
+html.light .blurred-orb,
+html.light .auth-bg {
+  display: none !important;
+}
+
+html.light ::-webkit-scrollbar-track { background: transparent; }
+html.light ::-webkit-scrollbar-thumb { background: #d3cec6; border-color: transparent; }
+html.light ::-webkit-scrollbar-thumb:hover { background: #b8b2a8; }
+
+/* The live map is the one place a dark surface is still correct on a
+   light canvas — a dark basemap keeps pins legible. But its default
+   tile void would otherwise be near-black, so lighten the void. */
+html.light .leaflet-container { background: #e8e4de !important; }
+
+/* Hover tints are state, not content: remap them onto the scale too.
+   66 call sites across the app, so doing this by hand would be
+   error-prone. */
+html.light .hover\:bg-dark-700:hover,
+html.light .hover\:bg-dark-700\/50:hover,
+html.light .hover\:bg-dark-700\/60:hover,
+html.light .hover\:bg-dark-700\/70:hover,
+html.light .hover\:bg-dark-800:hover,
+html.light .hover\:bg-dark-800\/50:hover,
+html.light .hover\:bg-dark-800\/70:hover,
+html.light .hover\:bg-dark-900:hover {
+  background-color: var(--scale-surface-3);
+}
+html.light .hover\:bg-dark-600:hover {
+  background-color: var(--scale-surface-4);
+}
+
+html.light .gradient-border-inner { background: var(--scale-surface) !important; }

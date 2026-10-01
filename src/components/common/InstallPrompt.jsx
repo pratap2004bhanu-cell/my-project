@@ -29,7 +29,7 @@ const InstallPrompt = () => {
         <div className="card p-4 flex items-start gap-3 animate-slide-up">
           <span className="text-3xl">📲</span>
           <div className="flex-1 min-w-0">
-            <p className="font-bold text-white leading-snug">
+            <p className="font-bold text-ink leading-snug">
               {installEvt ? 'Install KIKY on your phone' : 'Add KIKY to your Home Screen'}
             </p>
             <p className="text-xs text-dark-400 mt-0.5">
@@ -67,7 +67,7 @@ const InstallPrompt = () => {
               try { localStorage.setItem('kiky_install_dismissed', '1'); } catch { /* persist badge */ }
               setDismissed(true);
             }}
-            className="text-dark-400 hover:text-white shrink-0"
+            className="text-dark-400 hover:text-ink shrink-0"
             aria-label="Dismiss install prompt"
           >
             <FiX className="w-5 h-5" />

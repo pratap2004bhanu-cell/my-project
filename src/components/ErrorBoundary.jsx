@@ -28,7 +28,7 @@ class ErrorBoundary extends Component {
         <div className="min-h-screen bg-dark-950 flex items-center justify-center p-6">
           <div className="card max-w-md w-full text-center p-8">
             <span className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-hotpink-500/15 text-3xl mb-4">🫠</span>
-            <h1 className="text-2xl font-display font-bold text-white mb-2">Something went wrong</h1>
+            <h1 className="text-2xl font-display font-bold text-ink mb-2">Something went wrong</h1>
             <p className="text-dark-400 text-sm mb-6">
               An unexpected error crashed this screen. Your data is safe — reload to get back in.
             </p>

@@ -222,7 +222,7 @@ const NotificationsPage = () => {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-display font-bold text-white">
+          <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink">
             Notifications
           </h1>
           <p className="text-dark-400">
@@ -250,7 +250,7 @@ const NotificationsPage = () => {
             <FiSmartphone className="w-5 h-5 text-lime-400" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-semibold text-white">
+            <h3 className="text-sm font-semibold text-ink">
               {pushState === 'enabled' ? 'Push notifications on' : 'Push notifications'}
             </h3>
             <p className="text-xs text-dark-400">
@@ -303,7 +303,7 @@ const NotificationsPage = () => {
 
             {/* Content */}
             <div className="flex-1 min-w-0">
-              <p className="text-white text-sm">
+              <p className="text-ink text-sm">
                 <span className="font-semibold">{actorName(notification)}</span>{' '}
                 <span className="text-dark-300">{notification.text}</span>
               </p>
@@ -361,7 +361,7 @@ const NotificationsPage = () => {
       ) : notifications.length === 0 ? (
         <div className="text-center py-16">
           <span className="text-6xl mb-4 block">🔔</span>
-          <h3 className="text-xl font-bold text-white mb-2">No notifications</h3>
+          <h3 className="text-xl font-bold text-ink mb-2">No notifications</h3>
           <p className="text-dark-400">You're all caught up!</p>
         </div>
       ) : (

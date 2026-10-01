@@ -276,7 +276,7 @@ const ChatPage = () => {
       <div className={`${activeChat ? 'hidden lg:flex' : 'flex'} flex-col w-full lg:w-96 border-r border-dark-800`}>
         {/* Header */}
         <div className="p-4 border-b border-dark-800">
-          <h1 className="text-xl font-display font-bold text-white mb-4">Messages</h1>
+          <h1 className="text-xl font-display font-bold text-ink mb-4">Messages</h1>
           <div className="relative">
             <input
               type="text"
@@ -298,7 +298,7 @@ const ChatPage = () => {
           ) : conversations.length === 0 ? (
             <div className="text-center py-14 px-6">
               <span className="text-5xl block mb-3">💬</span>
-              <h3 className="text-white font-semibold mb-1">No conversations yet</h3>
+              <h3 className="text-ink font-semibold mb-1">No conversations yet</h3>
               <p className="text-dark-400 text-sm mb-5">Start by messaging someone from People.</p>
               <button onClick={() => navigate('/people')} className="btn-primary text-sm px-4 py-2.5">
                 Find people
@@ -307,7 +307,7 @@ const ChatPage = () => {
           ) : filteredConversations.length === 0 ? (
             <div className="text-center py-14 px-6">
               <span className="text-5xl block mb-3">🔍</span>
-              <h3 className="text-white font-semibold mb-1">No matches</h3>
+              <h3 className="text-ink font-semibold mb-1">No matches</h3>
               <p className="text-dark-400 text-sm">No conversations match "{conversationSearch}"</p>
             </div>
           ) : filteredConversations.map((conv) => (
@@ -327,7 +327,7 @@ const ChatPage = () => {
               />
               <div className="flex-1 min-w-0 text-left">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-semibold text-white truncate">{conv.name}</h3>
+                  <h3 className="font-semibold text-ink truncate">{conv.name}</h3>
                   <span className="text-xs text-dark-400">{conv.time}</span>
                 </div>
                 <p className="text-sm text-dark-400 truncate">{conv.lastMessage}</p>
@@ -362,7 +362,7 @@ const ChatPage = () => {
                 className="w-10 h-10"
               />
               <div className="flex-1">
-                <h2 className="font-semibold text-white">{activeConversation?.name || 'Chat'}</h2>
+                <h2 className="font-semibold text-ink">{activeConversation?.name || 'Chat'}</h2>
                 <p className="text-xs text-dark-400">
                   {typing
                     ? <span className="text-lime-400">typing...</span>
@@ -419,7 +419,7 @@ const ChatPage = () => {
                     <button
                       type="button"
                       onClick={() => setPendingAttachment(null)}
-                      className="text-dark-400 hover:text-white flex-shrink-0"
+                      className="text-dark-400 hover:text-ink flex-shrink-0"
                       aria-label="Remove attachment"
                     >
                       <FiX className="w-4 h-4" />
@@ -462,7 +462,7 @@ const ChatPage = () => {
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
               <span className="text-6xl mb-4 block">💬</span>
-              <h3 className="text-xl font-bold text-white mb-2">Select a conversation</h3>
+              <h3 className="text-xl font-bold text-ink mb-2">Select a conversation</h3>
               <p className="text-dark-400">Choose from your existing conversations or start a new one</p>
             </div>
           </div>

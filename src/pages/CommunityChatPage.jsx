@@ -165,7 +165,7 @@ const CommunityChatPage = () => {
           {community?.emoji || '👥'}
         </div>
         <div className="flex-1 min-w-0">
-          <h2 className="font-semibold text-white truncate">{community?.name || 'Community Chat'}</h2>
+          <h2 className="font-semibold text-ink truncate">{community?.name || 'Community Chat'}</h2>
           <p className="text-xs text-dark-400 flex items-center gap-1">
             {typingName ? (
               <span className="text-lime-400">{typingName} is typing...</span>
@@ -188,7 +188,7 @@ const CommunityChatPage = () => {
         ) : messages.length === 0 ? (
           <div className="text-center py-16">
             <span className="text-5xl mb-4 block">💬</span>
-            <h3 className="text-lg font-bold text-white mb-2">No messages yet</h3>
+            <h3 className="text-lg font-bold text-ink mb-2">No messages yet</h3>
             <p className="text-dark-400 text-sm">Say hi to the community!</p>
           </div>
         ) : (
@@ -252,7 +252,7 @@ const CommunityChatPage = () => {
               <button
                 type="button"
                 onClick={() => setPendingAttachment(null)}
-                className="text-dark-400 hover:text-white flex-shrink-0"
+                className="text-dark-400 hover:text-ink flex-shrink-0"
                 aria-label="Remove attachment"
               >
                 <FiX className="w-4 h-4" />

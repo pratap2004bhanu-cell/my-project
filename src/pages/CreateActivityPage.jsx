@@ -246,7 +246,7 @@ const CreateActivityPage = () => {
           <FiArrowLeft className="w-5 h-5" />
         </button>
         <div>
-          <h1 className="text-2xl lg:text-3xl font-display font-bold text-white">
+          <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink">
             {editId ? 'Edit Activity' : 'Create Activity'}
           </h1>
           <p className="text-dark-400">
@@ -258,7 +258,7 @@ const CreateActivityPage = () => {
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Category Selection */}
         <div className="card">
-          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+          <h2 className="text-lg font-bold text-ink mb-4 flex items-center gap-2">
             <FiTag className="w-5 h-5 text-lime-400" />
             Category
           </h2>
@@ -283,7 +283,7 @@ const CreateActivityPage = () => {
 
         {/* Basic Info */}
         <div className="card">
-          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+          <h2 className="text-lg font-bold text-ink mb-4 flex items-center gap-2">
             <FiFileText className="w-5 h-5 text-electric-400" />
             Activity Details
           </h2>
@@ -318,7 +318,7 @@ const CreateActivityPage = () => {
 
         {/* Date & Time */}
         <div className="card">
-          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+          <h2 className="text-lg font-bold text-ink mb-4 flex items-center gap-2">
             <FiCalendar className="w-5 h-5 text-hotpink-400" />
             When
           </h2>
@@ -351,7 +351,7 @@ const CreateActivityPage = () => {
 
         {/* Location */}
         <div className="card">
-          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+          <h2 className="text-lg font-bold text-ink mb-4 flex items-center gap-2">
             <FiMapPin className="w-5 h-5 text-sunset-400" />
             Where
           </h2>
@@ -400,7 +400,7 @@ const CreateActivityPage = () => {
 
         {/* Participants */}
         <div className="card">
-          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+          <h2 className="text-lg font-bold text-ink mb-4 flex items-center gap-2">
             <FiUsers className="w-5 h-5 text-ocean-400" />
             Participants
           </h2>
@@ -423,7 +423,7 @@ const CreateActivityPage = () => {
 
         {/* Recurring */}
         <div className="card">
-          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+          <h2 className="text-lg font-bold text-ink mb-4 flex items-center gap-2">
             <FiRepeat className="w-5 h-5 text-electric-400" />
             Repeat
           </h2>
@@ -457,7 +457,7 @@ const CreateActivityPage = () => {
 
         {/* Activity Type */}
         <div className="card">
-          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+          <h2 className="text-lg font-bold text-ink mb-4 flex items-center gap-2">
             <FiLock className="w-5 h-5 text-dark-400" />
             Visibility
           </h2>
@@ -488,7 +488,7 @@ const CreateActivityPage = () => {
                   <type.icon className="w-5 h-5" />
                 </div>
                 <div className="flex-1">
-                  <p className="font-semibold text-white">{type.name}</p>
+                  <p className="font-semibold text-ink">{type.name}</p>
                   <p className="text-sm text-dark-400">{type.description}</p>
                 </div>
                 {formData.activityType === type.id && (
@@ -503,7 +503,7 @@ const CreateActivityPage = () => {
 
         {/* Good to know */}
         <div className="card">
-          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+          <h2 className="text-lg font-bold text-ink mb-4 flex items-center gap-2">
             <FiLock className="w-5 h-5 text-dark-400" />
             Good to know
           </h2>
@@ -530,7 +530,7 @@ const CreateActivityPage = () => {
                 className="mt-1 w-4 h-4 accent-lime-500"
               />
               <div>
-                <p className="font-semibold text-white">Approve people before they join</p>
+                <p className="font-semibold text-ink">Approve people before they join</p>
                 <p className="text-sm text-dark-400 mt-0.5">
                   People send a join request and you approve each one. Pick this for smaller groups where the vibe matters.
                 </p>
@@ -542,14 +542,14 @@ const CreateActivityPage = () => {
         {/* Preview */}
         {formData.title && formData.category && (
           <div className="card">
-            <h2 className="text-lg font-bold text-white mb-4">Preview</h2>
+            <h2 className="text-lg font-bold text-ink mb-4">Preview</h2>
             <div className="bg-dark-800/50 rounded-2xl p-4">
               <div className="flex items-center gap-4">
                 <div className={`w-16 h-16 bg-gradient-to-br ${categoryGradient[formData.category] || 'from-lime-500 to-electric-500'} rounded-2xl flex items-center justify-center text-2xl`}>
                   {selectedCategory?.emoji || '🎯'}
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-bold text-white">{formData.title}</h3>
+                  <h3 className="font-bold text-ink">{formData.title}</h3>
                   <div className="flex items-center gap-3 text-sm text-dark-400 mt-1">
                     {formData.location && (
                       <span className="flex items-center gap-1">

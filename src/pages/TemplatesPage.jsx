@@ -147,7 +147,7 @@ const TemplatesPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-display font-bold text-white">
+          <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink">
             Activity Templates
           </h1>
           <p className="text-dark-400">Create activities faster with templates</p>
@@ -194,7 +194,7 @@ const TemplatesPage = () => {
                         {template.emoji || '🎯'}
                       </div>
                       <div>
-                        <h3 className="font-bold text-white">{template.name}</h3>
+                        <h3 className="font-bold text-ink">{template.name}</h3>
                         <span className="badge-lime text-xs">{categoryName(template.category)}</span>
                       </div>
                     </div>
@@ -255,7 +255,7 @@ const TemplatesPage = () => {
                 <div className="w-14 h-14 bg-dark-800 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-lime-500/20 transition-colors">
                   <FiPlus className="w-6 h-6 text-dark-400 group-hover:text-lime-400" />
                 </div>
-                <span className="font-medium text-dark-400 group-hover:text-white transition-colors">
+                <span className="font-medium text-dark-400 group-hover:text-ink transition-colors">
                   Create New Template
                 </span>
               </button>
@@ -272,7 +272,7 @@ const TemplatesPage = () => {
                       {template.emoji || '🎯'}
                     </div>
                     <div>
-                      <h3 className="font-bold text-white">{template.name}</h3>
+                      <h3 className="font-bold text-ink">{template.name}</h3>
                       <span className="badge-lime text-xs">{categoryName(template.category)}</span>
                     </div>
                   </div>
@@ -327,7 +327,7 @@ const TemplatesPage = () => {
                       {template.emoji || '🎯'}
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-bold text-white">{template.name}</h3>
+                      <h3 className="font-bold text-ink">{template.name}</h3>
                       <p className="text-sm text-dark-400">
                         {template.description} · {formatLastUsed(template.lastUsedAt)}
                       </p>
@@ -353,7 +353,7 @@ const TemplatesPage = () => {
           <div className="absolute inset-0 bg-black/70" onClick={() => setShowModal(false)} />
           <div className="relative card-glow w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-white">
+              <h2 className="text-xl font-bold text-ink">
                 {editing ? 'Edit Template' : 'Create Template'}
               </h2>
               <button className="btn-icon w-9 h-9" onClick={() => setShowModal(false)}>

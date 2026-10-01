@@ -177,7 +177,7 @@ const SearchPage = () => {
     <div className="p-4 lg:p-6 max-w-7xl mx-auto">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl lg:text-3xl font-display font-bold text-white mb-2">
+        <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink mb-2">
           Search Activities
         </h1>
         <p className="text-dark-400">Find the perfect activity for you</p>
@@ -197,7 +197,7 @@ const SearchPage = () => {
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-dark-400 hover:text-white"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-dark-400 hover:text-ink"
             >
               <FiX className="w-5 h-5" />
             </button>
@@ -342,7 +342,7 @@ const SearchPage = () => {
                 });
                 setApplyTick((t) => t + 1);
               }}
-              className="text-dark-400 hover:text-white text-sm"
+              className="text-dark-400 hover:text-ink text-sm"
             >
               Clear all filters
             </button>
@@ -362,7 +362,7 @@ const SearchPage = () => {
         <p className="text-dark-400">
           {loading ? 'Searching...' : (
             <>
-              <span className="font-semibold text-white">{filteredActivities.length}</span> activities found
+              <span className="font-semibold text-ink">{filteredActivities.length}</span> activities found
             </>
           )}
         </p>
@@ -375,7 +375,7 @@ const SearchPage = () => {
       ) : error ? (
         <div className="text-center py-16">
           <span className="text-6xl mb-4 block">⚠️</span>
-          <h3 className="text-xl font-bold text-white mb-2">Couldn't load activities</h3>
+          <h3 className="text-xl font-bold text-ink mb-2">Couldn't load activities</h3>
           <p className="text-dark-400 mb-6">{error}</p>
           <button onClick={() => window.location.reload()} className="btn-primary">Retry</button>
         </div>
@@ -395,7 +395,7 @@ const SearchPage = () => {
             <div className="flex-1">
               <div className="flex items-start justify-between gap-2 mb-2">
                 <div>
-                  <h3 className="font-bold text-white group-hover:text-lime-400 transition-colors text-lg">
+                  <h3 className="font-bold text-ink group-hover:text-lime-400 transition-colors text-lg">
                     {activity.title}
                   </h3>
                   <p className="text-sm text-dark-400">by {activity.host}</p>
@@ -440,7 +440,7 @@ const SearchPage = () => {
       {!loading && !error && filteredActivities.length === 0 && (
         <div className="text-center py-16">
           <span className="text-6xl mb-4 block">🔍</span>
-          <h3 className="text-xl font-bold text-white mb-2">No activities found</h3>
+          <h3 className="text-xl font-bold text-ink mb-2">No activities found</h3>
           <p className="text-dark-400 mb-6">Try adjusting your search or filters</p>
           <button 
             onClick={() => { setSearchQuery(''); setFilters({ ...filters, category: 'all' }); }}

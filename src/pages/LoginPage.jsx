@@ -82,9 +82,9 @@ const LoginPage = () => {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center justify-center gap-3 mb-6">
-            <Logo size={170} className="text-white" />
+            <Logo size={170} className="text-ink" />
           </Link>
-          <h1 className="text-2xl font-bold text-white">Welcome back</h1>
+          <h1 className="text-2xl font-bold text-ink">Welcome back</h1>
           <p className="kiky-signature text-sm text-dark-400 mt-1">Sign in to find your party</p>
         </div>
 
@@ -101,7 +101,7 @@ const LoginPage = () => {
                   <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                   <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                 </svg>
-                <span className="font-medium text-white">Google</span>
+                <span className="font-medium text-ink">Google</span>
               </button>
             </div>
 
@@ -150,7 +150,7 @@ const LoginPage = () => {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-dark-400 hover:text-white transition-colors"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-dark-400 hover:text-ink transition-colors"
             >
               {showPassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
             </button>
@@ -191,7 +191,7 @@ const LoginPage = () => {
               <div className="bg-lime-500/10 border border-lime-500/30 text-lime-300 px-4 py-3 rounded-xl text-sm">
                 Your account uses two-factor authentication. Enter the 6-digit code sent to your email
                 {!twoFactor.emailConfigured && twoFactor.devCode && (
-                  <span className="block mt-2 font-mono text-lg tracking-widest text-white">
+                  <span className="block mt-2 font-mono text-lg tracking-widest text-ink">
                     {twoFactor.devCode}
                   </span>
                 )}

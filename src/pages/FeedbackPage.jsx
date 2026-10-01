@@ -96,7 +96,7 @@ const FeedbackPage = () => {
     <div className="p-4 lg:p-6 max-w-3xl mx-auto">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl lg:text-3xl font-display font-bold text-white">
+        <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink">
           Rate Your Experience
         </h1>
         <p className="text-dark-400">Help others by sharing your feedback</p>
@@ -120,7 +120,7 @@ const FeedbackPage = () => {
                   {activity.emoji}
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-bold text-white">{activity.title}</h3>
+                  <h3 className="font-bold text-ink">{activity.title}</h3>
                   <p className="text-sm text-dark-400 flex items-center gap-2">
                     <FiCalendar className="w-3 h-3" />
                     {activity.date}
@@ -140,7 +140,7 @@ const FeedbackPage = () => {
           ) : (
             <div className="text-center py-16">
               <span className="text-6xl mb-4 block">✅</span>
-              <h3 className="text-xl font-bold text-white mb-2">All caught up!</h3>
+              <h3 className="text-xl font-bold text-ink mb-2">All caught up!</h3>
               <p className="text-dark-400 mb-6">No pending feedback to submit</p>
               <Link to="/history" className="btn-primary inline-flex items-center gap-2">
                 View History <FiArrowRight className="w-4 h-4" />
@@ -156,7 +156,7 @@ const FeedbackPage = () => {
               <div className="w-20 h-20 bg-lime-500 rounded-full flex items-center justify-center mx-auto mb-4">
                 <FiCheck className="w-10 h-10 text-dark-900" />
               </div>
-              <h2 className="text-2xl font-bold text-white mb-2">Thank You!</h2>
+              <h2 className="text-2xl font-bold text-ink mb-2">Thank You!</h2>
               <p className="text-dark-400">Your feedback has been submitted</p>
             </div>
           ) : (
@@ -168,7 +168,7 @@ const FeedbackPage = () => {
                     {selectedActivity.emoji}
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-white">{selectedActivity.title}</h2>
+                    <h2 className="text-xl font-bold text-ink">{selectedActivity.title}</h2>
                     <p className="text-dark-400">{selectedActivity.date} • {selectedActivity.location}</p>
                   </div>
                 </div>
@@ -176,7 +176,7 @@ const FeedbackPage = () => {
 
               {/* Overall Rating */}
               <div className="card p-6">
-                <h3 className="font-semibold text-white mb-4">Overall Experience</h3>
+                <h3 className="font-semibold text-ink mb-4">Overall Experience</h3>
                 <div className="flex justify-center gap-2 mb-4">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
@@ -204,14 +204,14 @@ const FeedbackPage = () => {
 
               {/* Rate Participants */}
               <div className="card p-6">
-                <h3 className="font-semibold text-white mb-4">Rate Participants</h3>
+                <h3 className="font-semibold text-ink mb-4">Rate Participants</h3>
                 <div className="space-y-4">
                   {selectedActivity.participants.filter(p => p.id !== me?.id).map((person) => (
                     <div key={person.id} className="flex items-center gap-4 p-3 bg-dark-800/50 rounded-xl">
                       <div className="w-10 h-10 rounded-full bg-gradient-to-br from-lime-500 to-electric-500 flex items-center justify-center text-white font-bold">
                         {person.name.charAt(0)}
                       </div>
-                      <span className="flex-1 text-white">{person.name}</span>
+                      <span className="flex-1 text-ink">{person.name}</span>
                       <div className="flex gap-1">
                         {[1, 2, 3, 4, 5].map((star) => (
                           <button
@@ -235,7 +235,7 @@ const FeedbackPage = () => {
 
               {/* Written Feedback */}
               <div className="card p-6">
-                <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
+                <h3 className="font-semibold text-ink mb-4 flex items-center gap-2">
                   <FiMessageSquare className="w-5 h-5 text-lime-400" />
                   Additional Comments
                 </h3>

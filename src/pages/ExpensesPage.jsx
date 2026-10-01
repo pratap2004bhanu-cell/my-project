@@ -144,7 +144,7 @@ const ExpensesPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-display font-bold text-white">
+          <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink">
             Split Expenses
           </h1>
           <p className="text-dark-400">Track and split bills with friends</p>
@@ -171,7 +171,7 @@ const ExpensesPage = () => {
       <>
       {/* Balance Summary */}
       <div className="card p-6 mb-8">
-        <h2 className="text-lg font-semibold text-white mb-4">Your Balances</h2>
+        <h2 className="text-lg font-semibold text-ink mb-4">Your Balances</h2>
         <div className="grid sm:grid-cols-3 gap-4 mb-4">
           <div className="p-4 bg-lime-500/10 rounded-xl text-center">
             <FiDollarSign className="w-6 h-6 text-lime-400 mx-auto mb-2" />
@@ -203,7 +203,7 @@ const ExpensesPage = () => {
                 className="w-10 h-10 text-sm"
               />
               <div className="flex-1">
-                <h4 className="font-medium text-white">{balance.name}</h4>
+                <h4 className="font-medium text-ink">{balance.name}</h4>
                 <p className="text-xs text-dark-400">
                   {balance.type === 'owes_you' ? 'owes you' : 'you owe'}
                 </p>
@@ -222,11 +222,11 @@ const ExpensesPage = () => {
 
       {/* Recent Activities */}
       <div>
-        <h2 className="text-lg font-semibold text-white mb-4">Recent Splits</h2>
+        <h2 className="text-lg font-semibold text-ink mb-4">Recent Splits</h2>
         {activitiesWithExpenses.length === 0 ? (
           <div className="card text-center py-12">
             <span className="text-5xl mb-3 block">💰</span>
-            <h3 className="text-lg font-bold text-white mb-2">No expenses yet</h3>
+            <h3 className="text-lg font-bold text-ink mb-2">No expenses yet</h3>
             <p className="text-dark-400">Track and split bills with your activity mates.</p>
           </div>
         ) : (
@@ -242,11 +242,11 @@ const ExpensesPage = () => {
                     {activity.emoji}
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-bold text-white">{activity.title}</h3>
+                    <h3 className="font-bold text-ink">{activity.title}</h3>
                     <p className="text-sm text-dark-400">{activity.time}</p>
                   </div>
                   <div className="text-right">
-                    <div className="text-xl font-bold text-white">₹{total}</div>
+                    <div className="text-xl font-bold text-ink">₹{total}</div>
                     <div className="text-xs text-dark-400">Total</div>
                   </div>
                 </div>
@@ -305,7 +305,7 @@ const ExpensesPage = () => {
       {showAddExpense && (
         <div className="fixed inset-0 bg-dark-900/80 flex items-center justify-center z-50 p-4">
           <div className="card max-w-md w-full p-6 max-h-[90vh] overflow-y-auto">
-            <h3 className="text-xl font-bold text-white mb-6">Add Expense</h3>
+            <h3 className="text-xl font-bold text-ink mb-6">Add Expense</h3>
             
             <div className="space-y-4">
               <div>
@@ -363,7 +363,7 @@ const ExpensesPage = () => {
                         gradient="from-lime-500 to-electric-500"
                         className="w-8 h-8 text-xs"
                       />
-                      <span className="text-white">{person.name}</span>
+                      <span className="text-ink">{person.name}</span>
                     </label>
                   ))}
                 </div>

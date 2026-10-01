@@ -53,7 +53,7 @@ const MobileMenu = ({ isOpen, onClose }) => {
       >
         {/* Header */}
         <div className="flex items-center justify-between px-4 h-16 border-b border-dark-800 flex-shrink-0">
-          <Logo size={96} className="text-white" />
+          <Logo size={96} className="text-ink" />
           <button onClick={onClose} className="btn-icon" aria-label="Close menu">
             <FiX className="w-5 h-5" />
           </button>

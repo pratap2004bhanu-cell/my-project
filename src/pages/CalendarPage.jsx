@@ -110,7 +110,7 @@ const CalendarPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-display font-bold text-white">
+          <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink">
             Calendar
           </h1>
           <p className="text-dark-400">View and manage your activities</p>
@@ -133,7 +133,7 @@ const CalendarPage = () => {
               >
                 <FiChevronLeft className="w-5 h-5" />
               </button>
-              <h2 className="text-xl font-bold text-white">
+              <h2 className="text-xl font-bold text-ink">
                 {selectedDate.toLocaleString('default', { month: 'long', year: 'numeric' })}
               </h2>
               <button 
@@ -191,7 +191,7 @@ const CalendarPage = () => {
 
           {/* Selected Date Activities */}
           <div className="mt-6">
-            <h3 className="text-lg font-semibold text-white mb-4">
+            <h3 className="text-lg font-semibold text-ink mb-4">
               Activities on {selectedDate.toLocaleDateString('default', { month: 'long', day: 'numeric' })}
             </h3>
             {loading ? (
@@ -216,7 +216,7 @@ const CalendarPage = () => {
                       {activity.emoji}
                     </div>
                     <div className="flex-1">
-                      <h4 className="font-bold text-white group-hover:text-lime-400 transition-colors">
+                      <h4 className="font-bold text-ink group-hover:text-lime-400 transition-colors">
                         {activity.title}
                       </h4>
                       <div className="flex items-center gap-4 text-sm text-dark-400">
@@ -249,7 +249,7 @@ const CalendarPage = () => {
         {/* Sidebar - Upcoming */}
         <div>
           <div className="card p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">Upcoming Activities</h3>
+            <h3 className="text-lg font-semibold text-ink mb-4">Upcoming Activities</h3>
             {upcomingActivities.length > 0 ? (
               <div className="space-y-3">
                 {upcomingActivities.map((activity) => (
@@ -258,7 +258,7 @@ const CalendarPage = () => {
                       {activity.emoji}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-medium text-white text-sm truncate">{activity.title}</h4>
+                      <h4 className="font-medium text-ink text-sm truncate">{activity.title}</h4>
                       <p className="text-xs text-dark-400">
                         {activity.date.toLocaleDateString('default', { month: 'short', day: 'numeric' })} • {activity.time || 'Anytime'}
                       </p>
@@ -273,19 +273,19 @@ const CalendarPage = () => {
 
           {/* Quick Stats */}
           <div className="card p-6 mt-6">
-            <h3 className="text-lg font-semibold text-white mb-4">This Month</h3>
+            <h3 className="text-lg font-semibold text-ink mb-4">This Month</h3>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-dark-400">Total Activities</span>
-                <span className="text-white font-bold">{monthActivities.length}</span>
+                <span className="text-ink font-bold">{monthActivities.length}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-dark-400">Hours Planned</span>
-                <span className="text-white font-bold">{hoursPlanned}</span>
+                <span className="text-ink font-bold">{hoursPlanned}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-dark-400">People Meeting</span>
-                <span className="text-white font-bold">{peopleMeeting}</span>
+                <span className="text-ink font-bold">{peopleMeeting}</span>
               </div>
             </div>
           </div>

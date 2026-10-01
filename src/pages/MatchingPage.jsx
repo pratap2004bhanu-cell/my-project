@@ -146,7 +146,7 @@ const MatchingPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-display font-bold text-white">
+          <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink">
             Smart Matching
           </h1>
           <p className="text-dark-400">Find your perfect matches based on interests and availability</p>
@@ -208,7 +208,7 @@ const MatchingPage = () => {
                     <div className="flex items-center gap-3">
                       <span className="text-3xl">{activity.emoji}</span>
                       <div>
-                        <h3 className="font-bold text-white group-hover:text-lime-400 transition-colors text-lg">
+                        <h3 className="font-bold text-ink group-hover:text-lime-400 transition-colors text-lg">
                           {activity.title}
                         </h3>
                         <p className="text-sm text-dark-400">by {activity.host}</p>
@@ -255,7 +255,7 @@ const MatchingPage = () => {
         ) : (
           <div className="text-center py-16">
             <span className="text-6xl mb-4 block">🎯</span>
-            <h3 className="text-xl font-bold text-white mb-2">No matches found</h3>
+            <h3 className="text-xl font-bold text-ink mb-2">No matches found</h3>
             <p className="text-dark-400 mb-6">Try joining open activities or update your interests</p>
             <Link to="/explore" className="btn-primary">Explore Activities</Link>
           </div>
@@ -274,7 +274,7 @@ const MatchingPage = () => {
                     className="w-16 h-16 text-xl"
                   />
                   <div>
-                    <Link to={`/users/${person.id}`} className="font-bold text-white text-lg hover:text-lime-400 transition-colors">
+                    <Link to={`/users/${person.id}`} className="font-bold text-ink text-lg hover:text-lime-400 transition-colors">
                       {person.name}
                     </Link>
                     <p className="text-sm text-dark-400 flex items-center gap-1">
@@ -353,7 +353,7 @@ const MatchingPage = () => {
         ) : (
           <div className="text-center py-16">
             <span className="text-6xl mb-4 block">🎯</span>
-            <h3 className="text-xl font-bold text-white mb-2">No matches found</h3>
+            <h3 className="text-xl font-bold text-ink mb-2">No matches found</h3>
             <p className="text-dark-400 mb-6">Add interests to your profile to find like-minded people</p>
             <Link to="/profile" className="btn-primary">Update Preferences</Link>
           </div>

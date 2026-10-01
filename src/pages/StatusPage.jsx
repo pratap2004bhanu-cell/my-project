@@ -43,7 +43,7 @@ const StatusPage = () => {
     <div className="p-4 lg:p-6 max-w-3xl mx-auto">
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-display font-bold text-white">
+          <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink">
             Your Status
           </h1>
           <p className="text-dark-400">Let others know when you're up for activities</p>
@@ -67,7 +67,7 @@ const StatusPage = () => {
               <span className={`absolute bottom-1 right-1 w-5 h-5 rounded-full border-2 border-dark-900 ${currentOption.color}`}></span>
           </div>
           <div>
-            <p className="text-xl font-bold text-white">{user?.name}</p>
+            <p className="text-xl font-bold text-ink">{user?.name}</p>
             <p className="text-dark-400 flex items-center gap-1.5">
               <span className={`w-2 h-2 rounded-full ${currentOption.color}`}></span>
               {currentOption.label}
@@ -81,7 +81,7 @@ const StatusPage = () => {
 
       {/* Set status */}
       <div className="card mb-8">
-        <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+        <h2 className="text-lg font-bold text-ink mb-4 flex items-center gap-2">
           <FiZap className="w-5 h-5 text-lime-400" />
           Set your status
         </h2>
@@ -98,7 +98,7 @@ const StatusPage = () => {
             >
               <span className={`w-3.5 h-3.5 rounded-full ${option.color}`}></span>
               <div className="flex-1 text-left">
-                <p className="font-semibold text-white">{option.label}</p>
+                <p className="font-semibold text-ink">{option.label}</p>
                 <p className="text-sm text-dark-400">{option.sub}</p>
               </div>
               {status.current === option.id && (
@@ -111,7 +111,7 @@ const StatusPage = () => {
 
       {/* Availability */}
       <div className="card">
-        <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+        <h2 className="text-lg font-bold text-ink mb-4 flex items-center gap-2">
           <FiClock className="w-5 h-5 text-electric-400" />
           Your availability
         </h2>
@@ -179,7 +179,7 @@ const StatusPage = () => {
               }`}
             >
               <span className="text-2xl mb-1 block">⚡</span>
-              <p className="text-sm font-semibold text-white">Yes, call me</p>
+              <p className="text-sm font-semibold text-ink">Yes, call me</p>
               <p className="text-xs text-dark-400 mt-1">KIKY Now will flag you</p>
             </button>
             <button
@@ -191,7 +191,7 @@ const StatusPage = () => {
               }`}
             >
               <span className="text-2xl mb-1 block">🕐</span>
-              <p className="text-sm font-semibold text-white">Plan ahead</p>
+              <p className="text-sm font-semibold text-ink">Plan ahead</p>
               <p className="text-xs text-dark-400 mt-1">Prefer scheduled only</p>
             </button>
           </div>

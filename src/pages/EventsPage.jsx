@@ -103,7 +103,7 @@ const EventsPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-5">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-display font-bold text-white flex items-center gap-2">
+          <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink flex items-center gap-2">
             <FiCalendar className="text-lime-400" />
             KIKY Events
           </h1>
@@ -247,7 +247,7 @@ const EventsPage = () => {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-lime-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full w-2 h-2 bg-lime-500"></span>
           </span>
-          <span className="text-xs font-medium text-white">
+          <span className="text-xs font-medium text-ink">
             {events.filter((e) => e.coordinates).length} on map
           </span>
         </div>
@@ -255,7 +255,7 @@ const EventsPage = () => {
 
       {/* Header row */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+        <h2 className="text-lg font-semibold text-ink flex items-center gap-2">
           {selectedCategory ? (
             <>{selectedCategory.emoji} {selectedCategory.label} events</>
           ) : (
@@ -278,7 +278,7 @@ const EventsPage = () => {
       ) : events.length === 0 ? (
         <div className="text-center py-16">
           <span className="text-6xl mb-4 block">🎪</span>
-          <h3 className="text-xl font-bold text-white mb-2">No events found</h3>
+          <h3 className="text-xl font-bold text-ink mb-2">No events found</h3>
           <p className="text-dark-400 mb-6">Widen your search or be the first to start one.</p>
           <Link to="/events/new" className="btn-primary">Create an event</Link>
         </div>

@@ -169,7 +169,7 @@ const WeatherPage = () => {
   return (
     <div className="p-4 lg:p-6 max-w-5xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-2xl lg:text-3xl font-display font-bold text-white">
+        <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink">
           Weather Suggestions
         </h1>
         <p className="text-dark-400 flex items-center gap-1">
@@ -190,7 +190,7 @@ const WeatherPage = () => {
           >
             <p className="text-sm font-medium text-dark-300">{d.day}</p>
             <p className="text-3xl my-2">{d.emoji}</p>
-            <p className="text-xl font-bold text-white">{d.temp}°</p>
+            <p className="text-xl font-bold text-ink">{d.temp}°</p>
             <p className="text-xs text-dark-400 mt-1">H:{d.hi} L:{d.lo}</p>
           </button>
         ))}
@@ -206,14 +206,14 @@ const WeatherPage = () => {
             <div className="relative z-10 flex items-center gap-6">
               <span className="text-6xl">{current.emoji}</span>
               <div>
-                <h2 className="text-3xl font-bold text-white">{current.label}</h2>
-                <p className="text-white/90 mt-1">{current.temp}°C • {current.tip}</p>
+                <h2 className="text-3xl font-bold text-ink">{current.label}</h2>
+                <p className="text-ink/90 mt-1">{current.temp}°C • {current.tip}</p>
               </div>
             </div>
           </div>
 
           {/* Suggested activities */}
-          <h2 className="text-lg font-bold text-white mb-5">Perfect activities for {current.label.toLowerCase()} weather</h2>
+          <h2 className="text-lg font-bold text-ink mb-5">Perfect activities for {current.label.toLowerCase()} weather</h2>
           <div className="grid sm:grid-cols-2 gap-4">
             {activityList.map((activity, idx) => (
               <Link
@@ -223,7 +223,7 @@ const WeatherPage = () => {
               >
                 <span className="text-4xl">{activity.emoji}</span>
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-white truncate">{activity.title}</h3>
+                  <h3 className="font-semibold text-ink truncate">{activity.title}</h3>
                   <p className="text-sm text-dark-400 mt-0.5">{activity.location} • {activity.time}</p>
                 </div>
                 <span className="text-lime-400 group-hover:translate-x-1 transition-transform">

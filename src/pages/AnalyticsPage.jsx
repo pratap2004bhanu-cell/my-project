@@ -118,7 +118,7 @@ const AnalyticsPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-display font-bold text-white">
+          <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink">
             Analytics
           </h1>
           <p className="text-dark-400">Track your activity patterns and connections</p>
@@ -149,28 +149,28 @@ const AnalyticsPage = () => {
             <div className="card p-4">
               <p className="text-sm text-dark-400 mb-1">Total Activities</p>
               <div className="flex items-end gap-2">
-                <span className="text-2xl font-bold text-white">{data.totalActivities}</span>
+                <span className="text-2xl font-bold text-ink">{data.totalActivities}</span>
                 <span className={`text-sm mb-1 ${data.activitiesChange.startsWith('-') ? 'text-red-400' : 'text-lime-400'}`}>{data.activitiesChange}</span>
               </div>
             </div>
             <div className="card p-4">
               <p className="text-sm text-dark-400 mb-1">Connections</p>
               <div className="flex items-end gap-2">
-                <span className="text-2xl font-bold text-white">{stats.connections || 0}</span>
+                <span className="text-2xl font-bold text-ink">{stats.connections || 0}</span>
                 <span className="text-sm text-dark-500 mb-1">—</span>
               </div>
             </div>
             <div className="card p-4">
               <p className="text-sm text-dark-400 mb-1">Hours Spent</p>
               <div className="flex items-end gap-2">
-                <span className="text-2xl font-bold text-white">{data.hoursSpent}</span>
+                <span className="text-2xl font-bold text-ink">{data.hoursSpent}</span>
                 <span className={`text-sm mb-1 ${data.hoursChange.startsWith('-') ? 'text-red-400' : 'text-lime-400'}`}>{data.hoursChange}</span>
               </div>
             </div>
             <div className="card p-4">
               <p className="text-sm text-dark-400 mb-1">Avg Match</p>
               <div className="flex items-end gap-2">
-                <span className="text-2xl font-bold text-white">{data.totalActivities ? `${data.avgMatch}%` : '—'}</span>
+                <span className="text-2xl font-bold text-ink">{data.totalActivities ? `${data.avgMatch}%` : '—'}</span>
                 <span className="text-sm text-dark-500 mb-1">—</span>
               </div>
             </div>
@@ -181,7 +181,7 @@ const AnalyticsPage = () => {
             <div className="card p-6">
               <div className="flex items-center gap-2 mb-6">
                 <FiPieChart className="w-5 h-5 text-lime-400" />
-                <h2 className="text-lg font-semibold text-white">Activity Breakdown</h2>
+                <h2 className="text-lg font-semibold text-ink">Activity Breakdown</h2>
               </div>
               {data.activityBreakdown.length > 0 ? (
                 <div className="space-y-4">
@@ -189,7 +189,7 @@ const AnalyticsPage = () => {
                     <div key={item.category}>
                       <div className="flex items-center justify-between mb-1">
                         <span className="text-dark-300">{item.category}</span>
-                        <span className="text-white font-medium">{item.count} ({item.percentage}%)</span>
+                        <span className="text-ink font-medium">{item.count} ({item.percentage}%)</span>
                       </div>
                       <div className="h-2 bg-dark-700 rounded-full overflow-hidden">
                         <div className={`h-full bg-gradient-to-r ${item.color} rounded-full`} style={{ width: `${item.percentage}%` }} />
@@ -206,7 +206,7 @@ const AnalyticsPage = () => {
             <div className="card p-6">
               <div className="flex items-center gap-2 mb-6">
                 <FiBarChart2 className="w-5 h-5 text-lime-400" />
-                <h2 className="text-lg font-semibold text-white">
+                <h2 className="text-lg font-semibold text-ink">
                   {timeRange === 'week' ? 'Daily Activity' : timeRange === 'year' ? 'Weekly Activity' : 'Daily Activity (30 days)'}
                 </h2>
               </div>
@@ -224,7 +224,7 @@ const AnalyticsPage = () => {
                       {bi % labelEvery === 0 ? (
                         <span className="text-[10px] text-dark-400 mt-2 whitespace-nowrap">{item.label}</span>
                       ) : <span className="mt-2" />}
-                      <span className="text-[10px] text-white font-medium">{item.count}</span>
+                      <span className="text-[10px] text-ink font-medium">{item.count}</span>
                     </div>
                     );
                   })}
@@ -240,7 +240,7 @@ const AnalyticsPage = () => {
             <div className="card p-6">
               <div className="flex items-center gap-2 mb-6">
                 <FiUsers className="w-5 h-5 text-lime-400" />
-                <h2 className="text-lg font-semibold text-white">Top Connections</h2>
+                <h2 className="text-lg font-semibold text-ink">Top Connections</h2>
               </div>
               {data.topConnections.length > 0 ? (
                 <div className="space-y-4">
@@ -254,7 +254,7 @@ const AnalyticsPage = () => {
                         className="w-10 h-10"
                       />
                       <div className="flex-1">
-                        <h4 className="font-medium text-white">{person.name}</h4>
+                        <h4 className="font-medium text-ink">{person.name}</h4>
                         <p className="text-sm text-dark-400">{person.count} activities together</p>
                       </div>
                       <span className="badge-lime">{person.compatibility}%</span>
@@ -270,23 +270,23 @@ const AnalyticsPage = () => {
             <div className="card p-6">
               <div className="flex items-center gap-2 mb-6">
                 <FiTarget className="w-5 h-5 text-lime-400" />
-                <h2 className="text-lg font-semibold text-white">Performance Metrics</h2>
+                <h2 className="text-lg font-semibold text-ink">Performance Metrics</h2>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="p-4 bg-dark-800/50 rounded-xl text-center">
-                  <div className="text-2xl font-bold text-white mb-1">{data.avgRating ? data.avgRating.toFixed(1) : '—'}</div>
+                  <div className="text-2xl font-bold text-ink mb-1">{data.avgRating ? data.avgRating.toFixed(1) : '—'}</div>
                   <div className="text-sm text-dark-400">Avg Rating</div>
                 </div>
                 <div className="p-4 bg-dark-800/50 rounded-xl text-center">
-                  <div className="text-2xl font-bold text-white mb-1">{data.repeatRate}%</div>
+                  <div className="text-2xl font-bold text-ink mb-1">{data.repeatRate}%</div>
                   <div className="text-sm text-dark-400">Repeat Meetups</div>
                 </div>
                 <div className="p-4 bg-dark-800/50 rounded-xl text-center">
-                  <div className="text-2xl font-bold text-white mb-1">{data.newPlaces}</div>
+                  <div className="text-2xl font-bold text-ink mb-1">{data.newPlaces}</div>
                   <div className="text-sm text-dark-400">New Places</div>
                 </div>
                 <div className="p-4 bg-dark-800/50 rounded-xl text-center">
-                  <div className="text-2xl font-bold text-white mb-1">{data.activeDays}</div>
+                  <div className="text-2xl font-bold text-ink mb-1">{data.activeDays}</div>
                   <div className="text-sm text-dark-400">Active Days</div>
                 </div>
               </div>

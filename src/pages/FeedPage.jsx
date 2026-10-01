@@ -103,7 +103,7 @@ const FeedPage = () => {
     <div className="p-4 lg:p-6 max-w-2xl mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl lg:text-3xl font-display font-bold text-white">
+        <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink">
           Your Feed
         </h1>
         <Link to="/create-activity" className="btn-primary text-sm flex items-center gap-1">
@@ -149,14 +149,14 @@ const FeedPage = () => {
       ) : error ? (
         <div className="card p-10 text-center">
           <span className="text-6xl mb-4 block">⚠️</span>
-          <h3 className="text-xl font-bold text-white mb-2">Couldn't load your feed</h3>
+          <h3 className="text-xl font-bold text-ink mb-2">Couldn't load your feed</h3>
           <p className="text-dark-400 mb-6">{error}</p>
           <button onClick={loadFeed} className="btn-primary">Try again</button>
         </div>
       ) : posts.length === 0 ? (
         <div className="card p-10 text-center">
           <span className="text-6xl mb-4 block">🌱</span>
-          <h3 className="text-xl font-bold text-white mb-2">Nothing here yet</h3>
+          <h3 className="text-xl font-bold text-ink mb-2">Nothing here yet</h3>
           <p className="text-dark-400 mb-6">Create or join an activity to get your feed going</p>
           <Link to="/explore" className="btn-primary">Explore Activities</Link>
         </div>
@@ -174,7 +174,7 @@ const FeedPage = () => {
                 />
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <h3 className="font-semibold text-white group-hover:text-lime-400 transition-colors">{post.user.name}</h3>
+                    <h3 className="font-semibold text-ink group-hover:text-lime-400 transition-colors">{post.user.name}</h3>
                     {post.isCreator && (
                       <span className="text-xs text-dark-400">(host)</span>
                     )}

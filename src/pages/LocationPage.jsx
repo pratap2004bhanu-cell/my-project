@@ -189,7 +189,7 @@ const LocationPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-display font-bold text-white">
+          <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink">
             <span className="kiky-wordmark">KIKY</span>{' '}
             <span className="text-dark-400 font-normal">Party Palace</span>
           </h1>
@@ -263,7 +263,7 @@ const LocationPage = () => {
         <div className="space-y-6">
           {/* Sharing Status */}
           <div className="card p-6">
-            <h2 className="text-lg font-semibold text-white mb-4">Location Sharing</h2>
+            <h2 className="text-lg font-semibold text-ink mb-4">Location Sharing</h2>
             <div className={`p-4 rounded-xl ${isSharing ? 'bg-lime-500/10 border border-lime-500/30' : 'bg-dark-800/50'}`}>
               <div className="flex items-center gap-3">
                 <div className={`w-3 h-3 rounded-full ${isSharing ? 'bg-lime-500 animate-pulse' : 'bg-dark-500'}`} />
@@ -280,7 +280,7 @@ const LocationPage = () => {
             {center && (
               <div className="mt-4">
                 {locAddress && (
-                  <p className="font-semibold text-white leading-snug">{locAddress}</p>
+                  <p className="font-semibold text-ink leading-snug">{locAddress}</p>
                 )}
                 <p className="text-sm text-dark-400 font-mono mt-1">
                   {formatCoords(center[0], center[1])}
@@ -291,7 +291,7 @@ const LocationPage = () => {
 
           {/* Nearby Friends */}
           <div className="card p-6">
-            <h2 className="text-lg font-semibold text-white mb-4">
+            <h2 className="text-lg font-semibold text-ink mb-4">
               Nearby Friends ({nearbyFriends.filter((f) => f.online).length} online)
             </h2>
             {nearbyFriends.length === 0 ? (
@@ -315,7 +315,7 @@ const LocationPage = () => {
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-medium text-white truncate">{friend.name}</h4>
+                      <h4 className="font-medium text-ink truncate">{friend.name}</h4>
                       <p className="text-xs text-dark-400">{friend.distance} • {friend.activity}</p>
                     </div>
                     <button
@@ -333,7 +333,7 @@ const LocationPage = () => {
           {/* 🔥 Happening near you — real nearby activities, Party Map cards */}
           <div className="card p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+              <h2 className="text-lg font-semibold text-ink flex items-center gap-2">
                 🔥 Happening near you
               </h2>
               <span className="text-xs font-medium px-2 py-1 rounded-full bg-lime-500/15 text-lime-400">
@@ -384,7 +384,7 @@ const LocationPage = () => {
                           {a.emoji}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h4 className="font-medium text-white truncate">{a.title}</h4>
+                          <h4 className="font-medium text-ink truncate">{a.title}</h4>
                           <p className="text-xs text-dark-400 truncate">
                             {a.distanceLabel} • {a.participantsCount}/{a.maxParticipants} joined
                           </p>
@@ -405,7 +405,7 @@ const LocationPage = () => {
 
           {/* Quick Share */}
           <div className="card p-6">
-            <h2 className="text-lg font-semibold text-white mb-4">Quick Share</h2>
+            <h2 className="text-lg font-semibold text-ink mb-4">Quick Share</h2>
             <p className="text-sm text-dark-400 mb-4">Share your live location with specific people</p>
             <button
               onClick={toggleSharing}
@@ -423,7 +423,7 @@ const LocationPage = () => {
           <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:px-4">
             <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setSheetOpen(false)} />
             <div className="relative w-full max-w-md bg-dark-800 rounded-t-2xl sm:rounded-2xl border border-dark-700/50 p-6 shadow-2xl animate-sheet-up">
-              <button onClick={() => setSheetOpen(false)} className="absolute top-4 right-4 text-dark-400 hover:text-white">
+              <button onClick={() => setSheetOpen(false)} className="absolute top-4 right-4 text-dark-400 hover:text-ink">
                 <FiX className="w-5 h-5" />
               </button>
               <div className="flex items-center gap-4 mb-4">
@@ -434,7 +434,7 @@ const LocationPage = () => {
                   {selected.emoji}
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-lg font-semibold text-white truncate">{selected.title}</h3>
+                  <h3 className="text-lg font-semibold text-ink truncate">{selected.title}</h3>
                   <p className="text-sm text-dark-400">{selected.category} • {selected.distanceLabel}</p>
                 </div>
               </div>

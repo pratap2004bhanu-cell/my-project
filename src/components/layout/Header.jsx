@@ -32,7 +32,7 @@ const Header = () => {
       <div className="flex items-center justify-between px-4 lg:px-6 h-16 lg:h-20">
         {/* Logo */}
         <Link to="/dashboard" className="flex items-center gap-2 flex-shrink-0">
-          <Logo size={96} className="text-white w-16 sm:w-24" />
+          <Logo size={96} className="text-ink w-16 sm:w-24" />
         </Link>
 
         {/* Search - Desktop */}

@@ -47,7 +47,7 @@ const ResetPasswordPage = () => {
         <div className="auth-card animate-scale-in">
           <div className="text-center mb-8">
             <FiCheckCircle className="w-14 h-14 text-lime-400 mx-auto mb-4" />
-            <h1 className="text-2xl font-bold text-white mb-2">Password updated</h1>
+            <h1 className="text-2xl font-bold text-ink mb-2">Password updated</h1>
             <p className="text-dark-400">You can now sign in with your new password.</p>
           </div>
           <button onClick={() => navigate('/login')} className="w-full btn-primary flex items-center justify-center gap-2">
@@ -69,9 +69,9 @@ const ResetPasswordPage = () => {
       <div className="auth-card animate-scale-in">
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center mb-6">
-            <Logo size={120} className="text-white" />
+            <Logo size={120} className="text-ink" />
           </div>
-          <h1 className="text-2xl font-bold text-white">Set a new password</h1>
+          <h1 className="text-2xl font-bold text-ink">Set a new password</h1>
           <p className="text-dark-400 mt-2">
             {token ? 'Use your reset link to set a new password' : 'Enter the code from your email along with your email address'}
           </p>
@@ -131,7 +131,7 @@ const ResetPasswordPage = () => {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-dark-400 hover:text-white transition-colors"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-dark-400 hover:text-ink transition-colors"
             >
               {showPassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
             </button>
@@ -162,7 +162,7 @@ const ResetPasswordPage = () => {
             )}
           </button>
 
-          <Link to="/login" className="flex items-center justify-center gap-2 text-sm text-dark-300 hover:text-white transition-colors">
+          <Link to="/login" className="flex items-center justify-center gap-2 text-sm text-dark-300 hover:text-ink transition-colors">
             <FiChevronLeft className="w-4 h-4" /> Back to Login
           </Link>
         </form>

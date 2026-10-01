@@ -44,10 +44,10 @@ const EventCard = ({ event, compact = false }) => {
 
         <div className="absolute bottom-2 left-3 right-3 flex items-end justify-between">
           <div className="min-w-0">
-            <h3 className="font-display font-bold text-white text-lg leading-tight truncate group-hover:text-lime-300 transition-colors">
+            <h3 className="font-display font-bold text-ink text-lg leading-tight truncate group-hover:text-lime-300 transition-colors">
               {event.title}
             </h3>
-            <p className="text-white/80 text-xs flex items-center gap-1 mt-0.5">
+            <p className="text-ink/80 text-xs flex items-center gap-1 mt-0.5">
               <FiClock className="w-3 h-3 flex-shrink-0" />
               {event.dateLabel}
             </p>

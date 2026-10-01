@@ -105,7 +105,7 @@ const EditProfilePage = () => {
           <Link to="/profile" className="btn-icon">
             <FiArrowLeft className="w-5 h-5" />
           </Link>
-          <h1 className="text-2xl font-display font-bold text-white">
+          <h1 className="text-2xl font-display font-bold text-ink">
             Edit Profile
           </h1>
         </div>
@@ -150,7 +150,7 @@ const EditProfilePage = () => {
             />
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-white">{profile.name}</h2>
+            <h2 className="text-lg font-semibold text-ink">{profile.name}</h2>
             <p className="text-dark-400">{uploading ? 'Uploading...' : 'Tap camera icon to change photo'}</p>
           </div>
         </div>
@@ -158,7 +158,7 @@ const EditProfilePage = () => {
 
       {/* Basic Info */}
       <div className="card p-6 mb-6">
-        <h2 className="text-lg font-semibold text-white mb-4">Basic Information</h2>
+        <h2 className="text-lg font-semibold text-ink mb-4">Basic Information</h2>
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-dark-300 mb-2">Name</label>
@@ -209,7 +209,7 @@ const EditProfilePage = () => {
 
       {/* Interests */}
       <div className="card p-6 mb-6">
-        <h2 className="text-lg font-semibold text-white mb-4">
+        <h2 className="text-lg font-semibold text-ink mb-4">
           Interests ({profile.interests.length}/10)
         </h2>
         

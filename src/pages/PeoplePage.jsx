@@ -199,7 +199,7 @@ const PeoplePage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-display font-bold text-white">
+          <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink">
             Discover People
           </h1>
           <p className="text-dark-400">Find people with similar interests nearby</p>
@@ -239,7 +239,7 @@ const PeoplePage = () => {
       ) : error ? (
         <div className="text-center py-16">
           <span className="text-6xl mb-4 block">⚠️</span>
-          <h3 className="text-xl font-bold text-white mb-2">Couldn't load people</h3>
+          <h3 className="text-xl font-bold text-ink mb-2">Couldn't load people</h3>
           <p className="text-dark-400 mb-6">{error}</p>
           <button onClick={() => window.location.reload()} className="btn-primary">Retry</button>
         </div>
@@ -247,7 +247,7 @@ const PeoplePage = () => {
         requests.length === 0 ? (
           <div className="text-center py-16">
             <span className="text-6xl mb-4 block">📥</span>
-            <h3 className="text-xl font-bold text-white mb-2">No pending requests</h3>
+            <h3 className="text-xl font-bold text-ink mb-2">No pending requests</h3>
             <p className="text-dark-400">When someone wants to connect, their request shows up here.</p>
           </div>
         ) : (
@@ -264,7 +264,7 @@ const PeoplePage = () => {
                     />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-bold text-white text-lg">{person.name}</h3>
+                    <h3 className="font-bold text-ink text-lg">{person.name}</h3>
                     <p className="text-sm text-dark-400 flex items-center gap-1">
                       <FiMapPin className="w-3 h-3" />
                       {person.location || 'Nearby'}
@@ -317,7 +317,7 @@ const PeoplePage = () => {
                 <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full border-2 border-dark-900"></div>
               </div>
               <div className="flex-1">
-                <h3 className="font-bold text-white text-lg">{person.name}</h3>
+                <h3 className="font-bold text-ink text-lg">{person.name}</h3>
                 <p className="text-sm text-dark-400 flex items-center gap-1">
                   <FiMapPin className="w-3 h-3" />
                   {person.location}{person.distance ? ` • ${person.distance}` : ''}
@@ -442,7 +442,7 @@ const PeoplePage = () => {
       {!loading && !error && filteredPeople.length === 0 && (
         <div className="text-center py-16">
           <span className="text-6xl mb-4 block">👥</span>
-          <h3 className="text-xl font-bold text-white mb-2">No people to show</h3>
+          <h3 className="text-xl font-bold text-ink mb-2">No people to show</h3>
           <p className="text-dark-400 mb-6">
             {filter === 'connected'
               ? 'Start connecting with people to see them here'

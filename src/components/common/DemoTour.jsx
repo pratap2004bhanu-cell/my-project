@@ -198,7 +198,7 @@ const DemoTour = ({ isOpen, onClose }) => {
                   <div
                     className={`relative w-24 h-24 rounded-3xl bg-gradient-to-br ${slide.gradient} flex items-center justify-center shadow-lg`}
                   >
-                    <slide.icon className="w-11 h-11 text-white" />
+                    <slide.icon className="w-11 h-11 text-ink" />
                   </div>
                   {slide.chips.map((chip, i) => (
                     <div
@@ -218,12 +218,12 @@ const DemoTour = ({ isOpen, onClose }) => {
                 </div>
 
                 <span className={`badge-lime inline-block mb-3`}>{slide.tagline}</span>
-                <h2 className="text-2xl sm:text-3xl font-display font-bold text-white mb-3">{slide.title}</h2>
+                <h2 className="text-2xl sm:text-3xl font-display font-bold text-ink mb-3">{slide.title}</h2>
                 <p className="text-dark-300 max-w-lg mx-auto mb-6 leading-relaxed">{slide.description}</p>
 
                 <ul className="max-w-md mx-auto space-y-2.5 text-left mb-8">
                   {slide.points.map((point) => (
-                    <li key={point} className="flex items-start gap-3 text-white/85 text-sm sm:text-base">
+                    <li key={point} className="flex items-start gap-3 text-ink/85 text-sm sm:text-base">
                       <span className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-lime-500/15 border border-lime-500/30 flex items-center justify-center">
                         <FiCheck className="w-3 h-3 text-lime-400" />
                       </span>
@@ -239,10 +239,10 @@ const DemoTour = ({ isOpen, onClose }) => {
                   <div
                     className="relative w-24 h-24 rounded-full bg-gradient-to-br from-lime-500 via-electric-500 to-hotpink-500 flex items-center justify-center shadow-lg"
                   >
-                    <FiCheck className="w-12 h-12 text-white" />
+                    <FiCheck className="w-12 h-12 text-ink" />
                   </div>
                 </div>
-                <h2 className="text-2xl sm:text-3xl font-display font-bold text-white mb-3">
+                <h2 className="text-2xl sm:text-3xl font-display font-bold text-ink mb-3">
                   Ready to <span className="gradient-text-flow">KIKY?</span>
                 </h2>
                 <p className="text-dark-300 max-w-lg mx-auto mb-8 leading-relaxed">

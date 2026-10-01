@@ -66,7 +66,7 @@ const UserProfilePage = () => {
     return (
       <div className="p-4 lg:p-6 max-w-2xl mx-auto text-center py-16">
         <span className="text-6xl mb-4 block">😕</span>
-        <h3 className="text-xl font-bold text-white mb-2">User not found</h3>
+        <h3 className="text-xl font-bold text-ink mb-2">User not found</h3>
         <p className="text-dark-400 mb-6">{error}</p>
         <button onClick={() => navigate(-1)} className="btn-primary">Go back</button>
       </div>
@@ -88,7 +88,7 @@ const UserProfilePage = () => {
             className="w-20 h-20 text-2xl"
           />
           <div className="flex-1 min-w-0">
-            <h1 className="text-xl font-bold text-white">{profile.name}</h1>
+            <h1 className="text-xl font-bold text-ink">{profile.name}</h1>
             <p className="text-sm text-dark-400 flex items-center gap-1 mt-1">
               <FiClock className="w-3 h-3" />
               {profile.status === 'online' ? 'Online now' : 'Offline'}
@@ -151,7 +151,7 @@ const UserProfilePage = () => {
       {restricted && (
         <div className="card p-6 text-center">
           <span className="text-4xl mb-3 block">🔒</span>
-          <h3 className="text-lg font-bold text-white mb-2">Private Profile</h3>
+          <h3 className="text-lg font-bold text-ink mb-2">Private Profile</h3>
           <p className="text-dark-400 text-sm">
             This user keeps their profile private. Connect with them to see the full profile.
           </p>

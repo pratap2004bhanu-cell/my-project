@@ -95,7 +95,7 @@ const SavedPage = () => {
     <div className="p-4 lg:p-6 max-w-4xl mx-auto">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl lg:text-3xl font-display font-bold text-white">
+        <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink">
           Saved
         </h1>
         <p className="text-dark-400">Your bookmarked activities and places</p>
@@ -136,7 +136,7 @@ const SavedPage = () => {
                 <div className="flex-1">
                   <div className="flex items-start justify-between gap-2 mb-2">
                     <div>
-                      <h3 className="font-bold text-white group-hover:text-lime-400 transition-colors">
+                      <h3 className="font-bold text-ink group-hover:text-lime-400 transition-colors">
                         {activity.title}
                       </h3>
                       <p className="text-sm text-dark-400 capitalize">by {activity.host}</p>
@@ -190,7 +190,7 @@ const SavedPage = () => {
           {!loading && savedActivities.length === 0 && (
             <div className="text-center py-16">
               <span className="text-6xl mb-4 block">🔖</span>
-              <h3 className="text-xl font-bold text-white mb-2">No saved activities</h3>
+              <h3 className="text-xl font-bold text-ink mb-2">No saved activities</h3>
               <p className="text-dark-400 mb-6">Bookmark activities to save them for later</p>
               <Link to="/explore" className="btn-primary">
                 Explore Activities
@@ -208,7 +208,7 @@ const SavedPage = () => {
           ) : connections.length === 0 ? (
             <div className="text-center py-16">
               <span className="text-6xl mb-4 block">👥</span>
-              <h3 className="text-xl font-bold text-white mb-2">No connections yet</h3>
+              <h3 className="text-xl font-bold text-ink mb-2">No connections yet</h3>
               <p className="text-dark-400 mb-6">Connect with people to see them here</p>
               <Link to="/people" className="btn-primary">
                 Discover People
@@ -229,7 +229,7 @@ const SavedPage = () => {
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-white">{person.name}</h3>
+                    <h3 className="font-bold text-ink">{person.name}</h3>
                     <p className="text-xs text-dark-400 truncate">
                       {person.location?.address || 'No location set'}
                     </p>
@@ -262,7 +262,7 @@ const SavedPage = () => {
           ) : savedPlaces.length === 0 ? (
             <div className="text-center py-16">
               <span className="text-6xl mb-4 block">📍</span>
-              <h3 className="text-xl font-bold text-white mb-2">No saved places</h3>
+              <h3 className="text-xl font-bold text-ink mb-2">No saved places</h3>
               <p className="text-dark-400 mb-6">The locations of your bookmarked activities appear here</p>
               <Link to="/explore" className="btn-primary">
                 Explore Activities
@@ -276,7 +276,7 @@ const SavedPage = () => {
                     {place.emoji}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-white truncate">{place.address}</h3>
+                    <h3 className="font-bold text-ink truncate">{place.address}</h3>
                     <p className="text-xs text-dark-400 mt-1">
                       {place.count} saved {place.count === 1 ? 'activity' : 'activities'} here
                     </p>

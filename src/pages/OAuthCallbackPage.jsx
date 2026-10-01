@@ -69,11 +69,11 @@ const OAuthCallbackPage = () => {
         <div className="auth-card animate-scale-in">
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center mb-4">
-              <Logo size={120} className="text-white" />
+              <Logo size={120} className="text-ink" />
             </div>
             <div className="flex items-center justify-center gap-2 mb-2">
               <FiShield className="w-5 h-5 text-lime-400" />
-              <h1 className="text-xl font-bold text-white">Two-factor check</h1>
+              <h1 className="text-xl font-bold text-ink">Two-factor check</h1>
             </div>
             <p className="text-dark-400 text-sm">
               {challenge.loading
@@ -87,7 +87,7 @@ const OAuthCallbackPage = () => {
               {challenge.devCode && (
                 <div className="bg-lime-500/10 border border-lime-500/30 text-lime-300 px-4 py-3 rounded-xl text-sm">
                   Email delivery is not configured — use the dev code below:
-                  <span className="block mt-2 font-mono text-lg tracking-widest text-white">
+                  <span className="block mt-2 font-mono text-lg tracking-widest text-ink">
                     {challenge.devCode}
                   </span>
                 </div>
@@ -139,7 +139,7 @@ const OAuthCallbackPage = () => {
       ) : (
         <>
           <span className="text-6xl mb-4">❌</span>
-          <h1 className="text-xl font-bold text-white mb-2">Sign-in failed</h1>
+          <h1 className="text-xl font-bold text-ink mb-2">Sign-in failed</h1>
           <p className="text-dark-400 mb-6 max-w-md">{error}</p>
           <button onClick={() => navigate('/login')} className="btn-primary inline-flex items-center gap-2">
             <FiChevronLeft className="w-4 h-4" /> Back to Login

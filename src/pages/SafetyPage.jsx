@@ -242,7 +242,7 @@ const SafetyPage = () => {
           <div className="p-2 bg-lime-500/20 rounded-xl">
             <FiShield className="w-6 h-6 text-lime-400" />
           </div>
-          <h1 className="text-2xl lg:text-3xl font-display font-bold text-white">
+          <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink">
             Trust & Safety
           </h1>
         </div>
@@ -253,10 +253,10 @@ const SafetyPage = () => {
       <div className="card p-6 mb-6">
         <div className="flex items-center gap-4 mb-4">
           <div className="w-16 h-16 rounded-full bg-gradient-to-br from-lime-500 to-emerald-500 flex items-center justify-center">
-            <FiShield className="w-8 h-8 text-white" />
+            <FiShield className="w-8 h-8 text-ink" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-white">Safety Score: {safetyScore}%</h2>
+            <h2 className="text-xl font-bold text-ink">Safety Score: {safetyScore}%</h2>
             <p className="text-dark-400">Status: {scoreLabel} · Complete your profile to increase trust</p>
           </div>
         </div>
@@ -277,7 +277,7 @@ const SafetyPage = () => {
               <feature.icon className="w-5 h-5" />
             </div>
             <div className="flex-1">
-              <h3 className="font-semibold text-white">{feature.title}</h3>
+              <h3 className="font-semibold text-ink">{feature.title}</h3>
               <p className="text-sm text-dark-400">{feature.description}</p>
             </div>
             <FiChevronRight className="w-5 h-5 text-dark-400" />
@@ -287,7 +287,7 @@ const SafetyPage = () => {
 
       {/* Report User */}
       <div className="card p-6 mb-6">
-        <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+        <h2 className="text-lg font-semibold text-ink mb-4 flex items-center gap-2">
           <FiFlag className="w-5 h-5 text-red-400" />
           Report a User
         </h2>
@@ -311,7 +311,7 @@ const SafetyPage = () => {
 
       {/* Blocked Users */}
       <div id="blocked-section" className="card p-6 mb-6">
-        <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+        <h2 className="text-lg font-semibold text-ink mb-4 flex items-center gap-2">
           <FiUserX className="w-5 h-5 text-red-400" />
           Blocked Users
         </h2>
@@ -326,7 +326,7 @@ const SafetyPage = () => {
                   className="w-10 h-10"
                 />
                 <div className="flex-1">
-                  <h3 className="font-medium text-white">{user.name}</h3>
+                  <h3 className="font-medium text-ink">{user.name}</h3>
                   <p className="text-xs text-dark-400">Blocked</p>
                 </div>
                 <button
@@ -350,7 +350,7 @@ const SafetyPage = () => {
         <div className="fixed inset-0 bg-dark-900/80 flex items-center justify-center z-50 p-4">
           <div className="card max-w-md w-full p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-white">Verify Your Profile</h3>
+              <h3 className="text-lg font-bold text-ink">Verify Your Profile</h3>
               <button onClick={closeVerify} className="btn-icon">
                 <FiX className="w-5 h-5" />
               </button>
@@ -360,9 +360,9 @@ const SafetyPage = () => {
                 <div className="w-16 h-16 rounded-full bg-amber-400/20 flex items-center justify-center mx-auto mb-4">
                   <FiCheck className="w-8 h-8 text-amber-400" />
                 </div>
-                <h4 className="font-bold text-white text-lg mb-2">Add phone number and email to increase trust</h4>
+                <h4 className="font-bold text-ink text-lg mb-2">Add phone number and email to increase trust</h4>
                 <p className="text-dark-400 mb-6">
-                  We'll send a one-time code to <span className="text-white">{user?.email}</span> to confirm this account belongs to you.
+                  We'll send a one-time code to <span className="text-ink">{user?.email}</span> to confirm this account belongs to you.
                 </p>
                 <button
                   onClick={sendVerification}
@@ -375,9 +375,9 @@ const SafetyPage = () => {
             )}
             {verifyStatus === 'sent' && (
               <div className="py-2">
-                <h4 className="font-bold text-white text-lg mb-2">Enter the code</h4>
+                <h4 className="font-bold text-ink text-lg mb-2">Enter the code</h4>
                 <p className="text-dark-400 mb-4">
-                  We sent a 6-digit code to <span className="text-white">{user?.email}</span>. It expires in 10 minutes.
+                  We sent a 6-digit code to <span className="text-ink">{user?.email}</span>. It expires in 10 minutes.
                 </p>
                 {!emailConfigured && devCode && (
                   <div className="mb-4 p-3 bg-amber-400/10 border border-amber-400/30 rounded-xl">
@@ -412,7 +412,7 @@ const SafetyPage = () => {
             {verifyStatus === 'verified' && (
               <div className="text-center py-8">
                 <div className="text-5xl mb-4">✅</div>
-                <h4 className="font-bold text-white text-lg mb-2">Profile verified</h4>
+                <h4 className="font-bold text-ink text-lg mb-2">Profile verified</h4>
                 <p className="text-dark-400 mb-6">Your profile is now verified. This boosts your safety score and trust with the community.</p>
                 <button onClick={closeVerify} className="btn-primary w-full">
                   Done
@@ -428,7 +428,7 @@ const SafetyPage = () => {
         <div className="fixed inset-0 bg-dark-900/80 flex items-center justify-center z-50 p-4">
           <div className="card max-w-md w-full p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-white">My Reports</h3>
+              <h3 className="text-lg font-bold text-ink">My Reports</h3>
               <button onClick={() => setReportsOpen(false)} className="btn-icon">
                 <FiX className="w-5 h-5" />
               </button>
@@ -444,7 +444,7 @@ const SafetyPage = () => {
                         className="w-8 h-8"
                       />
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-white text-sm truncate">{r.reported?.name || 'Unknown user'}</p>
+                        <p className="font-medium text-ink text-sm truncate">{r.reported?.name || 'Unknown user'}</p>
                         <p className="text-xs text-dark-400">{reportTypeLabel(r.type)}</p>
                       </div>
                       <span className={`text-xs px-2 py-1 rounded-full ${
@@ -478,7 +478,7 @@ const SafetyPage = () => {
         <div className="fixed inset-0 bg-dark-900/80 flex items-center justify-center z-50 p-4">
           <div className="card max-w-md w-full p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-white">Emergency Contacts</h3>
+              <h3 className="text-lg font-bold text-ink">Emergency Contacts</h3>
               <button onClick={() => setEmergencyOpen(false)} className="btn-icon">
                 <FiX className="w-5 h-5" />
               </button>
@@ -495,7 +495,7 @@ const SafetyPage = () => {
                       <FiPhone className="w-4 h-4 text-lime-400" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-white text-sm truncate">{c.name}</p>
+                      <p className="font-medium text-ink text-sm truncate">{c.name}</p>
                       <p className="text-xs text-dark-400 truncate">
                         {c.phone}{c.relation ? ` · ${c.relation}` : ''}
                       </p>
@@ -563,7 +563,7 @@ const SafetyPage = () => {
         <div className="fixed inset-0 bg-dark-900/80 flex items-center justify-center z-50 p-4">
           <div className="card max-w-md w-full p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-white">Report User</h3>
+              <h3 className="text-lg font-bold text-ink">Report User</h3>
               <button onClick={handleCloseReport} className="btn-icon">
                 <FiX className="w-5 h-5" />
               </button>
@@ -571,7 +571,7 @@ const SafetyPage = () => {
             {reportSubmitted ? (
               <div className="text-center py-8">
                 <div className="text-5xl mb-4">✅</div>
-                <h4 className="font-bold text-white text-lg mb-2">Report submitted</h4>
+                <h4 className="font-bold text-ink text-lg mb-2">Report submitted</h4>
                 <p className="text-dark-400 mb-6">Our team will review it shortly.</p>
                 <button onClick={handleCloseReport} className="btn-primary w-full">
                   Done

@@ -42,7 +42,7 @@ const DraftsPage = () => {
           <FiArrowLeft className="w-5 h-5" />
         </Link>
         <div>
-          <h1 className="text-2xl lg:text-3xl font-display font-bold text-white">
+          <h1 className="text-2xl lg:text-3xl font-display font-bold text-ink">
             My Drafts
           </h1>
           <p className="text-dark-400">Unfinished activities you can resume anytime</p>
@@ -54,14 +54,14 @@ const DraftsPage = () => {
       ) : error ? (
         <div className="card text-center py-16">
           <div className="text-5xl mb-4">⚠️</div>
-          <h2 className="text-xl font-bold text-white mb-2">Couldn't load drafts</h2>
+          <h2 className="text-xl font-bold text-ink mb-2">Couldn't load drafts</h2>
           <p className="text-dark-400 mb-6">{error}</p>
           <button onClick={loadDrafts} className="btn-primary">Retry</button>
         </div>
       ) : drafts.length === 0 ? (
         <div className="card text-center py-16">
           <div className="text-5xl mb-4">📝</div>
-          <h2 className="text-xl font-bold text-white mb-2">No drafts yet</h2>
+          <h2 className="text-xl font-bold text-ink mb-2">No drafts yet</h2>
           <p className="text-dark-400 mb-6">Start creating an activity and save it as a draft to find it here.</p>
           <Link to="/create-activity" className="btn-primary inline-flex items-center gap-2">
             <FiFileText className="w-4 h-4" />
@@ -74,7 +74,7 @@ const DraftsPage = () => {
             <div key={d._id} className="glass-strong rounded-2xl p-5 hover-lift">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-white truncate">
+                  <h3 className="font-semibold text-ink truncate">
                     {draft(d).title || 'Untitled Activity'}
                   </h3>
                   <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-dark-400">

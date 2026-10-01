@@ -70,7 +70,7 @@ const EventChatPanel = ({ eventId, me, socket, sendEnabled = true }) => {
     <div className="flex flex-col h-[420px] rounded-2xl border border-dark-700/50 bg-dark-800/40 overflow-hidden">
       <div className="px-4 py-3 border-b border-dark-700/50 flex items-center gap-2">
         <FiClock className="w-4 h-4 text-lime-400" />
-        <h3 className="text-sm font-semibold text-white">Event chat</h3>
+        <h3 className="text-sm font-semibold text-ink">Event chat</h3>
         <span className="text-[10px] px-2 py-0.5 rounded-full bg-lime-500/10 text-lime-400 ml-auto">live</span>
       </div>
 
