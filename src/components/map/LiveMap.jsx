@@ -14,6 +14,36 @@ L.Icon.Default.mergeOptions({
 const DEFAULT_CENTER = [28.6139, 77.2090];
 const PALETTE = ['#22c55e', '#ec4899', '#3b82f6', '#f59e0b', '#8b5cf6', '#06b6d4'];
 
+// People render as avatars, not map pins: an initials disc on the KIKY
+// surface, ringed in their palette colour, with a soft live pulse.
+function initialsOf(name) {
+  return (name || '?')
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((w) => w[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase();
+}
+
+function avatarIcon(name, color, active) {
+  const disc = initialsOf(name);
+  const pulseClass = active ? ' kiky-avatar-pulse' : '';
+  const ringStyle = `border-color:${color};box-shadow:0 0 0 3px rgba(5,5,12,0.9),0 6px 18px -6px ${color};`;
+  const html =
+    `<div class="kiky-avatar">` +
+    `<span class="kiky-avatar-disc${pulseClass}" style="${ringStyle}">${disc}</span>` +
+    `<span class="kiky-avatar-tag">${name || ''}</span>` +
+    `</div>`;
+  return L.divIcon({
+    className: 'kiky-avatar-wrap',
+    iconSize: [44, 44],
+    iconAnchor: [22, 22],
+    popupAnchor: [0, -24],
+    html,
+  });
+}
+
 const LiveMap = forwardRef(({ center = DEFAULT_CENTER, friends = [], activities = [], onSelectActivity = () => {} }, ref) => {
   const mapRef = useRef(null);
   useImperativeHandle(ref, () => ({
@@ -67,7 +97,7 @@ const LiveMap = forwardRef(({ center = DEFAULT_CENTER, friends = [], activities 
         </Popup>
       </Marker>
 
-      {/* Friends */}
+      {/* Friends — each person is an avatar, not a pin */}
       {items.map((friend) => (
         <div key={friend.id}>
           <Circle
@@ -75,7 +105,7 @@ const LiveMap = forwardRef(({ center = DEFAULT_CENTER, friends = [], activities 
             radius={50}
             pathOptions={{ color: friend.color, fillColor: friend.color, fillOpacity: 0.2 }}
           />
-          <Marker position={friend.position}>
+          <Marker position={friend.position} icon={avatarIcon(friend.name, friend.color, true)}>
             <Popup>
               <div className="text-center">
                 <strong>{friend.name}</strong>
@@ -98,7 +128,10 @@ const LiveMap = forwardRef(({ center = DEFAULT_CENTER, friends = [], activities 
                 pathOptions={{ color, fillColor: color, fillOpacity: 0.18 }}
               />
             )}
-            <Marker position={activity.position}>
+            <Marker
+              position={activity.position}
+              icon={avatarIcon(activity.title, color, pulse)}
+            >
               <Popup>
                 <div className="text-center min-w-[140px]">
                   <div className="text-2xl mb-1">{activity.emoji}</div>
