@@ -1385,3 +1385,76 @@ html:not(.light):not(.doodle) .kiky-avatar-glyph {
   line-height: 1;
   background: var(--kiky-surface-2);
 }
+
+/* ============================================================
+   AUTH ACCENTS
+   Translucent lime/electric/hotpink tints still present on the auth
+   screens remap to the neon signature. Scoped to default theme.
+   ============================================================ */
+html:not(.light):not(.doodle) .bg-lime-500\/10,
+html:not(.light):not(.doodle) .bg-lime-500\/15,
+html:not(.light):not(.doodle) .bg-lime-500\/20 { background-color: var(--kiky-neon-soft) !important; }
+
+html:not(.light):not(.doodle) .border-lime-500\/30,
+html:not(.light):not(.doodle) .border-lime-500\/40 {
+  border-color: rgba(124, 255, 107, 0.4) !important;
+}
+
+/* Solid lime accent (checkbox tick, requirement pips) -> neon chip */
+html:not(.light):not(.doodle) .bg-lime-500 {
+  background-color: var(--kiky-neon) !important;
+}
+
+/* Decorative float tiles: neon / cyan / violet instead of lime / electric / pink */
+html:not(.light):not(.doodle) .bg-electric-500\/10 { background-color: rgba(0, 229, 255, 0.10) !important; }
+html:not(.light):not(.doodle) .bg-hotpink-500\/10 { background-color: rgba(157, 140, 255, 0.10) !important; }
+
+/* Focus rings follow the neon accent */
+html:not(.light):not(.doodle) .focus\:ring-lime-500:focus {
+  --tw-ring-color: var(--kiky-neon);
+}
+
+/* Auth ambient: the base .auth-bg still bakes raw lime/indigo/pink pools,
+   which bypass the token layer. Recolour for the default dark theme. */
+html:not(.light):not(.doodle) .auth-bg {
+  background:
+    radial-gradient(ellipse at 18% 22%, rgba(124, 255, 107, 0.10) 0%, transparent 50%),
+    radial-gradient(ellipse at 82% 18%, rgba(0, 229, 255, 0.08) 0%, transparent 48%),
+    radial-gradient(ellipse at 60% 82%, rgba(157, 140, 255, 0.08) 0%, transparent 50%);
+  animation: aurora-drift 20s ease-in-out infinite alternate;
+}
+
+/* Card top hairline follows the neon -> cyan -> violet signature */
+html:not(.light):not(.doodle) .auth-card::before {
+  background: linear-gradient(90deg, #7CFF6B, #00E5FF, #9D8CFF, #7CFF6B);
+}
+
+/* Gradient stops: lime/electric/hotpink hardcoded in JSX (heaviest on
+   LandingPage) remap to the neon / cyan / violet signature. Gradient
+   utilities need the stop colour forced per-class; there is no token hook. */
+html:not(.light):not(.doodle) .from-lime-500,
+html:not(.light):not(.doodle) .from-lime-400 { --tw-gradient-from: var(--kiky-neon) var(--tw-gradient-from-position); --tw-gradient-to: transparent var(--tw-gradient-to-position); }
+html:not(.light):not(.doodle) .to-lime-500,
+html:not(.light):not(.doodle) .to-lime-400 { --tw-gradient-to: var(--kiky-neon) var(--tw-gradient-to-position); }
+
+html:not(.light):not(.doodle) .from-electric-500,
+html:not(.light):not(.doodle) .from-electric-400,
+html:not(.light):not(.doodle) .from-indigo-500 { --tw-gradient-from: var(--kiky-cyan) var(--tw-gradient-from-position); --tw-gradient-to: transparent var(--tw-gradient-to-position); }
+html:not(.light):not(.doodle) .to-electric-500,
+html:not(.light):not(.doodle) .to-electric-400 { --tw-gradient-to: var(--kiky-cyan) var(--tw-gradient-to-position); }
+
+html:not(.light):not(.doodle) .from-hotpink-500,
+html:not(.light):not(.doodle) .from-pink-500 { --tw-gradient-from: var(--kiky-violet) var(--tw-gradient-from-position); --tw-gradient-to: transparent var(--tw-gradient-to-position); }
+html:not(.light):not(.doodle) .to-hotpink-500,
+html:not(.light):not(.doodle) .to-pink-500 { --tw-gradient-to: var(--kiky-violet) var(--tw-gradient-to-position); }
+
+/* Emerald stop stays in the green family but keyed to the neon accent */
+html:not(.light):not(.doodle) .to-emerald-500,
+html:not(.light):not(.doodle) .to-emerald-600 { --tw-gradient-to: #4AE83A var(--tw-gradient-to-position); }
+
+/* Glows follow the new accent so depth stays coherent */
+html:not(.light):not(.doodle) .shadow-glow-lime { box-shadow: 0 0 44px -8px rgba(124, 255, 107, 0.45); }
+html:not(.light):not(.doodle) .shadow-glow-electric { box-shadow: 0 0 44px -8px rgba(0, 229, 255, 0.40); }
+html:not(.light):not(.doodle) .shadow-glow-pink { box-shadow: 0 0 44px -8px rgba(157, 140, 255, 0.40); }
+html:not(.light):not(.doodle) .ring-lime-500\/40 { --tw-ring-color: rgba(124, 255, 107, 0.4); }
+html:not(.light):not(.doodle) .ring-lime-400\/40 { --tw-ring-color: rgba(124, 255, 107, 0.4); }

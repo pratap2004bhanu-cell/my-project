@@ -90,8 +90,8 @@ const RegisterPage = () => {
           <Link to="/" className="inline-flex items-center justify-center gap-3 mb-6">
             <Logo size={170} className="text-white" />
           </Link>
-          <h1 className="text-2xl font-bold text-white">Join KIKY!</h1>
-          <p className="text-dark-400 mt-2">Find like-minded people for activities</p>
+          <h1 className="text-2xl font-bold text-white">Join the party</h1>
+          <p className="kiky-signature text-sm text-dark-400 mt-1">Find people who actually show up</p>
         </div>
 
         {/* Social Login */}

@@ -22,7 +22,7 @@ const InstallPrompt = () => {
     return () => window.removeEventListener('beforeinstallprompt', onBefore);
   }, []);
 
-  if (dismissed || delayed) return null     mood;
+  if (dismissed || delayed) return null;
   if (installEvt || isIOS) {
     return (
       <div className="fixed bottom-20 lg:bottom-6 inset-x-4 z-50 sm:max-w-sm sm:mx-auto">
