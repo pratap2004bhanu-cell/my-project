@@ -190,9 +190,10 @@ const LocationPage = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl lg:text-3xl font-display font-bold text-white">
-            Live Location
+            <span className="kiky-wordmark">KIKY</span>{' '}
+            <span className="text-dark-400 font-normal">Party Palace</span>
           </h1>
-          <p className="text-dark-400 flex items-center gap-2">
+          <p className="kiky-signature text-sm text-dark-400 flex items-center gap-2">
             <FiClock className="w-4 h-4" />
             Last updated: {lastUpdated.toLocaleTimeString()}
           </p>
