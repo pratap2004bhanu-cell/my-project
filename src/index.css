@@ -1458,3 +1458,54 @@ html:not(.light):not(.doodle) .shadow-glow-electric { box-shadow: 0 0 44px -8px 
 html:not(.light):not(.doodle) .shadow-glow-pink { box-shadow: 0 0 44px -8px rgba(157, 140, 255, 0.40); }
 html:not(.light):not(.doodle) .ring-lime-500\/40 { --tw-ring-color: rgba(124, 255, 107, 0.4); }
 html:not(.light):not(.doodle) .ring-lime-400\/40 { --tw-ring-color: rgba(124, 255, 107, 0.4); }
+
+/* ============================================================
+   CALM PASS  —  simple and attractive
+   The app animated a 20s drifting 5-stop aurora behind every screen,
+   plus pulsing glows and drifting particles. That motion competes with
+   content and reads as noise. Content stays; ambient motion is toned
+   down to a near-still wash so the UI reads calm.
+   Scoped to default theme.
+   ============================================================ */
+
+/* Ambient wash: same depth, no drift, far lower amplitude */
+html:not(.light):not(.doodle) .aurora::before {
+  inset: 0;
+  filter: none;
+  animation: none;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(124, 255, 107, 0.05), transparent 55%),
+    radial-gradient(ellipse at 85% 10%, rgba(0, 229, 255, 0.04), transparent 50%);
+}
+
+/* Softer vignette so cards sit on the canvas without a hard edge */
+html:not(.light):not(.doodle) .aurora::after {
+  background: radial-gradient(ellipse at 50% 40%, transparent 62%, rgba(2, 6, 23, 0.42) 100%);
+}
+
+/* Glows become a soft halo rather than a neon lamp */
+html:not(.light):not(.doodle) .shadow-glow-lime,
+html:not(.light):not(.doodle) .shadow-glow-electric,
+html:not(.light):not(.doodle) .shadow-glow-pink {
+  box-shadow: 0 8px 24px -14px rgba(5, 5, 12, 0.9);
+}
+
+/* Infinite pulsing decoration is the loudest offender. Freeze it. */
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.light):not(.doodle) .animate-pulse-slow {
+    animation: none;
+  }
+}
+
+/* Drifting particles -> barely-there motes, no vertical travel */
+html:not(.light):not(.doodle) .particle {
+  width: 3px;
+  height: 3px;
+  background: rgba(124, 255, 107, 0.18);
+  animation: kiky-mote 18s ease-in-out infinite alternate;
+}
+
+@keyframes kiky-mote {
+  0%   { transform: translateY(0); opacity: 0.10; }
+  100% { transform: translateY(-14px); opacity: 0.22; }
+}

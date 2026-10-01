@@ -7,6 +7,16 @@ import {
 } from 'react-icons/fi';
 import { Logo, DemoTour } from '../components/common';
 
+// Fixed once at module load so the motes do not reshuffle on every render.
+const MOTES = [
+  { id: 1, left: 8, top: 18, delay: 0 },
+  { id: 2, left: 24, top: 62, delay: 3 },
+  { id: 3, left: 42, top: 34, delay: 6 },
+  { id: 4, left: 58, top: 78, delay: 9 },
+  { id: 5, left: 72, top: 24, delay: 12 },
+  { id: 6, left: 88, top: 55, delay: 15 },
+];
+
 const LandingPage = () => {
   const [currentWord, setCurrentWord] = useState(0);
   const [demoOpen, setDemoOpen] = useState(false);
@@ -73,16 +83,16 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen bg-dark-950 overflow-hidden aurora">
-      {/* Particle Background */}
-      <div className="particles">
-        {[...Array(20)].map((_, i) => (
+      {/* Ambient motes: few, fixed, no per-render randomness */}
+      <div className="particles" aria-hidden="true">
+        {MOTES.map((mote) => (
           <div
-            key={i}
+            key={mote.id}
             className="particle"
             style={{
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 15}s`,
-              animationDuration: `${15 + Math.random() * 10}s`,
+              left: `${mote.left}%`,
+              top: `${mote.top}%`,
+              animationDelay: `${mote.delay}s`,
             }}
           />
         ))}
