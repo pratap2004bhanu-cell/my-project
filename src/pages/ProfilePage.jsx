@@ -8,7 +8,7 @@ import {
   FiEdit2, FiMapPin, FiCalendar, FiHeart, 
   FiActivity, FiStar, FiSettings, FiLogOut,
   FiTarget, FiTrendingUp, FiUsers, FiCheck,
-  FiCamera, FiImage, FiX
+  FiCamera, FiImage, FiX, FiChevronRight
 } from 'react-icons/fi';
 
 const ProfilePage = () => {
@@ -18,6 +18,7 @@ const ProfilePage = () => {
   const [loading, setLoading] = useState(true);
   const [gallery, setGallery] = useState(() => user?.gallery || []);
   const [uploading, setUploading] = useState(false);
+  const [journeyStats, setJourneyStats] = useState(null);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -52,6 +53,25 @@ const ProfilePage = () => {
   }, [user?.id]);
 
   useEffect(() => { setGallery(user?.gallery || []); }, [user?.gallery]);
+
+  // Journey preview figures. Real, derived numbers only — the preview card
+  // is absent-friendly rather than showing a misleading zero-filled map.
+  useEffect(() => {
+    let cancelled = false;
+    api
+      .get('/api/journey')
+      .then((res) => {
+        if (cancelled) return;
+        const s = res.data?.stats || {};
+        setJourneyStats([
+          { label: 'Places', value: s.places ?? 0 },
+          { label: 'Activities', value: s.activities ?? 0 },
+          { label: 'People', value: s.people ?? 0 },
+        ]);
+      })
+      .catch(() => { /* preview stays hidden on failure */ });
+    return () => { cancelled = true; };
+  }, []);
 
   const handleGalleryUpload = async (e) => {
     const files = Array.from(e.target.files || []);
@@ -180,6 +200,58 @@ const ProfilePage = () => {
           </div>
         ))}
       </div>
+
+      {journeyStats && (
+      /* Journey preview — the map is the story, so it gets its own entry */
+      <Link
+        to="/journey"
+        className="card mb-6 block overflow-hidden group relative active:scale-[0.995] transition-transform"
+      >
+        <div
+          className="absolute inset-0 opacity-90 transition-opacity group-hover:opacity-100"
+          style={{
+            background:
+              'radial-gradient(120% 90% at 0% 0%, rgba(124,255,107,0.16) 0%, rgba(0,229,255,0.10) 45%, transparent 75%)',
+          }}
+        />
+        <div className="relative px-4 sm:px-5 py-4">
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <p className="text-xs font-semibold uppercase tracking-widest text-lime-400">
+                Your Kiky Journey
+              </p>
+              <p className="text-dark-300 text-sm mt-1">
+                Every plan becomes a memory.
+              </p>
+            </div>
+            <span
+              className="w-10 h-10 rounded-xl grid place-items-center flex-shrink-0"
+              style={{ background: 'rgba(124,255,107,0.12)' }}
+            >
+              <FiMapPin className="w-5 h-5 text-lime-400" />
+            </span>
+          </div>
+
+          <div className="flex gap-4 sm:gap-6 mt-4">
+            {journeyStats.map((s) => (
+              <div key={s.label}>
+                <p className="text-xl sm:text-2xl font-bold text-ink leading-none">
+                  {s.value}
+                </p>
+                <p className="text-[11px] uppercase tracking-wider text-dark-400 mt-1">
+                  {s.label}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <p className="inline-flex items-center gap-1 text-sm font-semibold text-lime-400 mt-4">
+            Open my map
+            <FiChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+          </p>
+        </div>
+      </Link>
+      )}
 
       {/* Tabs */}
       <div className="flex gap-2 mb-6 overflow-x-auto pb-2">

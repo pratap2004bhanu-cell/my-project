@@ -37,6 +37,7 @@ const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 const EditProfilePage = lazy(() => import('./pages/EditProfilePage'));
 const SavedPage = lazy(() => import('./pages/SavedPage'));
 const HistoryPage = lazy(() => import('./pages/HistoryPage'));
+const JourneyPage = lazy(() => import('./pages/JourneyPage'));
 const LocationPage = lazy(() => import('./pages/LocationPage'));
 const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage'));
 const GroupChatPage = lazy(() => import('./pages/GroupChatPage'));
@@ -230,6 +231,17 @@ function App() {
             <Route path="my-events" element={<MyEventsPage />} />
             <Route path="admin/events" element={<AdminEventsPage />} />
           </Route>
+
+          {/* Journey — full-bleed map experience, so it runs without the
+              standard AppLayout chrome and manages its own header. */}
+          <Route
+            path="/journey"
+            element={
+              <ProtectedRoute>
+                <JourneyPage />
+              </ProtectedRoute>
+            }
+          />
           
           {/* Catch all - redirect to home */}
           <Route path="*" element={<Navigate to="/" replace />} />

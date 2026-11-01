@@ -586,25 +586,25 @@ html.light {
   --bg-secondary: #f8fafc;
   --bg-tertiary: #f1f5f9;
   --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #94a3b8;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
   --border-color: #e2e8f0;
 
   /* Light-canvas scale. Warm off-white, real ink, hairline borders.
      Every value checked against WCAG AA on its own surface. */
-  --scale-canvas: #f7f5f2;
+  --scale-canvas: #f8fafc;
   --scale-surface: #ffffff;
-  --scale-surface-2: #fbfaf8;
-  --scale-surface-3: #f1efeb;
-  --scale-surface-4: #e6e2dc;
-  --scale-ink: #14161a;
-  --scale-ink-strong: #000000;
-  --scale-mute: #5c6470;
-  --scale-mute-strong: #3d444e;
-  --scale-faint: #6a7078;
-  --scale-line: #e6e2dc;
-  --scale-line-strong: #d3cec6;
-  --scale-accent: #2f6b11;
+  --scale-surface-2: #f8fafc;
+  --scale-surface-3: #f1f5f9;
+  --scale-surface-4: #e2e8f0;
+  --scale-ink: #0f172a;
+  --scale-ink-strong: #020617;
+  --scale-mute: #475569;
+  --scale-mute-strong: #334155;
+  --scale-faint: #64748b;
+  --scale-line: #e2e8f0;
+  --scale-line-strong: #cbd5e1;
+  --scale-accent: #65a30d;
   --scale-on-accent: #ffffff;
 }
 
@@ -667,6 +667,14 @@ html.light [class*="text-white"] {
 html.light [class*="text-dark-"],
 html.light [class*="text-gray-"] {
   color: var(--text-secondary) !important;
+}
+html.light [class*="text-dark-300"],
+html.light [class*="text-dark-400"] {
+  color: var(--text-secondary) !important;
+}
+html.light [class*="text-dark-500"],
+html.light [class*="text-dark-600"] {
+  color: var(--text-primary) !important;
 }
 html.light [class*="text-dark-900"],
 html.light [class*="text-dark-950"],
@@ -787,11 +795,11 @@ html.light .badge-orange {
 
 /* Nav */
 html.light .nav-item {
-  color: var(--text-secondary);
+  color: var(--text-secondary) !important;
 }
 html.light .nav-item:hover {
-  background: var(--bg-tertiary);
-  color: var(--text-primary);
+  background: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
 }
 html.light .nav-item-active {
   background: #ecfccb;
@@ -1849,3 +1857,215 @@ html.light .hover\:bg-dark-600:hover {
 }
 
 html.light .gradient-border-inner { background: var(--scale-surface) !important; }
+
+/* ================================================================
+   KIKY JOURNEY — the personal adventure map
+   Premium dark map, custom pins, a memory trail. Deliberately calm:
+   the map is the content, so nothing else competes with it.
+   ================================================================ */
+
+/* The map surface. Dark, quiet streets, rounded container. */
+.kiky-journey-map {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  background: #0b0f14;
+  isolation: isolate;
+}
+.kiky-journey-map .leaflet-container {
+  background: #0b0f14 !important;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* Journey tiles: darker and more desaturated than the app-wide dark
+   tiles so the Kiky pins are the brightest thing on screen. */
+.kiky-journey-tiles img {
+  filter: invert(1) hue-rotate(185deg) brightness(0.62) contrast(1.05) saturate(0.42);
+}
+/* Fade the basemap out at the edges so it dissolves into the container
+   instead of ending on a hard rectangle. */
+.kiky-journey-map::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 400;
+  border-radius: 1rem;
+  box-shadow: inset 0 0 44px 10px rgba(11, 15, 20, 0.55);
+}
+
+/* Place pin: a rounded disc carrying the activity glyph, lit from
+   within. Replaces the default teardrop pin entirely. */
+.kiky-journey-pin-wrap { background: none; border: none; }
+.kiky-journey-pin {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: linear-gradient(
+    150deg,
+    rgba(255, 255, 255, 0.16),
+    rgba(255, 255, 255, 0.04) 60%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow:
+    0 0 0 1px rgba(11, 15, 20, 0.5),
+    0 8px 22px -10px rgba(0, 0, 0, 0.85),
+    0 0 18px -6px var(--kiky-pin-tone, rgba(124, 255, 107, 0.5));
+  animation: kiky-pin-in 420ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  transition: transform 180ms cubic-bezier(0.22, 0.61, 0.36, 1),
+              box-shadow 180ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.kiky-journey-pin span {
+  font-size: 17px;
+  line-height: 1;
+  filter: saturate(1.1);
+}
+.kiky-journey-pin-active {
+  transform: scale(1.16);
+  border-color: var(--kiky-pin-tone, #7CFF6B);
+  box-shadow:
+    0 0 0 2px rgba(11, 15, 20, 0.7),
+    0 0 0 4px var(--kiky-pin-tone, rgba(124, 255, 107, 0.45)),
+    0 10px 26px -10px rgba(0, 0, 0, 0.9),
+    0 0 26px -4px var(--kiky-pin-tone, rgba(124, 255, 107, 0.6));
+}
+@keyframes kiky-pin-in {
+  from { opacity: 0; transform: translateY(6px) scale(0.9); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* The user's own position: a quiet ring, not a pin. */
+.kiky-journey-me-wrap { background: none; border: none; }
+.kiky-journey-me {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: #7CFF6B;
+  box-shadow: 0 0 0 4px rgba(124, 255, 107, 0.22), 0 0 18px rgba(124, 255, 107, 0.55);
+}
+
+/* The trail: drawn on by JourneyMap via stroke-dashoffset, so no
+   keyframes here — the component owns the timing. */
+.kiky-journey-map .leaflet-overlay-pane path {
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .kiky-journey-pin { animation: none; }
+  .kiky-journey-map .leaflet-overlay-pane path { transition: none !important; }
+}
+
+/* ---- Page furniture ---- */
+.journey-shell {
+  background: radial-gradient(120% 70% at 50% 0%, #131820 0%, #0b0f14 62%);
+}
+
+/* Stat chips: compact and horizontal on mobile, a quiet grid on desktop. */
+.journey-stat {
+  position: relative;
+  min-width: 92px;
+  padding: 0.625rem 0.875rem;
+  border-radius: 0.875rem;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+.journey-stat-value {
+  font-size: 1.375rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: #F2F5F8;
+  font-variant-numeric: tabular-nums;
+}
+.journey-stat-label {
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #8FA0B5;
+  margin-top: 0.125rem;
+}
+
+/* Count-up entrance for the numbers. */
+.journey-count {
+  animation: journey-count-in 520ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+@keyframes journey-count-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Filter chips */
+.journey-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.875rem;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  white-space: nowrap;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  color: #B6C0CC;
+  transition: color 160ms cubic-bezier(0.22, 0.61, 0.36, 1),
+              background-color 160ms cubic-bezier(0.22, 0.61, 0.36, 1),
+              border-color 160ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.journey-chip-active {
+  background: rgba(124, 255, 107, 0.12);
+  border-color: rgba(124, 255, 107, 0.35);
+  color: #7CFF6B;
+}
+
+/* Bottom sheet: rounded top, glass, slide-up. */
+.journey-sheet {
+  border-radius: 1.5rem 1.5rem 0 0;
+  background: rgba(17, 21, 27, 0.86);
+  backdrop-filter: blur(24px) saturate(140%);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 -18px 50px -20px rgba(0, 0, 0, 0.9);
+  animation: journey-sheet-up 300ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+@keyframes journey-sheet-up {
+  from { transform: translateY(18px); opacity: 0.6; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+.journey-sheet-grab {
+  width: 36px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  margin: 0.5rem auto 0;
+}
+
+/* Memory cards */
+.journey-memory {
+  border-radius: 1rem;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  transition: border-color 160ms cubic-bezier(0.22, 0.61, 0.36, 1),
+              transform 160ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.journey-memory:active { transform: scale(0.99); }
+
+/* Section heading */
+.journey-heading {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7A8899;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .journey-sheet,
+  .journey-count,
+  .kiky-journey-pin { animation: none !important; }
+  .journey-memory { transition: none !important; }
+}

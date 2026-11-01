@@ -28,6 +28,7 @@ import templateRoutes from './routes/templates.js';
 import reportRoutes from './routes/reports.js';
 import suggestionRoutes from './routes/suggestions.js';
 import eventRoutes from './routes/events.js';
+import journeyRoutes from './routes/journey.js';
 import refreshActivityStatuses from './utils/lifecycle.js';
 import { serveFile } from './config/gridfs.js';
 
@@ -88,6 +89,7 @@ app.get('/uploads/:id', async (req, res, next) => {
 // Routes
 app.use('/auth', authRoutes);
 app.use('/api/activities', activityRoutes);
+app.use('/api/journey', journeyRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/notifications', notificationRoutes);
