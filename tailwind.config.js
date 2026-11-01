@@ -46,15 +46,14 @@ export default {
           800: '#9d174d',
           900: '#831843',
         },
-        // Signal - the light-mode accent. Lime reads as neon on a dark
-        // canvas but disappears on white (1.5:1), so the light canvas
-        // uses these instead: still energetic, still KIKY, legible.
+        // Signal - the light-mode accent. Warm coral/amber for the
+        // "warm & social" theme.
         signal: {
-          300: '#4d9c1a',
-          400: '#3f8415',
-          500: '#2f6b11',
-          600: '#275a0e',
-          700: '#1d460b',
+          300: '#fdba74',
+          400: '#fb923c',
+          500: '#ea580c',
+          600: '#c2410c',
+          700: '#9a3412',
         },
         // Sunset Orange (Warmth, Energy)
         sunset: {
@@ -99,12 +98,12 @@ export default {
         /* Canvas + ink for the light-first system. `dark-*` is the
            app-wide semantic scale, so these five tokens are what a
            light canvas is actually built from. */
-        canvas: '#f7f5f2',
+        canvas: '#faf6f1',
         surface: '#ffffff',
-        ink: '#14161a',
-        mute: '#5c6470',
-        faint: '#6a7078',
-        hairline: '#e6e2dc',
+        ink: '#2d1f14',
+        mute: '#7c6a5a',
+        faint: '#a89888',
+        hairline: '#e8dfd4',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],

@@ -592,19 +592,19 @@ html.light {
 
   /* Light-canvas scale. Warm off-white, real ink, hairline borders.
      Every value checked against WCAG AA on its own surface. */
-  --scale-canvas: #f8fafc;
+  --scale-canvas: #faf6f1;
   --scale-surface: #ffffff;
-  --scale-surface-2: #f8fafc;
-  --scale-surface-3: #f1f5f9;
-  --scale-surface-4: #e2e8f0;
-  --scale-ink: #0f172a;
-  --scale-ink-strong: #020617;
-  --scale-mute: #475569;
-  --scale-mute-strong: #334155;
-  --scale-faint: #64748b;
-  --scale-line: #e2e8f0;
-  --scale-line-strong: #cbd5e1;
-  --scale-accent: #65a30d;
+  --scale-surface-2: #faf6f1;
+  --scale-surface-3: #f3ede5;
+  --scale-surface-4: #e8dfd4;
+  --scale-ink: #2d1f14;
+  --scale-ink-strong: #1a1209;
+  --scale-mute: #7c6a5a;
+  --scale-mute-strong: #5a4a3a;
+  --scale-faint: #a89888;
+  --scale-line: #e8dfd4;
+  --scale-line-strong: #d4c9b8;
+  --scale-accent: #ea580c;
   --scale-on-accent: #ffffff;
 }
 
@@ -989,11 +989,11 @@ html.doodle .btn-ghost:hover {
    ============================================================ */
 :root {
   /* Canvas + surfaces — near-black navy, not gray */
-  --kiky-canvas: #05050C;
-  --kiky-canvas-soft: #0A0A14;
-  --kiky-surface: #101020;
-  --kiky-surface-2: #17172A;
-  --kiky-surface-3: #1E1E35;
+  --kiky-canvas: #1a1410;
+  --kiky-canvas-soft: #201a14;
+  --kiky-surface: #2a2218;
+  --kiky-surface-2: #332a1e;
+  --kiky-surface-3: #3d3224;
 
   /* Ink ramps — monochrome with a cool cast */
   --kiky-ink: #FFFFFF;
@@ -1002,10 +1002,10 @@ html.doodle .btn-ghost:hover {
   --kiky-ink-mute: #4A4A63;
 
   /* Neon signature (the single brand accent) */
-  --kiky-neon: #7CFF6B;
-  --kiky-neon-soft: rgba(124, 255, 107, 0.14);
-  --kiky-cyan: #00E5FF;
-  --kiky-violet: #9D8CFF;
+  --kiky-neon: #fb923c;
+  --kiky-neon-soft: rgba(251, 146, 60, 0.14);
+  --kiky-cyan: #fbbf24;
+  --kiky-violet: #f472b6;
   --kiky-line: rgba(255, 255, 255, 0.07);
 }
 
