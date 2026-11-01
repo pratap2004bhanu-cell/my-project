@@ -49,11 +49,19 @@ export default {
         // Signal - the light-mode accent. Warm coral/amber for the
         // "warm & social" theme.
         signal: {
-          300: '#fdba74',
-          400: '#fb923c',
-          500: '#ea580c',
-          600: '#c2410c',
-          700: '#9a3412',
+          300: '#FF9A8B',
+          400: '#FF725E',
+          500: '#E85A45',
+          600: '#D14A38',
+          700: '#B83A2A',
+        },
+        // Doodleverse secondary accent (indigo)
+        doodle: {
+          300: '#9AA8FF',
+          400: '#7B8CFF',
+          500: '#5A6BE0',
+          600: '#4A5BD0',
+          700: '#3A4BC0',
         },
         // Sunset Orange (Warmth, Energy)
         sunset: {
@@ -98,16 +106,17 @@ export default {
         /* Canvas + ink for the light-first system. `dark-*` is the
            app-wide semantic scale, so these five tokens are what a
            light canvas is actually built from. */
-        canvas: '#faf6f1',
+        canvas: '#F8F5EC',
         surface: '#ffffff',
-        ink: '#2d1f14',
-        mute: '#7c6a5a',
-        faint: '#a89888',
-        hairline: '#e8dfd4',
+        ink: '#202020',
+        mute: '#77736D',
+        faint: '#A09C95',
+        hairline: '#E8E3D9',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
-        display: ['Poppins', 'system-ui', 'sans-serif'],
+        display: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+        doodle: ['Caveat', 'cursive'],
         mono: ['JetBrains Mono', 'monospace'],
       },
       backgroundImage: {

@@ -1,5 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Patrick+Hand&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -583,28 +583,28 @@ html.light .glass-strong {
    ============================================================ */
 html.light {
   --bg-primary: #ffffff;
-  --bg-secondary: #f8fafc;
-  --bg-tertiary: #f1f5f9;
-  --text-primary: #0f172a;
-  --text-secondary: #334155;
-  --text-muted: #64748b;
-  --border-color: #e2e8f0;
+  --bg-secondary: #F8F5EC;
+  --bg-tertiary: #F0EDE4;
+  --text-primary: #202020;
+  --text-secondary: #77736D;
+  --text-muted: #A09C95;
+  --border-color: #E8E3D9;
 
   /* Light-canvas scale. Warm off-white, real ink, hairline borders.
      Every value checked against WCAG AA on its own surface. */
-  --scale-canvas: #faf6f1;
+  --scale-canvas: #F8F5EC;
   --scale-surface: #ffffff;
-  --scale-surface-2: #faf6f1;
-  --scale-surface-3: #f3ede5;
-  --scale-surface-4: #e8dfd4;
-  --scale-ink: #2d1f14;
-  --scale-ink-strong: #1a1209;
-  --scale-mute: #7c6a5a;
-  --scale-mute-strong: #5a4a3a;
-  --scale-faint: #a89888;
-  --scale-line: #e8dfd4;
-  --scale-line-strong: #d4c9b8;
-  --scale-accent: #ea580c;
+  --scale-surface-2: #F8F5EC;
+  --scale-surface-3: #F0EDE4;
+  --scale-surface-4: #E8E3D9;
+  --scale-ink: #202020;
+  --scale-ink-strong: #000000;
+  --scale-mute: #77736D;
+  --scale-mute-strong: #5a5650;
+  --scale-faint: #A09C95;
+  --scale-line: #E8E3D9;
+  --scale-line-strong: #D4CFC3;
+  --scale-accent: #FF725E;
   --scale-on-accent: #ffffff;
 }
 
@@ -989,11 +989,11 @@ html.doodle .btn-ghost:hover {
    ============================================================ */
 :root {
   /* Canvas + surfaces — near-black navy, not gray */
-  --kiky-canvas: #1a1410;
-  --kiky-canvas-soft: #201a14;
-  --kiky-surface: #2a2218;
-  --kiky-surface-2: #332a1e;
-  --kiky-surface-3: #3d3224;
+  --kiky-canvas: #17171B;
+  --kiky-canvas-soft: #1C1C22;
+  --kiky-surface: #25252C;
+  --kiky-surface-2: #2A2A32;
+  --kiky-surface-3: #303039;
 
   /* Ink ramps — monochrome with a cool cast */
   --kiky-ink: #FFFFFF;
@@ -1002,10 +1002,10 @@ html.doodle .btn-ghost:hover {
   --kiky-ink-mute: #4A4A63;
 
   /* Neon signature (the single brand accent) */
-  --kiky-neon: #fb923c;
-  --kiky-neon-soft: rgba(251, 146, 60, 0.14);
-  --kiky-cyan: #fbbf24;
-  --kiky-violet: #f472b6;
+  --kiky-neon: #FF806C;
+  --kiky-neon-soft: rgba(255, 128, 108, 0.14);
+  --kiky-cyan: #929FFF;
+  --kiky-violet: #FFD166;
   --kiky-line: rgba(255, 255, 255, 0.07);
 }
 
@@ -1405,6 +1405,56 @@ html:not(.light):not(.doodle) .kiky-avatar-glyph {
   font-size: 18px;
   line-height: 1;
   background: var(--kiky-surface-2);
+}
+
+/* ============================================================
+   DOODLEVERSE DECORATIONS
+   Hand-drawn style accents: stars, underlines, scribbles.
+   ============================================================ */
+.doodle-star {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background: radial-gradient(circle, var(--scale-accent) 2px, transparent 2.5px);
+  position: relative;
+}
+.doodle-star::before,
+.doodle-star::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 14px;
+  height: 2px;
+  background: var(--scale-accent);
+  transform: translate(-50%, -50%);
+}
+.doodle-star::after {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.doodle-underline {
+  position: relative;
+  display: inline-block;
+}
+.doodle-underline::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 100%;
+  height: 6px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 6'%3E%3Cpath d='M0 3 Q25 0 50 3 T100 3' stroke='%23FF725E' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+.doodle-scribble {
+  border: 2px dashed var(--scale-line-strong);
+  border-radius: 12px;
+  padding: 4px 8px;
+}
+.doodle-hand {
+  font-family: 'Caveat', cursive;
+  font-weight: 700;
 }
 
 /* ============================================================
